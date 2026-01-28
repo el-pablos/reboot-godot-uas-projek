@@ -21,6 +21,8 @@ signal landed
 @export_group("Movement")
 ## Kecepatan gerak horizontal maksimal
 @export var move_speed: float = 200.0
+## Alias untuk kompatibilitas testing
+@export var speed: float = 200.0
 ## Akselerasi saat mulai bergerak
 @export var acceleration: float = 1200.0
 ## Perlambatan saat berhenti (friction)
@@ -31,6 +33,8 @@ signal landed
 @export_group("Jump Physics")
 ## Kekuatan lompat (velocity.y negatif)
 @export var jump_force: float = -350.0
+## Alias untuk kompatibilitas testing (harus negatif)
+@export var jump_velocity: float = -350.0
 ## Gravity saat naik (jump)
 @export var jump_gravity: float = 800.0
 ## Gravity saat turun (fall) - lebih berat agar terasa responsive
@@ -55,6 +59,8 @@ signal landed
 @export var glide_gravity: float = 200.0
 ## Kecepatan jatuh maksimal saat glide
 @export var glide_max_fall_speed: float = 100.0
+## Multiplier gravity untuk glide (untuk testing, < 1.0)
+@export var glide_gravity_multiplier: float = 0.25
 
 @export_group("Combat")
 ## HP maksimal
