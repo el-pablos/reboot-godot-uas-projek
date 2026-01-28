@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://level_template"]
+
+[ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(2000, 64)
+
+[node name="LevelTemplate" type="Node2D"]
+script = ExtResource("1_level_script")
+level_name = "Template Level"
+spawn_position = Vector2(100, 200)
+killzone_y = 800.0
+
+[node name="Background" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.5, 0.5)
+
+[node name="BackgroundSprite" type="ColorRect" parent="Background/ParallaxLayer"]
+offset_left = -1000.0
+offset_top = -500.0
+offset_right = 3000.0
+offset_bottom = 1000.0
+color = Color(0.15, 0.2, 0.35, 1)
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Environment"]
+position = Vector2(500, 350)
+collision_layer = 4
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Ground"]
+scale = Vector2(60, 2)
+texture = ExtResource("2_ground")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ground"]
+shape = SubResource("ground_shape")
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(100, 200)

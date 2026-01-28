@@ -1,0 +1,156 @@
+[gd_scene load_steps=6 format=3 uid="uid://level_01_golden_isles"]
+
+[ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
+[ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
+
+[node name="Level_01_GoldenIsles" type="Node2D"]
+script = ExtResource("1_level_script")
+level_name = "The Golden Isles"
+level_description = "Tutorial area - Pulau melayang emas, tempat Bip pertama kali bangun setelah reboot."
+next_level_path = "res://scenes/levels/Level_02_RustFactory.tscn"
+spawn_position = Vector2(100, 200)
+killzone_y = 1000.0
+background_color = Color(0.4, 0.6, 0.9, 1)
+
+[node name="Background" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.1, 0.1)
+
+[node name="Sky" type="ColorRect" parent="Background/SkyLayer"]
+offset_left = -2000.0
+offset_top = -1000.0
+offset_right = 4000.0
+offset_bottom = 2000.0
+color = Color(0.529, 0.808, 0.922, 1)
+
+[node name="CloudLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.3, 0.2)
+
+[node name="Cloud1" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = 100.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = -150.0
+color = Color(1, 1, 1, 0.7)
+
+[node name="Cloud2" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = 500.0
+offset_top = -100.0
+offset_right = 700.0
+offset_bottom = -50.0
+color = Color(1, 1, 1, 0.6)
+
+[node name="Cloud3" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = 900.0
+offset_top = -180.0
+offset_right = 1100.0
+offset_bottom = -120.0
+color = Color(1, 1, 1, 0.8)
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="StartIsland" type="StaticBody2D" parent="Environment"]
+position = Vector2(200, 350)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/StartIsland"]
+scale = Vector2(15, 3)
+texture = ExtResource("2_ground")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/StartIsland"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/StartIsland"]
+polygon = PackedVector2Array(-240, -48, 240, -48, 240, 48, -240, 48)
+
+[node name="Platform1" type="StaticBody2D" parent="Environment"]
+position = Vector2(500, 280)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
+scale = Vector2(3, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
+polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+
+[node name="Platform2" type="StaticBody2D" parent="Environment"]
+position = Vector2(700, 220)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
+scale = Vector2(3, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
+polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+
+[node name="Platform3" type="StaticBody2D" parent="Environment"]
+position = Vector2(950, 280)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform3"]
+scale = Vector2(3, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3"]
+polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+
+[node name="MiddleIsland" type="StaticBody2D" parent="Environment"]
+position = Vector2(1200, 350)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/MiddleIsland"]
+scale = Vector2(12, 3)
+texture = ExtResource("2_ground")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/MiddleIsland"]
+polygon = PackedVector2Array(-192, -48, 192, -48, 192, 48, -192, 48)
+
+[node name="EndIsland" type="StaticBody2D" parent="Environment"]
+position = Vector2(1700, 300)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/EndIsland"]
+scale = Vector2(10, 3)
+texture = ExtResource("2_ground")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/EndIsland"]
+polygon = PackedVector2Array(-160, -48, 160, -48, 160, 48, -160, 48)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="CoreFragment" type="Area2D" parent="Collectibles"]
+position = Vector2(1700, 220)
+collision_layer = 16
+collision_mask = 1
+script = ExtResource("5_core_script")
+core_id = 1
+
+[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
+scale = Vector2(2, 2)
+self_modulate = Color(1, 0.9, 0.2, 1)
+texture = ExtResource("2_ground")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collectibles/CoreFragment"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="TutorialLabel" type="Label" parent="UI"]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 450.0
+offset_bottom = 150.0
+text = "TUTORIAL - THE GOLDEN ISLES
+Gunakan A/D atau Arrow Keys untuk bergerak.
+Tekan SPACE atau W untuk lompat.
+Tujuan: Ambil Core Fragment di ujung level!"
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(100, 250)

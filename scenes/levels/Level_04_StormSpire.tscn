@@ -1,0 +1,207 @@
+[gd_scene load_steps=7 format=3 uid="uid://level_04_storm_spire"]
+
+[ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
+[ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
+[ext_resource type="Script" path="res://scripts/hazards/WindZone.gd" id="6_wind_script"]
+
+[node name="Level_04_StormSpire" type="Node2D"]
+script = ExtResource("1_level_script")
+level_name = "The Storm Spire"
+level_description = "Menara tinggi dengan badai dan angin kencang. Boss: Tempest."
+next_level_path = "res://scenes/levels/Level_05_OverlordFortress.tscn"
+spawn_position = Vector2(100, 600)
+killzone_y = 1500.0
+background_color = Color(0.15, 0.15, 0.25, 1)
+
+[node name="Background" type="ParallaxBackground" parent="."]
+
+[node name="StormBG" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.05, 0.05)
+
+[node name="BGRect" type="ColorRect" parent="Background/StormBG"]
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 4000.0
+offset_bottom = 3000.0
+color = Color(0.1, 0.1, 0.2, 1)
+
+[node name="CloudLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.3, 0.1)
+
+[node name="StormCloud1" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = -100.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = -200.0
+color = Color(0.3, 0.3, 0.4, 0.8)
+
+[node name="StormCloud2" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = 400.0
+offset_top = -400.0
+offset_right = 900.0
+offset_bottom = -280.0
+color = Color(0.25, 0.25, 0.35, 0.9)
+
+[node name="StormCloud3" type="ColorRect" parent="Background/CloudLayer"]
+offset_left = 1000.0
+offset_top = -350.0
+offset_right = 1500.0
+offset_bottom = -220.0
+color = Color(0.2, 0.2, 0.3, 0.85)
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="FloorBase" type="StaticBody2D" parent="Environment"]
+position = Vector2(300, 700)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/FloorBase"]
+scale = Vector2(18, 2)
+modulate = Color(0.4, 0.4, 0.5, 1)
+texture = ExtResource("2_ground")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/FloorBase"]
+polygon = PackedVector2Array(-288, -32, 288, -32, 288, 32, -288, 32)
+
+[node name="Platform1" type="StaticBody2D" parent="Environment"]
+position = Vector2(200, 580)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
+scale = Vector2(4, 1)
+modulate = Color(0.5, 0.5, 0.6, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
+polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+
+[node name="Platform2" type="StaticBody2D" parent="Environment"]
+position = Vector2(450, 480)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
+scale = Vector2(3, 1)
+modulate = Color(0.5, 0.5, 0.6, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
+polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+
+[node name="Platform3" type="StaticBody2D" parent="Environment"]
+position = Vector2(250, 380)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform3"]
+scale = Vector2(4, 1)
+modulate = Color(0.5, 0.5, 0.6, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3"]
+polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+
+[node name="Platform4" type="StaticBody2D" parent="Environment"]
+position = Vector2(500, 280)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform4"]
+scale = Vector2(3, 1)
+modulate = Color(0.5, 0.5, 0.6, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform4"]
+polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+
+[node name="Platform5" type="StaticBody2D" parent="Environment"]
+position = Vector2(300, 180)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform5"]
+scale = Vector2(4, 1)
+modulate = Color(0.5, 0.5, 0.6, 1)
+texture = ExtResource("4_platform")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform5"]
+polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+
+[node name="TopPlatform" type="StaticBody2D" parent="Environment"]
+position = Vector2(500, 80)
+collision_layer = 4
+
+[node name="Sprite" type="Sprite2D" parent="Environment/TopPlatform"]
+scale = Vector2(8, 2)
+modulate = Color(0.6, 0.6, 0.7, 1)
+texture = ExtResource("2_ground")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/TopPlatform"]
+polygon = PackedVector2Array(-128, -32, 128, -32, 128, 32, -128, 32)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="WindZone1" type="Area2D" parent="Hazards"]
+position = Vector2(350, 430)
+script = ExtResource("6_wind_script")
+wind_direction = Vector2(1, -0.3)
+wind_force = 250.0
+fluctuating = true
+
+[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone1"]
+offset_left = -80.0
+offset_top = -100.0
+offset_right = 80.0
+offset_bottom = 100.0
+color = Color(0.5, 0.7, 1, 0.15)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone1"]
+polygon = PackedVector2Array(-80, -100, 80, -100, 80, 100, -80, 100)
+
+[node name="WindZone2" type="Area2D" parent="Hazards"]
+position = Vector2(400, 230)
+script = ExtResource("6_wind_script")
+wind_direction = Vector2(-1, -0.2)
+wind_force = 300.0
+fluctuating = true
+fluctuation_interval = 1.5
+
+[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone2"]
+offset_left = -100.0
+offset_top = -80.0
+offset_right = 100.0
+offset_bottom = 80.0
+color = Color(0.6, 0.8, 1, 0.2)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone2"]
+polygon = PackedVector2Array(-100, -80, 100, -80, 100, 80, -100, 80)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="CoreFragment" type="Area2D" parent="Collectibles"]
+position = Vector2(500, 0)
+collision_layer = 16
+collision_mask = 1
+script = ExtResource("5_core_script")
+core_id = 4
+glow_color = Color(0.8, 0.8, 1, 1)
+
+[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
+scale = Vector2(2, 2)
+self_modulate = Color(0.7, 0.7, 1, 1)
+texture = ExtResource("2_ground")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="LevelLabel" type="Label" parent="UI"]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 500.0
+offset_bottom = 100.0
+text = "LEVEL 4 - THE STORM SPIRE
+Hati-hati dengan zona angin! Naik ke puncak menara!"
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(100, 600)
