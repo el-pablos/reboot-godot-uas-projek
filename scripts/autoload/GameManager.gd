@@ -20,6 +20,9 @@ signal game_paused(is_paused: bool)
 const MAX_CORES: int = 5
 const SAVE_PATH: String = "user://savegame.save"
 
+# DEBUG: Set ke true untuk force unlock abilities (untuk testing Level 4+)
+const DEBUG_UNLOCK_ALL_ABILITIES: bool = true
+
 # --- DATA PEMAIN ---
 var player_health: int = 100
 var player_max_health: int = 100
@@ -41,10 +44,8 @@ func _ready() -> void:
 	# Set pause mode agar autoload tetap berjalan saat game di-pause
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# DEBUG: FORCE UNLOCK double jump untuk testing Level 4
-	# TODO: Hapus baris ini setelah testing selesai dan progression system berjalan!
-	can_double_jump = true
-	print("[GameManager] DEBUG: Double Jump FORCE ENABLED!")
+	# Apply debug unlocks if enabled
+	_apply_debug_unlocks()
 	
 	print("[GameManager] Sistem game manager aktif!")
 
@@ -185,7 +186,20 @@ func new_game() -> void:
 	can_glide = false
 	is_game_over = false
 	is_paused = false
+	
+	# IMPORTANT: Apply debug unlocks AFTER reset
+	_apply_debug_unlocks()
+	
 	print("[GameManager] New game dimulai! Semua progress di-reset.")
+
+
+func _apply_debug_unlocks() -> void:
+	"""Apply debug ability unlocks if DEBUG flag is enabled."""
+	if DEBUG_UNLOCK_ALL_ABILITIES:
+		can_double_jump = true
+		can_dash = true
+		can_glide = true
+		print("[GameManager] DEBUG: All abilities FORCE UNLOCKED! (dash, double_jump, glide)")
 
 
 # === FUNGSI TESTING (untuk unit test) ===

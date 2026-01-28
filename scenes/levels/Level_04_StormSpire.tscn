@@ -67,7 +67,7 @@ texture = ExtResource("2_ground")
 polygon = PackedVector2Array(-288, -32, 288, -32, 288, 32, -288, 32)
 
 [node name="Platform1" type="StaticBody2D" parent="Environment"]
-position = Vector2(200, 600)
+position = Vector2(200, 620)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
@@ -79,7 +79,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
 [node name="Platform2" type="StaticBody2D" parent="Environment"]
-position = Vector2(450, 520)
+position = Vector2(450, 550)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
@@ -91,7 +91,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
 
 [node name="Platform3" type="StaticBody2D" parent="Environment"]
-position = Vector2(250, 440)
+position = Vector2(250, 480)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform3"]
@@ -103,7 +103,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
 [node name="Platform4" type="StaticBody2D" parent="Environment"]
-position = Vector2(500, 360)
+position = Vector2(500, 410)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform4"]
@@ -115,7 +115,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
 
 [node name="Platform5" type="StaticBody2D" parent="Environment"]
-position = Vector2(300, 280)
+position = Vector2(300, 340)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform5"]
@@ -127,7 +127,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
 [node name="TopPlatform" type="StaticBody2D" parent="Environment"]
-position = Vector2(500, 180)
+position = Vector2(500, 270)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/TopPlatform"]
@@ -178,7 +178,7 @@ polygon = PackedVector2Array(-100, -80, 100, -80, 100, 80, -100, 80)
 [node name="Collectibles" type="Node2D" parent="."]
 
 [node name="CoreFragment" type="Area2D" parent="Collectibles"]
-position = Vector2(500, 130)
+position = Vector2(500, 220)
 collision_layer = 16
 collision_mask = 1
 script = ExtResource("5_core_script")
