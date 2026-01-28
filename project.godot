@@ -1,12 +1,16 @@
-; ===================================================
-; Project: REBOOT - 2D Action Platformer
-; Engine: Godot 4.x
-; Author: el-pablos (yeteprem.end23juni@gmail.com)
-; Repository: https://github.com/el-pablos/reboot-godot-uas-projek
-; ===================================================
-; Premis: Bot maintenance "Bip" harus mengumpulkan 5 Pecahan Core
-; untuk menyatukan Arcadia yang hancur akibat Overlord.
-; ===================================================
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
@@ -15,7 +19,7 @@ config/description="2D Action Platformer - Bip si robot maintenance harus menyel
 config/version="0.1.0"
 config/tags=PackedStringArray("2d", "platformer", "action", "indie")
 run/main_scene="res://scenes/main_menu/MainMenu.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -28,8 +32,6 @@ SaveManager="*res://scripts/autoload/SaveManager.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/size/mode=0
-window/size/resizable=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
