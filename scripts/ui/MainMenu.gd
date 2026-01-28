@@ -27,9 +27,9 @@ func _on_start_pressed() -> void:
 	GameManager.new_game()
 	SaveManager.delete_save()
 	
-	# TODO: Ganti ke level 1 setelah scene dibuat
-	# GameManager.change_level(LEVEL_1_PATH)
-	print("[MainMenu] Level 1 belum dibuat, stay di menu.")
+	# Load Level 1
+	GameManager.current_level = LEVEL_1_PATH
+	get_tree().change_scene_to_file(LEVEL_1_PATH)
 
 
 func _on_continue_pressed() -> void:
