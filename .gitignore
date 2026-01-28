@@ -1,0 +1,64 @@
+# ===================================================
+# .gitignore untuk Godot 4.x
+# Project: REBOOT - 2D Action Platformer
+# Author: el-pablos (yeteprem.end23juni@gmail.com)
+# ===================================================
+
+# Folder cache Godot (WAJIB diabaikan)
+.godot/
+
+# Folder hasil export
+export/
+exports/
+build/
+builds/
+
+# File backup editor
+*.backup
+*~
+
+# File import sementara
+*.import
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE dan Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python cache (untuk asset_downloader.py)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+.eggs/
+
+# Virtual environment Python
+venv/
+env/
+.env/
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# File konfigurasi lokal (jangan upload ke repo)
+local_config.tres
+secrets.gd

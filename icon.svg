@@ -1,0 +1,11 @@
+<svg height="128" width="128" xmlns="http://www.w3.org/2000/svg">
+  <rect fill="#2d5aa8" height="128" width="128" rx="16"/>
+  <circle cx="64" cy="50" r="25" fill="#4fc3f7"/>
+  <rect x="50" y="80" width="28" height="30" fill="#4fc3f7" rx="4"/>
+  <circle cx="55" cy="45" r="5" fill="#ffffff"/>
+  <circle cx="73" cy="45" r="5" fill="#ffffff"/>
+  <circle cx="55" cy="45" r="2" fill="#1a237e"/>
+  <circle cx="73" cy="45" r="2" fill="#1a237e"/>
+  <rect x="58" y="55" width="12" height="3" fill="#1a237e" rx="1"/>
+  <text x="64" y="125" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">BIP</text>
+</svg>
