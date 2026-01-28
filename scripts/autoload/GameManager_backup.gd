@@ -15,7 +15,6 @@ signal player_died
 signal level_completed(level_name: String)
 signal ability_unlocked(ability_name: String)
 signal game_paused(is_paused: bool)
-signal player_stats_changed  # Emitted when abilities/stats change
 
 # --- KONSTANTA ---
 const MAX_CORES: int = 5
@@ -86,7 +85,6 @@ func unlock_dash() -> void:
 	"""Unlock air dash - hadiah dari Boss Scrapper."""
 	can_dash = true
 	ability_unlocked.emit("dash")
-	player_stats_changed.emit()
 	print("[GameManager] ABILITY UNLOCKED: Air Dash!")
 
 
@@ -94,7 +92,6 @@ func unlock_double_jump() -> void:
 	"""Unlock double jump - hadiah dari Boss Spore-Bot."""
 	can_double_jump = true
 	ability_unlocked.emit("double_jump")
-	player_stats_changed.emit()
 	print("[GameManager] ABILITY UNLOCKED: Double Jump!")
 
 
@@ -102,7 +99,6 @@ func unlock_glide() -> void:
 	"""Unlock glide - hadiah dari Boss Tempest."""
 	can_glide = true
 	ability_unlocked.emit("glide")
-	player_stats_changed.emit()
 	print("[GameManager] ABILITY UNLOCKED: Glide!")
 
 
@@ -204,23 +200,6 @@ func _apply_debug_unlocks() -> void:
 		can_dash = true
 		can_glide = true
 		print("[GameManager] DEBUG: All abilities FORCE UNLOCKED! (dash, double_jump, glide)")
-
-
-func get_player_stats() -> Dictionary:
-	"""Return player stats as a Dictionary for Player sync.
-	
-	This is the Source of Truth for all ability/stat data.
-	Player.gd calls this in _ready() and when stats change.
-	"""
-	return {
-		"health": player_health,
-		"max_health": player_max_health,
-		"can_dash": can_dash,
-		"can_double_jump": can_double_jump,
-		"can_glide": can_glide,
-		"max_jumps": 2 if can_double_jump else 1,
-		"cores_collected": cores_collected
-	}
 
 
 # === FUNGSI TESTING (untuk unit test) ===

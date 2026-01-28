@@ -61,7 +61,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _collect() -> void:
 	is_collected = true
 	
-	# 1. Play sound effect
+	# 1. Play sound effect (AudioManager supports String names)
 	if AudioManager:
 		AudioManager.play_sfx("collect")
 	

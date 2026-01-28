@@ -14,7 +14,7 @@
 # ===================================================
 
 extends CharacterBody2D
-class_name Player
+# Original class_name: Player (removed to avoid conflict)
 
 # === SIGNALS ===
 signal health_changed(new_health: int, max_health: int)
@@ -173,7 +173,7 @@ func _sync_from_game_manager() -> void:
 	if not GameManager:
 		return
 	
-	var stats := GameManager.get_player_stats()
+	var stats: Dictionary = GameManager.get_player_stats()
 	can_dash = stats.can_dash
 	can_double_jump = stats.can_double_jump
 	can_glide = stats.can_glide
