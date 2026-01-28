@@ -159,3 +159,58 @@ func is_ability_unlocked(ability_name: String) -> bool:
 			return can_glide
 		_:
 			return false
+
+
+# === FUNGSI LEVEL MANAGEMENT (untuk UI screens) ===
+## Daftar urutan level
+const LEVEL_ORDER: Array[String] = [
+	"res://scenes/levels/Level_01_GoldenIsles.tscn",
+	"res://scenes/levels/Level_02_RustFactory.tscn",
+	"res://scenes/levels/Level_03_CrystalLabs.tscn",
+	"res://scenes/levels/Level_04_StormSpire.tscn",
+	"res://scenes/levels/Level_05_OverlordFortress.tscn"
+]
+
+
+func reload_current_level() -> void:
+	"""Reload level saat ini (untuk retry)."""
+	if current_level != "":
+		get_tree().reload_current_scene()
+		print("[GameManager] Reloading level: %s" % current_level)
+	else:
+		print("[GameManager] Warning: No current level to reload")
+
+
+func load_next_level() -> void:
+	"""Load level berikutnya dalam urutan."""
+	var current_index: int = LEVEL_ORDER.find(current_level)
+	
+	if current_index >= 0 and current_index < LEVEL_ORDER.size() - 1:
+		var next_level: String = LEVEL_ORDER[current_index + 1]
+		change_level(next_level)
+		print("[GameManager] Loading next level: %s" % next_level)
+	else:
+		# Sudah level terakhir atau tidak ditemukan
+		print("[GameManager] No next level available")
+
+
+func go_to_main_menu() -> void:
+	"""Kembali ke main menu."""
+	# Reset pause state
+	is_paused = false
+	get_tree().paused = false
+	
+	# Pindah ke main menu
+	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+	print("[GameManager] Returning to main menu")
+
+
+func reset_player_health() -> void:
+	"""Alias untuk reset_health (kompatibilitas)."""
+	reset_health()
+
+
+func reset_game() -> void:
+	"""Reset seluruh game state (alias untuk new_game)."""
+	new_game()
+	print("[GameManager] Game state reset")
