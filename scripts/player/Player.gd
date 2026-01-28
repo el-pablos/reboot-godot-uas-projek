@@ -30,21 +30,43 @@ signal landed
 ## Perlambatan di udara
 @export var air_friction: float = 400.0
 
-@export_group("Jump Physics")
-## Kekuatan lompat (velocity.y negatif)
-@export var jump_force: float = -350.0
-## Alias untuk kompatibilitas testing (harus negatif)
-@export var jump_velocity: float = -350.0
-## Gravity saat naik (jump)
-@export var jump_gravity: float = 800.0
-## Gravity saat turun (fall) - lebih berat agar terasa responsive
-@export var fall_gravity: float = 1200.0
+@export_group("Jump Physics - Kinematic Math")
+## Tinggi lompatan dalam pixel (digunakan untuk kalkulasi)
+@export var jump_height: float = 96.0
+## Waktu mencapai puncak lompatan (detik) - mempengaruhi feel "floaty" vs "snappy"
+@export var jump_time_to_peak: float = 0.4
+## Waktu turun dari puncak (detik) - lebih kecil = lebih "snappy"
+@export var jump_time_to_descent: float = 0.35
 ## Waktu toleransi setelah meninggalkan platform (Coyote Time)
 @export var coyote_time: float = 0.12
 ## Waktu buffer input jump sebelum mendarat
 @export var jump_buffer_time: float = 0.1
 ## Velocity maksimal saat jatuh
-@export var max_fall_speed: float = 600.0
+@export var max_fall_speed: float = 800.0
+## Jumlah maksimal lompatan (2 = Double Jump)
+@export var max_jumps: int = 2
+
+# === CALCULATED PHYSICS (Rumus Kinematika) ===
+# Rumus: v = 2h / t  (initial velocity untuk mencapai tinggi h dalam waktu t)
+# Rumus: g = 2h / t² (gravitasi yang dibutuhkan)
+#
+# Dengan rumus ini, lompatan SELALU konsisten tingginya,
+# tidak peduli frame rate atau delta time.
+
+## Velocity lompat (dihitung dari jump_height dan jump_time_to_peak)
+## Rumus: v₀ = (2 × h) / t → arah atas = negatif
+@onready var jump_velocity: float = -((2.0 * jump_height) / jump_time_to_peak)
+## Alias untuk kompatibilitas
+@onready var jump_force: float = jump_velocity
+## Gravity saat naik (dihitung dari kinematika)
+## Rumus: g = (2 × h) / t²
+@onready var jump_gravity: float = (2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
+## Gravity saat turun - lebih besar agar jatuh lebih cepat (snappy feel)
+## Rumus: g = (2 × h) / t²
+@onready var fall_gravity: float = (2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)
+
+# Jump counter untuk Double Jump
+var jump_count: int = 0
 
 @export_group("Dash Ability")
 ## Kecepatan dash
@@ -90,7 +112,7 @@ var can_glide: bool = false
 # Jump tracking
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
-var has_double_jumped: bool = false
+var has_double_jumped: bool = false  # Legacy, sekarang pakai jump_count
 
 # Dash tracking
 var is_dashing: bool = false
@@ -157,23 +179,30 @@ func _physics_process(delta: float) -> void:
 	_check_landing()
 
 
-# === GRAVITY ===
+# === GRAVITY (Variable Jump Height Algorithm) ===
+# Menggunakan gravitasi berbeda untuk naik vs turun
+# Ini membuat lompatan terasa lebih "game-like" dan responsive
 func _handle_gravity(delta: float) -> void:
 	if is_on_floor():
+		# Reset jump counter saat menyentuh tanah
+		jump_count = 0
+		has_double_jumped = false
 		return
 	
 	var gravity: float
 	
 	if is_gliding and velocity.y > 0:
-		# Glide gravity (lebih lambat)
+		# Glide: gunakan gravity yang jauh lebih ringan
 		gravity = glide_gravity
 		velocity.y = min(velocity.y + gravity * delta, glide_max_fall_speed)
 	elif velocity.y < 0:
-		# Naik (jump) - gravity lebih ringan
+		# ASCENDING (naik): gunakan jump_gravity
+		# Rumus: v = v₀ + g×t dimana g = 2h/t²
 		gravity = jump_gravity
 		velocity.y += gravity * delta
 	else:
-		# Turun (fall) - gravity lebih berat
+		# DESCENDING (turun): gunakan fall_gravity yang lebih besar
+		# Ini membuat karakter jatuh lebih cepat = feel lebih "snappy"
 		gravity = fall_gravity
 		velocity.y = min(velocity.y + gravity * delta, max_fall_speed)
 
@@ -198,26 +227,37 @@ func _handle_movement(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, fric * delta)
 
 
-# === JUMP ===
+# === JUMP (dengan Double Jump Support) ===
 func _handle_jump() -> void:
-	# Jump buffer - simpan input jump
+	# Jump buffer - simpan input jump untuk toleransi timing
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = jump_buffer_time
 	
-	# Cek kondisi jump
-	var can_normal_jump := coyote_timer > 0 or is_on_floor()
-	var can_do_double_jump := can_double_jump and not has_double_jumped and not is_on_floor() and coyote_timer <= 0
+	# Cek kondisi jump menggunakan jump_count system
+	# jump_count = 0: belum lompat (di tanah)
+	# jump_count = 1: sudah first jump (bisa double jump jika unlocked)
+	# jump_count >= max_jumps: tidak bisa lompat lagi
+	
+	var on_ground: bool = coyote_timer > 0 or is_on_floor()
+	var can_first_jump: bool = on_ground and jump_count == 0
+	var can_do_double_jump: bool = can_double_jump and jump_count > 0 and jump_count < max_jumps and not on_ground
 	
 	# Execute jump jika buffer aktif
 	if jump_buffer_timer > 0:
-		if can_normal_jump:
+		if can_first_jump:
+			# First jump dari tanah
 			_execute_jump()
+			jump_count = 1
 			jump_buffer_timer = 0
 			coyote_timer = 0
+			print("[Player] Jump #1 (from ground)")
 		elif can_do_double_jump:
+			# Double jump di udara
 			_execute_jump()
-			has_double_jumped = true
+			jump_count += 1
+			has_double_jumped = true  # Legacy compatibility
 			jump_buffer_timer = 0
+			print("[Player] Jump #%d (double jump!)" % jump_count)
 			ability_used.emit("double_jump")
 
 

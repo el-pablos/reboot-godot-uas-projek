@@ -45,7 +45,7 @@ func _ready() -> void:
 
 # === FUNGSI CORE COLLECTION ===
 func collect_core() -> void:
-	"""Dipanggil saat pemain mengambil pecahan core."""
+	"""Dipanggil saat pemain mengambil pecahan core (tanpa advance level)."""
 	if cores_collected < MAX_CORES:
 		cores_collected += 1
 		core_collected.emit(cores_collected)
@@ -54,6 +54,23 @@ func collect_core() -> void:
 		# Cek apakah semua core sudah terkumpul
 		if cores_collected >= MAX_CORES:
 			print("[GameManager] SEMUA CORE TERKUMPUL! Final boss unlocked!")
+
+
+func collect_core_and_advance() -> void:
+	"""Dipanggil saat pemain mengambil core DAN harus pindah level."""
+	if cores_collected < MAX_CORES:
+		cores_collected += 1
+		core_collected.emit(cores_collected)
+		print("[GameManager] Core collected! Total: %d/%d" % [cores_collected, MAX_CORES])
+	
+	# Complete current level
+	var level_name: String = current_level.get_file().get_basename()
+	level_completed.emit(level_name)
+	print("[GameManager] Level complete: %s" % level_name)
+	
+	# Delay sebentar agar SFX selesai, lalu load next level
+	await get_tree().create_timer(1.0).timeout
+	load_next_level()
 
 
 # === FUNGSI UNLOCK ABILITY ===

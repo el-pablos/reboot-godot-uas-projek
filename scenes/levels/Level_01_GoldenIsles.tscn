@@ -145,12 +145,19 @@ polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 [node name="TutorialLabel" type="Label" parent="UI"]
 offset_left = 50.0
 offset_top = 50.0
-offset_right = 450.0
-offset_bottom = 150.0
-text = "TUTORIAL - THE GOLDEN ISLES
-Gunakan A/D atau Arrow Keys untuk bergerak.
-Tekan SPACE atau W untuk lompat.
-Tujuan: Ambil Core Fragment di ujung level!"
+offset_right = 550.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 18
+text = "╔══════════════════════════════════════╗
+║     TUTORIAL - THE GOLDEN ISLES      ║
+╠══════════════════════════════════════╣
+║  WASD / Panah  →  Gerak kiri/kanan   ║
+║  SPASI / W     →  Lompat             ║
+║  (Tekan lagi di udara = Double Jump) ║
+╠══════════════════════════════════════╣
+║  MISI: Ambil KRISTAL BIRU di ujung   ║
+║        level untuk ke Level 2!       ║
+╚══════════════════════════════════════╝"
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(100, 250)

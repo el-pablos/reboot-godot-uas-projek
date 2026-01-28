@@ -61,12 +61,21 @@ func _on_body_entered(body: Node2D) -> void:
 func _collect() -> void:
 	is_collected = true
 	
-	# Notify GameManager
-	if GameManager:
-		GameManager.collect_core()
+	# 1. Play sound effect
+	if AudioManager:
+		AudioManager.play_sfx("collect")
 	
-	# Efek collect
+	# 2. Disable collision agar tidak trigger 2x
+	for child in get_children():
+		if child is CollisionShape2D or child is CollisionPolygon2D:
+			child.set_deferred("disabled", true)
+	
+	# 3. Efek visual collect
 	_collect_effect()
+	
+	# 4. Notify GameManager dan trigger level transition
+	if GameManager:
+		GameManager.collect_core_and_advance()
 
 
 func _collect_effect() -> void:
