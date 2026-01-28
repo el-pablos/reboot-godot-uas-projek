@@ -71,7 +71,7 @@ func _physics_process(delta: float) -> void:
 
 # === PHASE SYSTEM ===
 
-func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
+func take_damage(amount: int, _knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	if is_invulnerable or is_dead:
 		return
 	

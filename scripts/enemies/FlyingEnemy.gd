@@ -60,7 +60,7 @@ func _process_chase(delta: float) -> void:
 	
 	time_passed += delta
 	
-	var dir_to_player := get_direction_to_player()
+	var _dir_to_player := get_direction_to_player()
 	var distance := global_position.distance_to(target_player.global_position)
 	
 	# Cek apakah bisa dive

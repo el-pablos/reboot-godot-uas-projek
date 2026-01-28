@@ -76,8 +76,8 @@ func change_state(new_state: State) -> void:
 	previous_state = current_state
 	current_state = new_state
 	
-	var old_name := STATE_NAMES.get(previous_state, "UNKNOWN")
-	var new_name := STATE_NAMES.get(new_state, "UNKNOWN")
+	var old_name: String = STATE_NAMES.get(previous_state, "UNKNOWN")
+	var new_name: String = STATE_NAMES.get(new_state, "UNKNOWN")
 	
 	state_changed.emit(old_name, new_name)
 	# print("[StateMachine] State: %s -> %s" % [old_name, new_name])

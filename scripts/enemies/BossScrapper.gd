@@ -109,7 +109,7 @@ func _attack_dash() -> void:
 		return
 	
 	# Windup - mundur sedikit
-	var dash_dir := sign(target_player.global_position.x - global_position.x)
+	var dash_dir: float = sign(target_player.global_position.x - global_position.x)
 	velocity.x = -dash_dir * 50
 	
 	# Flash warning

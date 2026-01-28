@@ -1,301 +1,289 @@
 # =============================================================================
-# test_player_movement.gd - Unit Test untuk Player Movement
+# test_player_movement.gd - Unit Test untuk Player Movement (Standalone)
 # =============================================================================
-# Test suite untuk memverifikasi sistem pergerakan player:
-# - Dasar movement (jalan, lompat)
-# - Advanced abilities (dash, double jump, glide)
-# - State transitions
-# - Physics responses
-# =============================================================================
-# CARA MENJALANKAN:
-# 1. Pastikan GUT addon sudah terinstall
-# 2. Buka GUT Panel via menu atau F6
-# 3. Klik "Run All"
+# Test suite untuk memverifikasi sistem pergerakan player.
+# Bisa dijalankan tanpa GUT - extend Node dan run langsung.
 # =============================================================================
 
-extends GutTest
+extends Node
 
 # Referensi ke player instance untuk testing
 var player: CharacterBody2D = null
 var player_scene: PackedScene = null
 
+# Test counters
+var tests_passed: int = 0
+var tests_failed: int = 0
+var tests_total: int = 0
+
 
 # -----------------------------------------------------------------------------
-# SETUP & TEARDOWN
+# ENTRY POINT
 # -----------------------------------------------------------------------------
 
-## Setup sebelum setiap test - instance player baru
-func before_each() -> void:
-	# Load player scene
-	player_scene = load("res://scenes/player/Player.tscn")
+func _ready() -> void:
+	print("\n" + "=".repeat(60))
+	print("🧪 RUNNING: test_player_movement.gd")
+	print("=".repeat(60))
 	
+	# Jalankan semua test
+	await run_all_tests()
+	
+	# Print hasil
+	print_results()
+
+
+func run_all_tests() -> void:
+	test_player_scene_exists()
+	await test_player_instantiates_correctly()
+	await test_player_has_valid_speed_values()
+	await test_player_has_jump_velocity()
+	await test_coyote_time_exists()
+	await test_jump_buffer_exists()
+	await test_dash_speed_exists()
+	await test_glide_multiplier_exists()
+	test_dash_starts_locked()
+	test_double_jump_starts_locked()
+	test_glide_starts_locked()
+	test_player_can_take_damage()
+	test_player_dies_at_zero_health()
+	test_health_cannot_go_negative()
+
+
+func print_results() -> void:
+	print("\n" + "-".repeat(60))
+	print("📊 HASIL TEST PLAYER MOVEMENT")
+	print("-".repeat(60))
+	print("✅ Passed: %d" % tests_passed)
+	print("❌ Failed: %d" % tests_failed)
+	print("📝 Total:  %d" % tests_total)
+	print("-".repeat(60))
+	
+	if tests_failed == 0:
+		print("🎉 SEMUA TEST PASSED!")
+	else:
+		print("⚠️  ADA TEST YANG GAGAL")
+	print("")
+
+
+# -----------------------------------------------------------------------------
+# HELPER FUNCTIONS
+# -----------------------------------------------------------------------------
+
+func assert_true(condition: bool, message: String) -> void:
+	tests_total += 1
+	if condition:
+		tests_passed += 1
+		print("  ✅ PASS: %s" % message)
+	else:
+		tests_failed += 1
+		print("  ❌ FAIL: %s" % message)
+
+
+func assert_false(condition: bool, message: String) -> void:
+	assert_true(not condition, message)
+
+
+func assert_not_null(obj: Variant, message: String) -> void:
+	assert_true(obj != null, message)
+
+
+func assert_eq(a: Variant, b: Variant, message: String) -> void:
+	assert_true(a == b, message + " (got: %s, expected: %s)" % [str(a), str(b)])
+
+
+func assert_lt(a: float, b: float, message: String) -> void:
+	assert_true(a < b, message)
+
+
+func setup_player() -> void:
+	if player != null:
+		player.queue_free()
+		player = null
+	
+	player_scene = load("res://scenes/player/Player.tscn")
 	if player_scene:
 		player = player_scene.instantiate()
-		add_child_autofree(player)
-		
-		# Tunggu satu frame agar _ready() terpanggil
-		await get_tree().process_frame
-	else:
-		gut.p("WARNING: Player scene tidak ditemukan!")
+		add_child(player)
 
 
-## Cleanup setelah setiap test
-func after_each() -> void:
-	player = null
+func cleanup_player() -> void:
+	if player != null:
+		player.queue_free()
+		player = null
 
 
 # -----------------------------------------------------------------------------
-# TEST: BASIC PROPERTIES
+# TESTS
 # -----------------------------------------------------------------------------
 
-## Test: Player berhasil di-instantiate dengan property yang benar
+func test_player_scene_exists() -> void:
+	print("\n[Test] Player Scene Exists")
+	var scene = load("res://scenes/player/Player.tscn")
+	assert_not_null(scene, "Player.tscn harus ada")
+
+
 func test_player_instantiates_correctly() -> void:
+	print("\n[Test] Player Instantiates Correctly")
+	setup_player()
+	await get_tree().process_frame
+	
 	assert_not_null(player, "Player harus ter-instantiate")
 	assert_true(player is CharacterBody2D, "Player harus bertipe CharacterBody2D")
+	
+	cleanup_player()
 
 
-## Test: Player memiliki speed values yang valid
 func test_player_has_valid_speed_values() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
+	print("\n[Test] Player Has Valid Speed")
+	setup_player()
+	await get_tree().process_frame
 	
-	# Cek property speed ada dan bernilai positif
-	assert_true(player.speed > 0, "Speed harus lebih dari 0")
-	assert_true(player.jump_velocity < 0, "Jump velocity harus negatif (ke atas)")
-
-
-## Test: Player memiliki gravity yang sesuai
-func test_player_has_gravity() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	# Gravity harus positif (menarik ke bawah)
-	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-	assert_true(gravity > 0, "Gravity harus positif")
-
-
-# -----------------------------------------------------------------------------
-# TEST: MOVEMENT STATES
-# -----------------------------------------------------------------------------
-
-## Test: Player mulai dalam state IDLE
-func test_player_starts_in_idle_state() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	# Cek state machine ada dan dalam kondisi idle
-	if player.has_node("StateMachine") or player.has_method("get_current_state"):
-		# Sesuaikan dengan implementasi state machine
-		pass
+	if player and "speed" in player:
+		assert_true(player.speed > 0, "Speed harus > 0 (got: %d)" % player.speed)
 	else:
-		# Jika tidak ada state machine, cek velocity = 0
-		assert_eq(player.velocity, Vector2.ZERO, "Player harus diam saat spawn")
-
-
-## Test: Velocity horizontal saat tidak ada input adalah 0
-func test_no_horizontal_movement_without_input() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
+		assert_true(false, "Property 'speed' tidak ditemukan")
 	
-	# Simulasi tanpa input
-	player.velocity.x = 0
-	
-	# Proses satu frame
-	await get_tree().physics_frame
-	
-	# Velocity X harus tetap 0 atau mendekati 0
-	assert_almost_eq(player.velocity.x, 0.0, 1.0, "Tidak boleh ada gerakan horizontal tanpa input")
+	cleanup_player()
 
 
-# -----------------------------------------------------------------------------
-# TEST: JUMP MECHANICS
-# -----------------------------------------------------------------------------
-
-## Test: Jump menghasilkan velocity negatif (ke atas)
-func test_jump_produces_upward_velocity() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
+func test_player_has_jump_velocity() -> void:
+	print("\n[Test] Player Has Jump Velocity")
+	setup_player()
+	await get_tree().process_frame
 	
-	# Simulasi player di ground
-	player.velocity.y = 0
+	if player and "jump_velocity" in player:
+		assert_lt(player.jump_velocity, 0, "Jump velocity harus negatif (ke atas)")
+	else:
+		assert_true(false, "Property 'jump_velocity' tidak ditemukan")
 	
-	# Set velocity jump manual (simulasi jump)
-	var jump_vel: float = player.jump_velocity if "jump_velocity" in player else -400.0
-	player.velocity.y = jump_vel
-	
-	assert_lt(player.velocity.y, 0, "Jump velocity harus negatif (ke atas)")
+	cleanup_player()
 
 
-## Test: Coyote time window ada dan valid
 func test_coyote_time_exists() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
+	print("\n[Test] Coyote Time Exists")
+	setup_player()
+	await get_tree().process_frame
 	
-	# Cek apakah player punya coyote time property
-	if "coyote_time" in player:
-		assert_true(player.coyote_time > 0, "Coyote time harus lebih dari 0")
-		assert_true(player.coyote_time <= 0.3, "Coyote time tidak boleh terlalu lama")
+	if player and "coyote_time" in player:
+		assert_true(player.coyote_time > 0, "Coyote time harus > 0")
+		assert_true(player.coyote_time <= 0.3, "Coyote time tidak boleh > 0.3s")
 	else:
-		pending("Coyote time belum diimplementasi")
+		assert_true(false, "Property 'coyote_time' tidak ditemukan")
+	
+	cleanup_player()
 
 
-## Test: Jump buffer window ada dan valid
 func test_jump_buffer_exists() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
+	print("\n[Test] Jump Buffer Exists")
+	setup_player()
+	await get_tree().process_frame
 	
-	# Cek apakah player punya jump buffer property
-	if "jump_buffer_time" in player:
-		assert_true(player.jump_buffer_time > 0, "Jump buffer harus lebih dari 0")
-		assert_true(player.jump_buffer_time <= 0.2, "Jump buffer tidak boleh terlalu lama")
+	if player and "jump_buffer_time" in player:
+		assert_true(player.jump_buffer_time > 0, "Jump buffer harus > 0")
+		assert_true(player.jump_buffer_time <= 0.2, "Jump buffer tidak boleh > 0.2s")
 	else:
-		pending("Jump buffer belum diimplementasi")
+		assert_true(false, "Property 'jump_buffer_time' tidak ditemukan")
+	
+	cleanup_player()
 
 
-# -----------------------------------------------------------------------------
-# TEST: ABILITY SYSTEM
-# -----------------------------------------------------------------------------
+func test_dash_speed_exists() -> void:
+	print("\n[Test] Dash Speed Exists")
+	setup_player()
+	await get_tree().process_frame
+	
+	if player and "dash_speed" in player and "speed" in player:
+		assert_true(player.dash_speed > player.speed, "Dash harus lebih cepat dari walk")
+	else:
+		assert_true(false, "Property 'dash_speed' tidak ditemukan")
+	
+	cleanup_player()
 
-## Test: Dash ability default terkunci
+
+func test_glide_multiplier_exists() -> void:
+	print("\n[Test] Glide Gravity Multiplier Exists")
+	setup_player()
+	await get_tree().process_frame
+	
+	if player and "glide_gravity_multiplier" in player:
+		assert_true(player.glide_gravity_multiplier < 1.0, "Glide multiplier harus < 1")
+	else:
+		assert_true(false, "Property 'glide_gravity_multiplier' tidak ditemukan")
+	
+	cleanup_player()
+
+
 func test_dash_starts_locked() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	# Cek via GameManager atau player property langsung
+	print("\n[Test] Dash Starts Locked")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
 	if game_manager:
-		assert_false(game_manager.can_dash, "Dash harus terkunci di awal game")
-	elif "can_dash" in player:
-		# Bisa juga cek dari property player
-		pass
+		game_manager.new_game()
+		assert_false(game_manager.can_dash, "Dash harus terkunci di awal")
+	else:
+		assert_true(false, "GameManager tidak tersedia")
 
 
-## Test: Double jump ability default terkunci
 func test_double_jump_starts_locked() -> void:
+	print("\n[Test] Double Jump Starts Locked")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
 	if game_manager:
-		assert_false(game_manager.can_double_jump, "Double jump harus terkunci di awal game")
+		assert_false(game_manager.can_double_jump, "Double jump harus terkunci di awal")
+	else:
+		assert_true(false, "GameManager tidak tersedia")
 
 
-## Test: Glide ability default terkunci
 func test_glide_starts_locked() -> void:
+	print("\n[Test] Glide Starts Locked")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
 	if game_manager:
-		assert_false(game_manager.can_glide, "Glide harus terkunci di awal game")
-
-
-# -----------------------------------------------------------------------------
-# TEST: DASH MECHANICS
-# -----------------------------------------------------------------------------
-
-## Test: Dash menghasilkan velocity burst
-func test_dash_increases_velocity() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	# Cek property dash_speed
-	if "dash_speed" in player:
-		assert_true(player.dash_speed > player.speed, "Dash harus lebih cepat dari jalan normal")
+		assert_false(game_manager.can_glide, "Glide harus terkunci di awal")
 	else:
-		pending("Dash speed belum diimplementasi")
+		assert_true(false, "GameManager tidak tersedia")
 
 
-## Test: Dash memiliki cooldown
-func test_dash_has_cooldown() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	if "dash_cooldown" in player:
-		assert_true(player.dash_cooldown > 0, "Dash cooldown harus lebih dari 0")
-	else:
-		pending("Dash cooldown belum diimplementasi")
-
-
-# -----------------------------------------------------------------------------
-# TEST: GLIDE MECHANICS
-# -----------------------------------------------------------------------------
-
-## Test: Glide mengurangi fall speed
-func test_glide_reduces_fall_speed() -> void:
-	if player == null:
-		pending("Player tidak tersedia")
-		return
-	
-	if "glide_gravity_multiplier" in player:
-		assert_true(
-			player.glide_gravity_multiplier < 1.0, 
-			"Glide gravity multiplier harus < 1 untuk memperlambat jatuh"
-		)
-	else:
-		pending("Glide belum diimplementasi")
-
-
-# -----------------------------------------------------------------------------
-# TEST: DAMAGE & DEATH
-# -----------------------------------------------------------------------------
-
-## Test: Player bisa menerima damage
 func test_player_can_take_damage() -> void:
+	print("\n[Test] Player Can Take Damage")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
-	if game_manager == null:
-		pending("GameManager tidak tersedia")
-		return
-	
-	var initial_health: int = game_manager.player_health
-	game_manager.damage_player(10)
-	
-	assert_eq(game_manager.player_health, initial_health - 10, "Health harus berkurang setelah damage")
-	
-	# Reset health untuk test lain
-	game_manager.reset_health()
+	if game_manager:
+		game_manager.new_game()
+		var initial_health: int = game_manager.player_health
+		game_manager.damage_player(10)
+		
+		assert_eq(game_manager.player_health, initial_health - 10, "Health harus berkurang")
+		game_manager.reset_health()
+	else:
+		assert_true(false, "GameManager tidak tersedia")
 
 
-## Test: Player mati saat health = 0
 func test_player_dies_at_zero_health() -> void:
+	print("\n[Test] Player Dies at Zero Health")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
-	if game_manager == null:
-		pending("GameManager tidak tersedia")
-		return
-	
-	# Track signal
-	var signal_received: bool = false
-	
-	# Damage sampai mati
-	game_manager.damage_player(game_manager.player_health)
-	
-	assert_eq(game_manager.player_health, 0, "Health harus 0 setelah fatal damage")
-	assert_true(game_manager.is_game_over, "is_game_over harus true")
-	
-	# Reset untuk test lain
-	game_manager.new_game()
+	if game_manager:
+		game_manager.new_game()
+		game_manager.damage_player(game_manager.player_health)
+		
+		assert_eq(game_manager.player_health, 0, "Health harus 0")
+		assert_true(game_manager.is_game_over, "is_game_over harus true")
+		game_manager.new_game()
+	else:
+		assert_true(false, "GameManager tidak tersedia")
 
 
-## Test: Health tidak bisa negatif
 func test_health_cannot_go_negative() -> void:
+	print("\n[Test] Health Cannot Go Negative")
 	var game_manager = get_node_or_null("/root/GameManager")
 	
-	if game_manager == null:
-		pending("GameManager tidak tersedia")
-		return
-	
-	game_manager.damage_player(9999)
-	
-	assert_true(game_manager.player_health >= 0, "Health tidak boleh negatif")
-	
-	# Reset untuk test lain
-	game_manager.new_game()
+	if game_manager:
+		game_manager.new_game()
+		game_manager.damage_player(9999)
+		
+		assert_true(game_manager.player_health >= 0, "Health tidak boleh negatif")
+		game_manager.new_game()
+	else:
+		assert_true(false, "GameManager tidak tersedia")

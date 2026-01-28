@@ -32,7 +32,7 @@ func _on_ready() -> void:
 	current_state = State.PATROL
 
 
-func _process_patrol(delta: float) -> void:
+func _process_patrol(_delta: float) -> void:
 	if is_waiting:
 		velocity.x = 0
 		return

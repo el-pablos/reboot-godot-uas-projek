@@ -66,7 +66,7 @@ func _process_phase_1(_delta: float) -> void:
 		return
 	
 	# Gerak horizontal saja
-	var dir_x := sign(target_player.global_position.x - global_position.x)
+	var dir_x: float = sign(target_player.global_position.x - global_position.x)
 	velocity.x = dir_x * move_speed
 	velocity.y = 0
 
@@ -197,7 +197,7 @@ func _attack_ground_slam() -> void:
 	
 	# Shockwave damage
 	if target_player and target_player.is_on_floor():
-		var distance := abs(target_player.global_position.x - global_position.x)
+		var distance: float = abs(target_player.global_position.x - global_position.x)
 		if distance < 300:
 			var knockback := Vector2(sign(target_player.global_position.x - global_position.x), -1).normalized()
 			target_player.take_damage(25, knockback * 200)

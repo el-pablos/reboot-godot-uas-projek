@@ -121,15 +121,15 @@ func _attack_lightning_burst() -> void:
 		sprite.modulate = Color.WHITE
 	
 	var base_dir := (target_player.global_position - global_position).normalized()
-	var base_angle := base_dir.angle()
+	var _base_angle := base_dir.angle()  # Used for direction reference
 	
 	# Spawn multiple projectiles
 	var count := projectile_count if current_phase == 1 else projectile_count + 2
-	var angle_step := deg_to_rad(spread_angle) / (count - 1) if count > 1 else 0
-	var start_angle := base_angle - deg_to_rad(spread_angle) / 2
+	var angle_step: float = deg_to_rad(spread_angle) / (count - 1) if count > 1 else 0.0
+	var start_angle := -deg_to_rad(spread_angle) / 2
 	
 	for i in range(count):
-		var angle := start_angle + angle_step * i
+		var angle: float = start_angle + angle_step * float(i)
 		var direction := Vector2.from_angle(angle)
 		var target_pos := global_position + direction * 500
 		_spawn_lightning(target_pos)
