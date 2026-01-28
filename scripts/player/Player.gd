@@ -233,31 +233,27 @@ func _handle_jump() -> void:
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = jump_buffer_time
 	
-	# Cek kondisi jump menggunakan jump_count system
-	# jump_count = 0: belum lompat (di tanah)
-	# jump_count = 1: sudah first jump (bisa double jump jika unlocked)
-	# jump_count >= max_jumps: tidak bisa lompat lagi
-	
-	var on_ground: bool = coyote_timer > 0 or is_on_floor()
-	var can_first_jump: bool = on_ground and jump_count == 0
-	var can_do_double_jump: bool = can_double_jump and jump_count > 0 and jump_count < max_jumps and not on_ground
+	# Reset jump count saat di tanah
+	if is_on_floor():
+		jump_count = 0
 	
 	# Execute jump jika buffer aktif
 	if jump_buffer_timer > 0:
-		if can_first_jump:
-			# First jump dari tanah
+		# Kondisi 1: Lompat dari tanah (atau coyote time)
+		if is_on_floor() or coyote_timer > 0:
 			_execute_jump()
 			jump_count = 1
 			jump_buffer_timer = 0
 			coyote_timer = 0
-			print("[Player] Jump #1 (from ground)")
-		elif can_do_double_jump:
-			# Double jump di udara
+			print("[Player] Jump #1 (ground)")
+		# Kondisi 2: Double jump di udara (jika unlocked dan masih ada sisa)
+		elif can_double_jump and jump_count < max_jumps:
 			_execute_jump()
 			jump_count += 1
-			has_double_jumped = true  # Legacy compatibility
+			has_double_jumped = true
 			jump_buffer_timer = 0
-			print("[Player] Jump #%d (double jump!)" % jump_count)
+			print("[Player] Jump #%d (AIR - double jump!)" % jump_count)
+			AudioManager.play_sfx("double_jump")
 			ability_used.emit("double_jump")
 
 

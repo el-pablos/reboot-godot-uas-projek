@@ -41,9 +41,10 @@ func _ready() -> void:
 	# Set pause mode agar autoload tetap berjalan saat game di-pause
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# DEBUG: Unlock double jump untuk testing Level 4
-	# Hapus baris ini setelah testing selesai!
-	# can_double_jump = true
+	# DEBUG: FORCE UNLOCK double jump untuk testing Level 4
+	# TODO: Hapus baris ini setelah testing selesai dan progression system berjalan!
+	can_double_jump = true
+	print("[GameManager] DEBUG: Double Jump FORCE ENABLED!")
 	
 	print("[GameManager] Sistem game manager aktif!")
 
