@@ -1,0 +1,22 @@
+# =============================================================================
+# .gut_settings.json - Konfigurasi GUT Testing Framework
+# =============================================================================
+# Untuk menggunakan GUT:
+# 1. Download GUT dari Asset Library di Godot atau dari:
+#    https://github.com/bitwes/Gut/releases
+# 2. Extract ke folder addons/gut/
+# 3. Aktifkan plugin di Project > Project Settings > Plugins
+# 4. Jalankan test via GUT Panel atau command line
+# =============================================================================
+
+{
+    "_README": "Konfigurasi untuk GUT Testing Framework. Pastikan sudah install GUT addon!",
+    "test_directory": "res://test/",
+    "test_prefix": "test_",
+    "test_suffix": ".gd",
+    "inner_class_prefix": "Test",
+    "double_strategy": "partial",
+    "log_level": 1,
+    "should_exit": true,
+    "should_exit_on_success": true
+}
