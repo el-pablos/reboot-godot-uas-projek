@@ -44,6 +44,48 @@ Jelajahi 5 level unik, kalahkan 4 boss, kumpulkan Core Fragments, dan unlock ber
 - **Double Jump** — unlock setelah Boss 2
 - **Glide** — unlock setelah Boss 3
 
+### ⚙️ Physics Engine & Kinematic Mathematics
+
+Game ini menggunakan **algoritma kinematika kustom** untuk memastikan "Game Feel" yang presisi dan konsisten — bukan sekadar angka acak.
+
+#### 🔬 Rumus Kinematika Lompatan
+
+Berdasarkan persamaan gerak kinematika:
+- `v = v₀ + gt` (kecepatan)
+- `h = v₀t + ½gt²` (perpindahan)
+
+**1. Jump Velocity (Kecepatan Awal Lompatan)**
+```
+v₀ = (2 × h) / t
+```
+Dimana:
+- `h` = tinggi lompatan target (96 pixels)
+- `t` = waktu mencapai puncak (0.4 detik)
+- Hasil: `v₀ = (2 × 96) / 0.4 = 480 px/s` (arah atas = negatif)
+
+**2. Dynamic Gravity System**
+
+*Jump Gravity* (saat naik):
+```
+g_jump = (2 × h) / t²
+g_jump = (2 × 96) / 0.4² = 1200 px/s²
+```
+
+*Fall Gravity* (saat turun):
+```
+g_fall = (2 × h) / t_descent²
+g_fall = (2 × 96) / 0.35² ≈ 1567 px/s²
+```
+
+**3. Mengapa Fall Gravity > Jump Gravity?**
+
+| Fase | Gravity | Efek |
+|------|---------|------|
+| Naik | 1200 px/s² | Terasa "floaty" dan terkontrol |
+| Turun | 1567 px/s² | Jatuh cepat = **snappy & responsive** |
+
+Perbedaan ini menciptakan karakteristik lompatan yang khas pada platformer profesional seperti Celeste, Hollow Knight, dan Super Meat Boy.
+
 ### ⚔️ Combat & Progression
 - Health system dengan regenerasi
 - Kumpulkan 5 **Core Fragments**

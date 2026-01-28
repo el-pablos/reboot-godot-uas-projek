@@ -202,13 +202,24 @@ func load_next_level() -> void:
 	"""Load level berikutnya dalam urutan."""
 	var current_index: int = LEVEL_ORDER.find(current_level)
 	
-	if current_index >= 0 and current_index < LEVEL_ORDER.size() - 1:
-		var next_level: String = LEVEL_ORDER[current_index + 1]
+	# Validasi: current_level tidak ditemukan di array
+	if current_index < 0:
+		push_warning("[GameManager] Current level '%s' not found in LEVEL_ORDER!" % current_level)
+		# Fallback: load level 1
+		if LEVEL_ORDER.size() > 0:
+			change_level(LEVEL_ORDER[0])
+		return
+	
+	# Cek apakah ada level berikutnya
+	var next_index: int = current_index + 1
+	if next_index < LEVEL_ORDER.size():
+		var next_level: String = LEVEL_ORDER[next_index]
 		change_level(next_level)
 		print("[GameManager] Loading next level: %s" % next_level)
 	else:
-		# Sudah level terakhir atau tidak ditemukan
-		print("[GameManager] No next level available")
+		# Sudah level terakhir - GAME COMPLETE!
+		print("[GameManager] 🎉 ALL LEVELS COMPLETE! Showing victory screen...")
+		_show_victory_screen()
 
 
 func go_to_main_menu() -> void:
@@ -231,3 +242,15 @@ func reset_game() -> void:
 	"""Reset seluruh game state (alias untuk new_game)."""
 	new_game()
 	print("[GameManager] Game state reset")
+
+
+func _show_victory_screen() -> void:
+	"""Internal: Tampilkan layar kemenangan setelah semua level selesai."""
+	# Coba load VictoryScreen jika ada
+	var victory_scene_path: String = "res://scenes/ui/VictoryScreen.tscn"
+	if ResourceLoader.exists(victory_scene_path):
+		get_tree().change_scene_to_file(victory_scene_path)
+	else:
+		# Fallback ke main menu dengan pesan
+		print("[GameManager] VictoryScreen not found, returning to main menu")
+		go_to_main_menu()

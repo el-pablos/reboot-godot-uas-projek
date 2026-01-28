@@ -4,6 +4,7 @@
 # Author: el-pablos
 # ===================================================
 # Mengelola semua audio: musik, SFX, volume settings.
+# Mendukung pemanggilan SFX via String name (smart dictionary).
 # ===================================================
 
 extends Node
@@ -24,7 +25,24 @@ var master_volume: float = 1.0
 var music_volume: float = 0.8
 var sfx_volume: float = 1.0
 
-# --- CACHE SFX ---
+# --- SFX LIBRARY (Smart Dictionary System) ---
+# Mapping nama SFX ke path file. File akan di-load saat pertama kali dipanggil.
+const SFX_PATHS: Dictionary = {
+	"collect": "res://assets/audio/sfx/collect.wav",
+	"jump": "res://assets/audio/sfx/jump.wav",
+	"hit": "res://assets/audio/sfx/hit.wav",
+	"dash": "res://assets/audio/sfx/dash.wav",
+	"double_jump": "res://assets/audio/sfx/double_jump.wav",
+	"land": "res://assets/audio/sfx/land.wav",
+	"hurt": "res://assets/audio/sfx/hurt.wav",
+	"death": "res://assets/audio/sfx/death.wav",
+	"boss_hit": "res://assets/audio/sfx/boss_hit.wav",
+	"level_complete": "res://assets/audio/sfx/level_complete.wav",
+	"menu_select": "res://assets/audio/sfx/menu_select.wav",
+	"menu_confirm": "res://assets/audio/sfx/menu_confirm.wav"
+}
+
+# Cache untuk SFX yang sudah di-load
 var sfx_cache: Dictionary = {}
 
 
@@ -68,8 +86,58 @@ func stop_music(fade_out: float = 0.5) -> void:
 
 
 # === SFX ===
-func play_sfx(stream: AudioStream, volume_scale: float = 1.0) -> void:
-	"""Mainkan SFX. Gunakan pool player yang tersedia."""
+func play_sfx(sfx_name_or_stream, volume_scale: float = 1.0) -> void:
+	"""Mainkan SFX. Mendukung String (nama SFX) atau AudioStream langsung.
+	
+	Contoh penggunaan:
+		AudioManager.play_sfx(\"collect\")  # Dari library
+		AudioManager.play_sfx(my_stream)   # AudioStream langsung
+	"""
+	var stream: AudioStream = null
+	
+	# Handle jika input adalah String (nama SFX dari library)
+	if sfx_name_or_stream is String:
+		var sfx_name: String = sfx_name_or_stream
+		stream = _get_sfx_from_library(sfx_name)
+		if stream == null:
+			push_warning("[AudioManager] SFX '%s' tidak ditemukan di library!" % sfx_name)
+			return
+	# Handle jika input adalah AudioStream langsung
+	elif sfx_name_or_stream is AudioStream:
+		stream = sfx_name_or_stream
+	else:
+		push_warning("[AudioManager] play_sfx: Invalid argument type")
+		return
+	
+	# Mainkan SFX menggunakan pool
+	_play_sfx_stream(stream, volume_scale)
+
+
+func _get_sfx_from_library(sfx_name: String) -> AudioStream:
+	"""Ambil SFX dari library. Load dan cache jika belum ada."""
+	# Cek cache dulu
+	if sfx_cache.has(sfx_name):
+		return sfx_cache[sfx_name]
+	
+	# Cek apakah nama ada di library
+	if not SFX_PATHS.has(sfx_name):
+		return null
+	
+	# Load file dan cache
+	var path: String = SFX_PATHS[sfx_name]
+	if ResourceLoader.exists(path):
+		var stream = load(path)
+		if stream:
+			sfx_cache[sfx_name] = stream
+			return stream
+	
+	# File tidak ada - ini normal jika placeholder belum dibuat
+	print("[AudioManager] SFX file not found (placeholder needed): %s" % path)
+	return null
+
+
+func _play_sfx_stream(stream: AudioStream, volume_scale: float) -> void:
+	"""Internal: Mainkan AudioStream menggunakan pool player."""
 	if stream == null:
 		return
 	
@@ -90,14 +158,17 @@ func play_sfx(stream: AudioStream, volume_scale: float = 1.0) -> void:
 func play_sfx_by_path(path: String, volume_scale: float = 1.0) -> void:
 	"""Mainkan SFX dari path resource. Gunakan cache."""
 	if not sfx_cache.has(path):
+		if not ResourceLoader.exists(path):
+			push_warning("[AudioManager] SFX tidak ditemukan: %s" % path)
+			return
 		var stream = load(path)
 		if stream:
 			sfx_cache[path] = stream
 		else:
-			push_warning("[AudioManager] SFX tidak ditemukan: %s" % path)
+			push_warning("[AudioManager] Gagal load SFX: %s" % path)
 			return
 	
-	play_sfx(sfx_cache[path], volume_scale)
+	_play_sfx_stream(sfx_cache[path], volume_scale)
 
 
 # === VOLUME CONTROLS ===
