@@ -620,3 +620,42 @@ func is_ability_unlocked(ability_name: String) -> bool:
 		"double_jump": return can_double_jump
 		"glide": return can_glide
 		_: return false
+
+
+func reset_player() -> void:
+	"""Reset player state for respawn. Called by LevelBase after death."""
+	# Reset velocity
+	velocity = Vector2.ZERO
+	
+	# Reset health
+	current_health = max_health
+	is_invincible = false
+	
+	# Reset jump tracking
+	jumps_left = max_jumps
+	coyote_timer = 0.0
+	jump_buffer_timer = 0.0
+	is_jump_held = false
+	was_on_floor = true
+	
+	# Reset dash
+	is_dashing = false
+	dash_timer = 0.0
+	dash_cooldown_timer = 0.0
+	
+	# Reset glide
+	is_gliding = false
+	
+	# Reset state machine to IDLE
+	if state_machine:
+		state_machine.change_state(PlayerStateMachine.State.IDLE)
+	
+	# Reset visual (squash/stretch)
+	if sprite:
+		sprite.scale = Vector2.ONE
+		sprite.modulate = Color.WHITE
+	
+	# Emit health changed
+	health_changed.emit(current_health, max_health)
+	
+	print("[Player] 🔄 State reset via reset_player()")

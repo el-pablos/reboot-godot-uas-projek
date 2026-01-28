@@ -27,6 +27,7 @@ var sfx_volume: float = 1.0
 
 # --- SFX LIBRARY (Smart Dictionary System) ---
 # Mapping nama SFX ke path file. File akan di-load saat pertama kali dipanggil.
+# FALLBACK: Jika file tidak ditemukan, play_sfx() akan silent (tidak crash).
 const SFX_PATHS: Dictionary = {
 	"collect": "res://assets/audio/sfx/collect.wav",
 	"jump": "res://assets/audio/sfx/jump.wav",
@@ -41,6 +42,9 @@ const SFX_PATHS: Dictionary = {
 	"menu_select": "res://assets/audio/sfx/menu_select.wav",
 	"menu_confirm": "res://assets/audio/sfx/menu_confirm.wav"
 }
+
+# Set to true to suppress missing file warnings
+const SILENT_MISSING_AUDIO: bool = true
 
 # Cache untuk SFX yang sudah di-load
 var sfx_cache: Dictionary = {}
@@ -114,25 +118,38 @@ func play_sfx(sfx_name_or_stream, volume_scale: float = 1.0) -> void:
 
 
 func _get_sfx_from_library(sfx_name: String) -> AudioStream:
-	"""Ambil SFX dari library. Load dan cache jika belum ada."""
+	"""Ambil SFX dari library. Load dan cache jika belum ada.
+	
+	Returns null jika file tidak ditemukan (silent fallback).
+	"""
 	# Cek cache dulu
 	if sfx_cache.has(sfx_name):
 		return sfx_cache[sfx_name]
 	
 	# Cek apakah nama ada di library
 	if not SFX_PATHS.has(sfx_name):
+		if not SILENT_MISSING_AUDIO:
+			push_warning("[AudioManager] SFX '%s' not in library" % sfx_name)
 		return null
 	
 	# Load file dan cache
 	var path: String = SFX_PATHS[sfx_name]
 	if ResourceLoader.exists(path):
 		var stream = load(path)
-		if stream:
+		if stream and stream is AudioStream:
 			sfx_cache[sfx_name] = stream
 			return stream
+		else:
+			# File exists but invalid format - cache null to avoid repeated attempts
+			sfx_cache[sfx_name] = null
+			if not SILENT_MISSING_AUDIO:
+				push_warning("[AudioManager] SFX '%s' failed to load (invalid format)" % sfx_name)
+			return null
 	
-	# File tidak ada - ini normal jika placeholder belum dibuat
-	print("[AudioManager] SFX file not found (placeholder needed): %s" % path)
+	# File tidak ada - cache null dan silent return
+	sfx_cache[sfx_name] = null
+	if not SILENT_MISSING_AUDIO:
+		print("[AudioManager] SFX file not found (placeholder needed): %s" % path)
 	return null
 
 
