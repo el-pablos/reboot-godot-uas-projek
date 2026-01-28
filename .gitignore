@@ -62,3 +62,25 @@ tmp/
 # File konfigurasi lokal (jangan upload ke repo)
 local_config.tres
 secrets.gd
+
+# ===================================================
+# CLEANUP FOR PRODUCTION (v1.0)
+# ===================================================
+
+# Ignore Helper Scripts
+*.ps1
+*.py
+asset_downloader.py
+download_assets_real.ps1
+setup_assets_real.ps1
+
+# Ignore Unit Tests (Development Only)
+test/
+.gut_settings.json
+
+# Ignore Export Artifacts
+*.pck
+*.exe
+*.zip
+*.apk
+*.aab
