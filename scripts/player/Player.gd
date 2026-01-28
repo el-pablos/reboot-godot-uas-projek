@@ -450,11 +450,30 @@ func _die() -> void:
 
 # === ABILITY SYNC ===
 func _sync_abilities_from_game_manager() -> void:
-	"""Sync status ability dari GameManager."""
+	"""Sync status ability dari GameManager.
+	
+	PENTING: Fungsi ini memastikan Player instance baru
+	mendapatkan semua ability yang sudah di-unlock.
+	"""
 	if GameManager:
 		can_dash = GameManager.can_dash
 		can_double_jump = GameManager.can_double_jump
 		can_glide = GameManager.can_glide
+		
+		# CRITICAL: Sync max_jumps berdasarkan double jump status!
+		if can_double_jump:
+			max_jumps = 2
+			jump_height = 110.0  # Buff untuk double jump
+			# Recalculate physics karena jump_height berubah
+			jump_velocity = -((2.0 * jump_height) / jump_time_to_peak)
+			jump_force = jump_velocity
+			jump_gravity = (2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
+			fall_gravity = (2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)
+			print("[Player] Double Jump SYNCED: max_jumps=%d, jump_height=%.1f" % [max_jumps, jump_height])
+		else:
+			max_jumps = 1
+		
+		print("[Player] Abilities synced: dash=%s, double_jump=%s, glide=%s" % [can_dash, can_double_jump, can_glide])
 
 
 func _on_ability_unlocked(ability_name: String) -> void:

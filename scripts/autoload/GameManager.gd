@@ -40,6 +40,11 @@ var is_game_over: bool = false
 func _ready() -> void:
 	# Set pause mode agar autoload tetap berjalan saat game di-pause
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# DEBUG: Unlock double jump untuk testing Level 4
+	# Hapus baris ini setelah testing selesai!
+	# can_double_jump = true
+	
 	print("[GameManager] Sistem game manager aktif!")
 
 
@@ -93,6 +98,34 @@ func unlock_glide() -> void:
 	can_glide = true
 	ability_unlocked.emit("glide")
 	print("[GameManager] ABILITY UNLOCKED: Glide!")
+
+
+func apply_upgrades_to_player(player_node: Node) -> void:
+	"""Apply semua ability yang sudah di-unlock ke instance Player baru.
+	
+	Fungsi ini WAJIB dipanggil setiap kali level baru dimuat,
+	karena Player instance baru dibuat dengan nilai default.
+	"""
+	if player_node == null:
+		push_warning("[GameManager] apply_upgrades_to_player: player_node is null!")
+		return
+	
+	# Sync ability flags
+	player_node.can_dash = can_dash
+	player_node.can_double_jump = can_double_jump
+	player_node.can_glide = can_glide
+	
+	# Adjust max_jumps berdasarkan double jump status
+	if can_double_jump:
+		player_node.max_jumps = 2
+		# Buff jump_height sedikit untuk double jump
+		player_node.jump_height = 110.0
+		print("[GameManager] Double Jump ENABLED - max_jumps=2, jump_height=110")
+	else:
+		player_node.max_jumps = 1
+		print("[GameManager] Double Jump disabled - max_jumps=1")
+	
+	print("[GameManager] Player upgrades applied: dash=%s, double_jump=%s, glide=%s" % [can_dash, can_double_jump, can_glide])
 
 
 # === FUNGSI HEALTH ===
