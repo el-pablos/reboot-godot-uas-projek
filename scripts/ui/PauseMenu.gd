@@ -74,8 +74,16 @@ func _on_resume_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	# TODO: Buka settings menu
-	print("[PauseMenu] Settings (belum diimplementasikan)")
+	var settings_scene := load("res://scenes/ui/SettingsMenu.tscn")
+	if settings_scene:
+		var settings_instance = settings_scene.instantiate()
+		settings_instance.set_from_pause(true)
+		settings_instance.process_mode = Node.PROCESS_MODE_ALWAYS
+		add_child(settings_instance)
+		pause_panel.visible = false
+		print("[PauseMenu] Membuka Settings overlay")
+	else:
+		print("[PauseMenu] Gagal load SettingsMenu!")
 
 
 func _on_main_menu_pressed() -> void:

@@ -44,8 +44,8 @@ func _on_continue_pressed() -> void:
 
 func _on_settings_pressed() -> void:
 	"""Buka menu pengaturan."""
-	print("[MainMenu] Settings menu (belum diimplementasikan)")
-	# TODO: Implement settings menu
+	print("[MainMenu] Membuka Settings...")
+	get_tree().change_scene_to_file("res://scenes/ui/SettingsMenu.tscn")
 
 
 func _on_quit_pressed() -> void:
