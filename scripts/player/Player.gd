@@ -131,7 +131,7 @@ var state_machine: PlayerStateMachine
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer if has_node("AnimationPlayer") else null
-@onready var dust_particles: GPUParticles2D = $DustParticles if has_node("DustParticles") else null
+@onready var dust_particles: CPUParticles2D = $DustParticles if has_node("DustParticles") else null
 @onready var ghost_timer: Timer = $GhostTimer if has_node("GhostTimer") else null
 @onready var attack_hitbox: Area2D = $AttackHitbox if has_node("AttackHitbox") else null
 @onready var player_light: PointLight2D = $PlayerLight if has_node("PlayerLight") else null
