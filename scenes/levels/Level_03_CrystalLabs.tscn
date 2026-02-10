@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/crystal_labs_far.png" id="12_far"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="13_core_tex"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_toxic.png" id="14_hazard_toxic"]
+[ext_resource type="Script" path="res://scripts/boss/BossGate.gd" id="15_gate_script"]
 
 [sub_resource type="Environment" id="Environment_crystal"]
 background_mode = 3
@@ -241,6 +242,23 @@ collision_mask = 6
 script = ExtResource("7_pl2iw")
 
 [node name="BossSporeBot" type="CharacterBody2D" parent="." unique_id=1232666485 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
-position = Vector2(1600, 300)
+position = Vector2(1050, 280)
 collision_layer = 2
 collision_mask = 5
+
+[node name="BossGate" type="StaticBody2D" parent="."]
+position = Vector2(1300, 310)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("15_gate_script")
+gate_color = Color(0.3, 0.9, 0.5, 0.7)
+
+[node name="GateSprite" type="ColorRect" parent="BossGate"]
+offset_left = -15.0
+offset_top = -80.0
+offset_right = 15.0
+offset_bottom = 32.0
+color = Color(0.3, 0.9, 0.5, 0.7)
+
+[node name="GateCollision" type="CollisionPolygon2D" parent="BossGate"]
+polygon = PackedVector2Array(-15, -80, 15, -80, 15, 32, -15, 32)
