@@ -78,6 +78,9 @@ setup_assets_real.ps1
 test/
 .gut_settings.json
 
+# Ignore Audit / Report Documents (internal only)
+md/
+
 # Ignore Export Artifacts
 *.pck
 *.exe

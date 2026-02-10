@@ -1,10 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://player_bip_scene"]
+[gd_scene load_steps=7 format=3 uid="uid://player_bip_scene"]
 
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="1_player_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/bip_placeholder.svg" id="2_bip_sprite"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(24, 28)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_attack"]
+size = Vector2(32, 24)
+
+[sub_resource type="Gradient" id="Gradient_light"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_light"]
+gradient = SubResource("Gradient_light")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 1
@@ -20,6 +34,26 @@ texture = ExtResource("2_bip_sprite")
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_player")
 
+[node name="AttackHitbox" type="Area2D" parent="."]
+position = Vector2(20, -2)
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("RectangleShape2D_attack")
+
+[node name="PlayerLight" type="PointLight2D" parent="."]
+position = Vector2(0, -10)
+color = Color(0.4, 0.85, 1, 1)
+energy = 0.8
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 4.0
+texture = SubResource("GradientTexture2D_light")
+texture_scale = 3.0
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -50)
 zoom = Vector2(2, 2)
@@ -31,3 +65,5 @@ drag_left_margin = 0.3
 drag_top_margin = 0.3
 drag_right_margin = 0.3
 drag_bottom_margin = 0.3
+
+[connection signal="body_entered" from="AttackHitbox" to="." method="_on_attack_hitbox_body_entered"]

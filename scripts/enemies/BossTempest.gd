@@ -76,9 +76,11 @@ func _choose_attack() -> void:
 
 func _attack_lightning_bolt() -> void:
 	"""Tembak satu petir ke arah player."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("lightning_bolt")
 	
-	if not target_player:
+	if not target_player or not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
@@ -86,23 +88,31 @@ func _attack_lightning_bolt() -> void:
 	if sprite:
 		sprite.modulate = Color(0.7, 0.7, 1)
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Fire!
 	if sprite:
 		sprite.modulate = Color.WHITE
 	
-	_spawn_lightning(target_player.global_position)
+	if target_player and is_instance_valid(target_player):
+		_spawn_lightning(target_player.global_position)
 	
-	await get_tree().create_timer(0.2).timeout
+	if not await _safe_await_timer(0.2):
+		return
 	_end_attack()
 
 
 func _attack_lightning_burst() -> void:
 	"""Tembak multiple petir spread."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("lightning_burst")
 	
-	if not target_player:
+	if not target_player or not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
@@ -110,15 +120,24 @@ func _attack_lightning_burst() -> void:
 	if sprite:
 		sprite.modulate = Color(1, 1, 0.5)
 		var tween := create_tween()
-		tween.tween_property(sprite, "scale", Vector2(1.2, 1.2), 0.4)
-		await tween.finished
-		sprite.scale = Vector2.ONE
+		if tween:
+			tween.tween_property(sprite, "scale", Vector2(1.2, 1.2), 0.4)
+			await tween.finished
+			sprite.scale = Vector2.ONE
 	else:
-		await get_tree().create_timer(0.4).timeout
+		if not await _safe_await_timer(0.4):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Fire burst!
 	if sprite:
 		sprite.modulate = Color.WHITE
+	
+	if not target_player or not is_instance_valid(target_player):
+		_end_attack()
+		return
 	
 	var base_dir := (target_player.global_position - global_position).normalized()
 	var _base_angle := base_dir.angle()  # Used for direction reference
@@ -129,38 +148,59 @@ func _attack_lightning_burst() -> void:
 	var start_angle := -deg_to_rad(spread_angle) / 2
 	
 	for i in range(count):
+		if not _is_valid_for_attack():
+			return
 		var angle: float = start_angle + angle_step * float(i)
 		var direction := Vector2.from_angle(angle)
 		var target_pos := global_position + direction * 500
 		_spawn_lightning(target_pos)
-		await get_tree().create_timer(0.05).timeout
+		if not await _safe_await_timer(0.05):
+			return
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
 	_end_attack()
 
 
 func _attack_dive_strike() -> void:
 	"""Dive ke bawah dengan lightning trail."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("dive_strike")
 	
-	if not target_player:
+	if not target_player or not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
 	# Naik dulu
 	var tween := create_tween()
-	tween.tween_property(self, "global_position:y", global_position.y - 80, 0.3)
-	await tween.finished
+	if tween:
+		tween.tween_property(self, "global_position:y", global_position.y - 80, 0.3)
+		await tween.finished
+	else:
+		if not await _safe_await_timer(0.3):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Warning
 	if sprite:
 		sprite.modulate = Color(1, 0.5, 0)
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# DIVE!
 	if sprite:
 		sprite.modulate = Color(1, 1, 0)
+	
+	if not target_player or not is_instance_valid(target_player):
+		_end_attack()
+		return
 	
 	var dive_target := target_player.global_position
 	var dive_dir := (dive_target - global_position).normalized()
@@ -170,14 +210,17 @@ func _attack_dive_strike() -> void:
 	# Spawn lightning trail
 	var dive_time := 0.0
 	while dive_time < 0.6:
-		await get_tree().create_timer(0.1).timeout
+		if not await _safe_await_timer(0.1):
+			break
+		if not _is_valid_for_attack():
+			break
 		dive_time += 0.1
 		
 		# Trail
 		_spawn_trail_effect()
 		
 		# Check hit
-		if target_player and global_position.distance_to(target_player.global_position) < 40:
+		if target_player and is_instance_valid(target_player) and global_position.distance_to(target_player.global_position) < 40:
 			var knockback := dive_dir
 			target_player.take_damage(30, knockback * 250)
 			break
@@ -187,12 +230,16 @@ func _attack_dive_strike() -> void:
 	if sprite:
 		sprite.modulate = Color.WHITE
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
 	_end_attack()
 
 
 func _spawn_lightning(target_pos: Vector2) -> void:
 	"""Spawn proyektil petir."""
+	if not is_inside_tree():
+		return
+	
 	var projectile := Area2D.new()
 	projectile.global_position = global_position
 	
@@ -213,8 +260,12 @@ func _spawn_lightning(target_pos: Vector2) -> void:
 	projectile.collision_layer = 32  # Layer 6: Projectile
 	projectile.collision_mask = 1    # Player
 	
-	get_parent().add_child(projectile)
-	projectiles.append(projectile)
+	if is_inside_tree():
+		get_parent().add_child(projectile)
+		projectiles.append(projectile)
+	else:
+		projectile.queue_free()
+		return
 	
 	# Movement
 	var direction := (target_pos - global_position).normalized()
@@ -222,8 +273,12 @@ func _spawn_lightning(target_pos: Vector2) -> void:
 	# Move projectile
 	var move_time := 0.0
 	while move_time < 3.0 and is_instance_valid(projectile):
-		await get_tree().process_frame
+		if not await _safe_await_frame():
+			break
 		move_time += get_process_delta_time()
+		
+		if not is_instance_valid(projectile):
+			break
 		
 		projectile.global_position += direction * lightning_speed * get_process_delta_time()
 		
@@ -231,7 +286,7 @@ func _spawn_lightning(target_pos: Vector2) -> void:
 		projectile.rotation = direction.angle() + PI/2
 		
 		# Check hit player
-		if target_player and projectile.global_position.distance_to(target_player.global_position) < 20:
+		if target_player and is_instance_valid(target_player) and projectile.global_position.distance_to(target_player.global_position) < 20:
 			target_player.take_damage(lightning_damage, direction * 100)
 			break
 	
@@ -257,10 +312,16 @@ func _spawn_trail_effect() -> void:
 
 func _phase_transition_effect() -> void:
 	# Phase 2 - faster, more projectiles
+	if not _is_valid_for_attack():
+		return
+	
 	if sprite:
 		for i in range(6):
+			if not _is_valid_for_attack():
+				return
 			sprite.modulate = Color(1, 1, 0) if i % 2 == 0 else Color.WHITE
-			await get_tree().create_timer(0.12).timeout
+			if not await _safe_await_timer(0.12):
+				return
 	
 	move_speed = 130.0
 	lightning_speed = 350.0

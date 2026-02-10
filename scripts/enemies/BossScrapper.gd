@@ -71,24 +71,32 @@ func _choose_attack() -> void:
 
 func _attack_slam() -> void:
 	"""Slam attack - area damage di depan."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("slam")
 	
 	# Windup
 	if sprite:
 		var tween := create_tween()
-		tween.tween_property(sprite, "position:y", -20, 0.3)
-		await tween.finished
+		if tween:
+			tween.tween_property(sprite, "position:y", -20, 0.3)
+			await tween.finished
 	else:
-		await get_tree().create_timer(0.3).timeout
+		if not await _safe_await_timer(0.3):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Slam down
 	if sprite:
 		var slam_tween := create_tween()
-		slam_tween.tween_property(sprite, "position:y", 10, 0.1)
-		slam_tween.tween_property(sprite, "position:y", 0, 0.2)
+		if slam_tween:
+			slam_tween.tween_property(sprite, "position:y", 10, 0.1)
+			slam_tween.tween_property(sprite, "position:y", 0, 0.2)
 	
 	# Check hit
-	if target_player:
+	if target_player and is_instance_valid(target_player):
 		var distance := global_position.distance_to(target_player.global_position)
 		if distance <= slam_range:
 			var knockback := (target_player.global_position - global_position).normalized()
@@ -96,15 +104,18 @@ func _attack_slam() -> void:
 	
 	# Shake effect (bisa ditambahkan camera shake)
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
 	_end_attack()
 
 
 func _attack_dash() -> void:
 	"""Dash attack - melesat ke arah player."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("dash")
 	
-	if not target_player:
+	if not target_player or not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
@@ -116,41 +127,56 @@ func _attack_dash() -> void:
 	if sprite:
 		sprite.modulate = Color(1, 0.5, 0)
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# DASH!
 	if sprite:
 		sprite.modulate = Color.WHITE
 	
-	dash_target = target_player.global_position
+	if target_player and is_instance_valid(target_player):
+		dash_target = target_player.global_position
 	velocity.x = dash_dir * dash_attack_speed
 	
 	# Dash duration
 	var dash_time := 0.0
 	while dash_time < 0.8:
-		await get_tree().process_frame
+		if not await _safe_await_frame():
+			return
+		if not _is_valid_for_attack():
+			return
 		dash_time += get_process_delta_time()
 		
 		# Cek hit player
-		if target_player and global_position.distance_to(target_player.global_position) < 50:
+		if target_player and is_instance_valid(target_player) and global_position.distance_to(target_player.global_position) < 50:
 			var knockback := Vector2(dash_dir, -0.5).normalized()
 			target_player.take_damage(dash_damage, knockback * 300)
 			break
 	
 	velocity.x = 0
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
 	_end_attack()
 
 
 func _phase_transition_effect() -> void:
 	# Scrapper rage mode di phase 2
+	if not _is_valid_for_attack():
+		return
+	
 	if sprite:
 		sprite.modulate = Color(1, 0.3, 0.3)
 		
 		for i in range(8):
+			if not _is_valid_for_attack():
+				return
 			sprite.rotation_degrees = 5 if i % 2 == 0 else -5
-			await get_tree().create_timer(0.1).timeout
+			if not await _safe_await_timer(0.1):
+				return
 		
 		sprite.rotation_degrees = 0
 		sprite.modulate = Color(1.2, 0.8, 0.8)  # Slightly red tint

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://scene_patcher_runner"]
+
+[ext_resource type="Script" path="res://tools/scene_patcher.gd" id="1_patcher_script"]
+
+[node name="ScenePatcher" type="Node"]
+script = ExtResource("1_patcher_script")
