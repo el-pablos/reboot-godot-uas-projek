@@ -79,11 +79,19 @@ func _collect() -> void:
 
 
 func _collect_effect() -> void:
-	# Scale up dan fade out
+	# Scale up dan fade out with bounce
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(self, "scale", Vector2(2, 2), 0.3)
-	tween.tween_property(self, "modulate:a", 0.0, 0.3)
+	tween.tween_property(self, "scale", Vector2(2.5, 2.5), 0.15).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.4)
+	tween.tween_property(self, "position:y", position.y - 30, 0.3).set_ease(Tween.EASE_OUT)
+	
+	# Screen shake saat collect (kecil)
+	var sm = get_node_or_null("/root/SettingsManager")
+	if not sm or sm.is_screen_shake_enabled():
+		var camera := get_viewport().get_camera_2d()
+		if camera and camera.has_method("shake"):
+			camera.shake(3.0, 0.06)
 	
 	await tween.finished
 	queue_free()

@@ -117,12 +117,12 @@ func _update_look_ahead(delta: float) -> void:
 # =========================================
 
 func shake(intensity: float = -1.0, duration: float = -1.0) -> void:
-	"""Trigger screen shake.
+	"""Trigger screen shake (respects SettingsManager)."""
+	# Check settings
+	var sm = get_node_or_null("/root/SettingsManager")
+	if sm and not sm.is_screen_shake_enabled():
+		return
 	
-	Args:
-		intensity: Shake strength in pixels. -1 uses default.
-		duration: Shake duration in seconds. -1 uses default.
-	"""
 	if intensity < 0:
 		intensity = default_shake_intensity
 	if duration < 0:

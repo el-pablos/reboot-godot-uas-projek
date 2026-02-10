@@ -120,6 +120,9 @@ func _respawn_player() -> void:
 	if player:
 		player.global_position = spawn_position + respawn_offset
 		player.reset_player()
+		# Sync GameManager health back to full, reset game_over flag
+		if GameManager:
+			GameManager.reset_health()
 		player_respawned.emit()
 		print("[Level] Player respawned di: %s" % player.global_position)
 

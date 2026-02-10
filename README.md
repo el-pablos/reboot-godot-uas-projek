@@ -4,7 +4,7 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-73%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-119%20Passed-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 **2D Action Platformer** • Dibuat dengan **Godot Engine 4.6**
@@ -149,9 +149,36 @@ EnemyBase (abstract)
 
 | Metric | Status |
 |--------|--------|
-| Unit Tests | **73 Passed** ✅ |
+| Unit Tests | **119/119 Passed** ✅ |
 | Parse Errors | **0** ✅ |
 | Code Coverage | **Core Systems** ✅ |
+| Headless Import | **Clean** ✅ |
+
+### Menjalankan Test Headless (Lokal)
+
+```bash
+# 1. Set main scene ke TestRunner (sementara)
+# Edit project.godot → run/main_scene="res://test/TestRunner.tscn"
+
+# 2. Jalankan headless
+godot --headless --path . 2>&1
+
+# 3. Kembalikan main scene ke MainMenu.tscn setelah selesai
+
+# TestRunner otomatis quit dengan exit code = jumlah test gagal
+# Exit 0 = semua test passed
+```
+
+### Test Suites
+
+| Suite | Tests |
+|-------|-------|
+| test_player_movement.gd | 21 |
+| test_game_logic.gd | 30 |
+| test_enemy_boss.gd | 25 |
+| test_enemy_ai.gd | 25 |
+| test_combat_system.gd | 18 |
+| **Total** | **119** |
 
 ---
 
@@ -196,6 +223,6 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 **Made with ❤️ and ☕ using Godot Engine**
 
-*Project: REBOOT — Version 1.0*
+*Project: REBOOT — Version 0.2.0*
 
 </div>

@@ -42,7 +42,7 @@ level_name = "The Storm Spire"
 level_description = "Menara tinggi dengan badai dan angin kencang. Boss: Tempest."
 next_level_path = "res://scenes/levels/Level_05_OverlordFortress.tscn"
 spawn_position = Vector2(100, 600)
-killzone_y = 1500.0
+killzone_y = 900.0
 background_color = Color(0.15, 0.15, 0.25, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1578295445]
@@ -271,6 +271,6 @@ collision_mask = 6
 script = ExtResource("7_8ih4q")
 
 [node name="BossTempest" type="CharacterBody2D" parent="." unique_id=1555109660 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
-position = Vector2(1500, -200)
+position = Vector2(600, 220)
 collision_layer = 2
 collision_mask = 5

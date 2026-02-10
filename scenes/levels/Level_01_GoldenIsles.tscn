@@ -40,7 +40,7 @@ level_name = "The Golden Isles"
 level_description = "Tutorial area - Pulau melayang emas, tempat Bip pertama kali bangun setelah reboot."
 next_level_path = "res://scenes/levels/Level_02_RustFactory.tscn"
 spawn_position = Vector2(100, 200)
-killzone_y = 1000.0
+killzone_y = 800.0
 background_color = Color(0.4, 0.6, 0.9, 1)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]

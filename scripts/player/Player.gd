@@ -531,13 +531,21 @@ func _on_attack_hitbox_body_entered(body: Node2D) -> void:
 		var knockback_dir := Vector2(1 if facing_right else -1, -0.3).normalized()
 		body.take_damage(attack_damage, knockback_dir * attack_knockback)
 		
-		# Hit stop effect (brief freeze)
-		_hit_stop(0.05)
+		# Hit stop effect (respects settings)
+		var sm = get_node_or_null("/root/SettingsManager")
+		var hs_dur := 0.05
+		if sm:
+			hs_dur = sm.get_hit_stop_duration()
+		if hs_dur > 0:
+			_hit_stop(hs_dur)
 		
-		# Screen shake
-		var camera := get_viewport().get_camera_2d()
-		if camera and camera.has_method("shake"):
-			camera.shake(6.0, 0.1)
+		# Screen shake (respects settings)
+		if not sm or sm.is_screen_shake_enabled():
+			var camera := get_viewport().get_camera_2d()
+			if camera and camera.has_method("shake"):
+				camera.shake(6.0, 0.1)
+		
+		AudioManager.play_sfx("hit")
 		
 		print("[Player] ⚔️ Hit enemy for %d damage!" % attack_damage)
 
@@ -671,6 +679,13 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	# State
 	state_machine.change_state(PlayerStateMachine.State.HURT)
 	AudioManager.play_sfx("hurt")
+	
+	# Screen shake on damage (respects settings)
+	var sm2 = get_node_or_null("/root/SettingsManager")
+	if not sm2 or sm2.is_screen_shake_enabled():
+		var cam := get_viewport().get_camera_2d()
+		if cam and cam.has_method("shake"):
+			cam.shake(4.0, 0.08)
 	
 	# Check death
 	if current_health <= 0:
