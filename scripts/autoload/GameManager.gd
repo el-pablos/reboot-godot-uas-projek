@@ -156,6 +156,7 @@ func heal_player(amount: int) -> void:
 func reset_health() -> void:
 	"""Reset HP ke full (saat respawn/new game)."""
 	player_health = player_max_health
+	is_game_over = false
 
 
 # === FUNGSI PAUSE ===
@@ -261,6 +262,8 @@ const LEVEL_ORDER: Array[String] = [
 
 func reload_current_level() -> void:
 	"""Reload level saat ini (untuk retry)."""
+	is_game_over = false
+	Engine.time_scale = 1.0
 	if current_level != "":
 		get_tree().reload_current_scene()
 		print("[GameManager] Reloading level: %s" % current_level)
