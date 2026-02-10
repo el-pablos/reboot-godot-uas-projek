@@ -1,0 +1,95 @@
+# =============================================================================
+# CI — Export Builds untuk Project: REBOOT
+# =============================================================================
+# Trigger: tag push (v*) atau manual dispatch
+# Export Windows, Linux, Web builds via Godot headless
+# =============================================================================
+
+name: "📦 Export Builds"
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version label (e.g., 0.2.0)"
+        required: false
+        default: "dev"
+
+jobs:
+  export:
+    name: "Export ${{ matrix.preset }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        include:
+          - preset: "Windows Desktop"
+            output_dir: "windows"
+            artifact_name: "ProjectREBOOT-Windows"
+          - preset: "Linux"
+            output_dir: "linux"
+            artifact_name: "ProjectREBOOT-Linux"
+          - preset: "Web"
+            output_dir: "web"
+            artifact_name: "ProjectREBOOT-Web"
+
+    steps:
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🤖 Setup Godot 4.6"
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.6.0-stable
+          use-dotnet: false
+          include-templates: true
+
+      - name: "📦 Import project resources"
+        run: |
+          godot --headless --import --quit 2>&1 || true
+          echo "Import complete"
+
+      - name: "🔨 Create output directory"
+        run: mkdir -p export_output/${{ matrix.output_dir }}
+
+      - name: "🚀 Export build — ${{ matrix.preset }}"
+        run: |
+          godot --headless --export-release "${{ matrix.preset }}" 2>&1
+          echo "Export ${{ matrix.preset }} complete"
+
+      - name: "📋 Upload build artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: export_output/${{ matrix.output_dir }}/
+          retention-days: 30
+
+  release:
+    name: "🏷️ Create Release"
+    needs: export
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: "📥 Download all artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts/
+
+      - name: "📦 Zip artifacts"
+        run: |
+          cd release-artifacts
+          for dir in */; do
+            zip -r "../${dir%/}.zip" "$dir"
+          done
+
+      - name: "🏷️ Create GitHub Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.zip"
+          generate_release_notes: true
+          draft: false
+          prerelease: false
