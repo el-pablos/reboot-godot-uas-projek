@@ -79,9 +79,12 @@ func _on_settings_pressed() -> void:
 
 
 func _on_main_menu_pressed() -> void:
-	# Konfirmasi dulu
+	# Kembali ke main menu via GameManager (reset state properly)
 	resume_game()
-	get_tree().change_scene_to_file("res://scenes/main_menu/MainMenu.tscn")
+	if GameManager:
+		GameManager.go_to_main_menu()
+	else:
+		get_tree().change_scene_to_file("res://scenes/main_menu/MainMenu.tscn")
 
 
 func _on_quit_pressed() -> void:

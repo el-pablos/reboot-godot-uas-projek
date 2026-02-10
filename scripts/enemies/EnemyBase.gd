@@ -16,7 +16,7 @@ class_name EnemyBase
 # --- SIGNALS ---
 signal died
 signal health_changed(current: int, max_health: int)
-signal player_detected(player: Player)
+signal player_detected(player: Node)  # Use Node to avoid circular dependency with Player class
 signal player_lost
 
 # === EXPORT VARIABLES ===
@@ -171,8 +171,9 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	else:
 		# Return to chase after hurt
 		await get_tree().create_timer(0.3).timeout
-		if not is_dead:
-			current_state = State.CHASE if target_player else State.PATROL
+		if not is_inside_tree() or is_dead:
+			return
+		current_state = State.CHASE if target_player else State.PATROL
 
 
 func _flash_damage() -> void:
@@ -182,6 +183,8 @@ func _flash_damage() -> void:
 	
 	sprite.modulate = Color(1, 0.3, 0.3)
 	await get_tree().create_timer(0.1).timeout
+	if not is_inside_tree():
+		return
 	if sprite:
 		sprite.modulate = Color.WHITE
 
@@ -224,6 +227,8 @@ func _deal_damage_to_player(player: Player) -> void:
 	# Cooldown
 	can_attack = false
 	await get_tree().create_timer(attack_cooldown).timeout
+	if not is_inside_tree():
+		return
 	can_attack = true
 
 
