@@ -128,13 +128,24 @@ var attack_cooldown_timer: float = 0.0
 var state_machine: PlayerStateMachine
 
 # === NODE REFERENCES ===
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer if has_node("AnimationPlayer") else null
 @onready var dust_particles: GPUParticles2D = $DustParticles if has_node("DustParticles") else null
 @onready var ghost_timer: Timer = $GhostTimer if has_node("GhostTimer") else null
 @onready var attack_hitbox: Area2D = $AttackHitbox if has_node("AttackHitbox") else null
 @onready var player_light: PointLight2D = $PlayerLight if has_node("PlayerLight") else null
+
+# Animation name mapping for state machine
+const ANIM_MAP: Dictionary = {
+	"IDLE": "idle",
+	"RUN": "run",
+	"JUMP": "jump",
+	"FALL": "fall",
+	"DASH": "dash",
+	"HURT": "hurt",
+	"DEAD": "dead",
+}
 
 
 # =========================================
@@ -167,6 +178,13 @@ func _ready() -> void:
 	if GameManager:
 		GameManager.ability_unlocked.connect(_on_ability_unlocked)
 		GameManager.player_stats_changed.connect(_sync_from_game_manager)
+	
+	# Connect state machine to play animations
+	state_machine.state_changed.connect(_on_state_changed_play_anim)
+	
+	# Start idle animation
+	if sprite:
+		sprite.play("idle")
 	
 	print("[Player] 🤖 Bip ready! max_jumps=%d, can_double_jump=%s" % [max_jumps, can_double_jump])
 
@@ -424,10 +442,19 @@ func _spawn_ghost_trail() -> void:
 	if not sprite:
 		return
 	
+	# Get current frame texture from AnimatedSprite2D
+	var current_anim: String = sprite.animation
+	var current_frame: int = sprite.frame
+	var frame_texture: Texture2D = null
+	if sprite.sprite_frames and sprite.sprite_frames.has_animation(current_anim):
+		frame_texture = sprite.sprite_frames.get_frame_texture(current_anim, current_frame)
+	if not frame_texture:
+		return
+	
 	for i in range(dash_ghost_count):
 		# Create ghost sprite
 		var ghost := Sprite2D.new()
-		ghost.texture = sprite.texture
+		ghost.texture = frame_texture
 		ghost.flip_h = sprite.flip_h
 		ghost.global_position = global_position
 		ghost.modulate = Color(0.5, 0.8, 1.0, 0.6)  # Cyan tint
@@ -599,6 +626,15 @@ func _update_state() -> void:
 			state_machine.change_state(PlayerStateMachine.State.JUMP)
 		else:
 			state_machine.change_state(PlayerStateMachine.State.FALL)
+
+
+func _on_state_changed_play_anim(_old_state: String, new_state: String) -> void:
+	"""Play animation matching the new state."""
+	if not sprite:
+		return
+	var anim_name: String = ANIM_MAP.get(new_state, "idle")
+	if sprite.sprite_frames and sprite.sprite_frames.has_animation(anim_name):
+		sprite.play(anim_name)
 
 
 # =========================================
@@ -798,6 +834,7 @@ func reset_player() -> void:
 	if sprite:
 		sprite.scale = Vector2.ONE
 		sprite.modulate = Color.WHITE
+		sprite.play("idle")
 	
 	# Emit health changed
 	health_changed.emit(current_health, max_health)
