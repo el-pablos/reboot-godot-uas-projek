@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://level_05_overlord_fortress"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
@@ -6,177 +6,240 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
 [ext_resource type="Script" path="res://scripts/hazards/Hazard.gd" id="6_hazard_script"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/BossOverlord.tscn" id="7_boss"]
+[ext_resource type="Script" path="res://scripts/player/Player.gd" id="7_uxp4k"]
 
-[node name="Level_05_OverlordFortress" type="Node2D"]
+[sub_resource type="Environment" id="Environment_fortress"]
+background_mode = 3
+background_color = Color(0.05, 0.01, 0.01, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.08, 0.08, 1)
+ambient_light_energy = 0.4
+glow_enabled = true
+glow_intensity = 0.5
+glow_strength = 0.9
+glow_bloom = 0.25
+glow_hdr_threshold = 0.7
+adjustment_enabled = true
+adjustment_contrast = 1.15
+adjustment_saturation = 1.2
+
+[sub_resource type="Gradient" id="Gradient_fortress"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fortress"]
+gradient = SubResource("Gradient_fortress")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="Level_05_OverlordFortress" type="Node2D" unique_id=1385363453]
 script = ExtResource("1_level_script")
 level_name = "Benteng Overlord"
 level_description = "Final level! Hadapi Overlord dan selamatkan Arcadia!"
-next_level_path = ""
 spawn_position = Vector2(100, 400)
 killzone_y = 1200.0
 background_color = Color(0.1, 0.05, 0.05, 1)
 
-[node name="Background" type="ParallaxBackground" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=22137831]
+environment = SubResource("Environment_fortress")
 
-[node name="FortressBG" type="ParallaxLayer" parent="Background"]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1067324599]
+color = Color(0.16, 0.12, 0.12, 1)
+
+[node name="AmbientLights" type="Node2D" parent="." unique_id=559893558]
+
+[node name="EvilRed1" type="PointLight2D" parent="AmbientLights" unique_id=129817174]
+position = Vector2(300, 350)
+color = Color(1, 0.2, 0.1, 1)
+energy = 0.7
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_fortress")
+texture_scale = 5.5
+
+[node name="EvilRed2" type="PointLight2D" parent="AmbientLights" unique_id=307464118]
+position = Vector2(700, 300)
+color = Color(1, 0.1, 0.05, 1)
+energy = 0.6
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_fortress")
+texture_scale = 6.5
+
+[node name="DarkPurple" type="PointLight2D" parent="AmbientLights" unique_id=1422492619]
+position = Vector2(500, 250)
+color = Color(0.5, 0.1, 0.4, 1)
+energy = 0.55
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_fortress")
+texture_scale = 7.5
+
+[node name="OminousOrange" type="PointLight2D" parent="AmbientLights" unique_id=1557405967]
+position = Vector2(1000, 320)
+color = Color(1, 0.5, 0.1, 1)
+energy = 0.65
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_fortress")
+texture_scale = 6.0
+
+[node name="Background" type="ParallaxBackground" parent="." unique_id=1025330840]
+
+[node name="FortressBG" type="ParallaxLayer" parent="Background" unique_id=945687412]
 motion_scale = Vector2(0.05, 0.05)
 
-[node name="BGRect" type="ColorRect" parent="Background/FortressBG"]
+[node name="BGRect" type="ColorRect" parent="Background/FortressBG" unique_id=758790109]
 offset_left = -2000.0
 offset_top = -1500.0
 offset_right = 4000.0
 offset_bottom = 2500.0
 color = Color(0.08, 0.02, 0.02, 1)
 
-[node name="LavaGlow" type="ParallaxLayer" parent="Background"]
+[node name="LavaGlow" type="ParallaxLayer" parent="Background" unique_id=412108343]
 motion_scale = Vector2(0.2, 0.3)
 
-[node name="Glow1" type="ColorRect" parent="Background/LavaGlow"]
-offset_left = 0.0
+[node name="Glow1" type="ColorRect" parent="Background/LavaGlow" unique_id=1340228227]
 offset_top = 800.0
 offset_right = 2000.0
 offset_bottom = 1200.0
 color = Color(0.8, 0.2, 0.05, 0.4)
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.85, 0.7, 0.65, 1)
+[node name="Environment" type="Node2D" parent="." unique_id=682356952]
 
-[node name="Environment" type="Node2D" parent="."]
-
-[node name="StartPlatform" type="StaticBody2D" parent="Environment"]
+[node name="StartPlatform" type="StaticBody2D" parent="Environment" unique_id=21472597]
 position = Vector2(200, 500)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/StartPlatform"]
-scale = Vector2(12, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/StartPlatform" unique_id=1654943804]
 modulate = Color(0.3, 0.2, 0.2, 1)
+scale = Vector2(12, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/StartPlatform"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/StartPlatform" unique_id=1488229237]
 polygon = PackedVector2Array(-192, -32, 192, -32, 192, 32, -192, 32)
 
-[node name="Platform1" type="StaticBody2D" parent="Environment"]
+[node name="Platform1" type="StaticBody2D" parent="Environment" unique_id=169357616]
 position = Vector2(500, 420)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform1" unique_id=411254609]
 modulate = Color(0.35, 0.2, 0.2, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=231557166]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="Platform2" type="StaticBody2D" parent="Environment"]
+[node name="Platform2" type="StaticBody2D" parent="Environment" unique_id=1582049617]
 position = Vector2(750, 350)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
-scale = Vector2(3, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform2" unique_id=1132891019]
 modulate = Color(0.35, 0.2, 0.2, 1)
+scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2" unique_id=2024821863]
 polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
 
-[node name="Platform3" type="StaticBody2D" parent="Environment"]
+[node name="Platform3" type="StaticBody2D" parent="Environment" unique_id=611096051]
 position = Vector2(1000, 400)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform3"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform3" unique_id=150697095]
 modulate = Color(0.35, 0.2, 0.2, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3" unique_id=1428305909]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="BossArena" type="StaticBody2D" parent="Environment"]
+[node name="BossArena" type="StaticBody2D" parent="Environment" unique_id=1897930920]
 position = Vector2(1400, 450)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/BossArena"]
-scale = Vector2(20, 3)
+[node name="Sprite" type="Sprite2D" parent="Environment/BossArena" unique_id=1589962067]
 modulate = Color(0.25, 0.15, 0.15, 1)
+scale = Vector2(20, 3)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/BossArena"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/BossArena" unique_id=1464441764]
 polygon = PackedVector2Array(-320, -48, 320, -48, 320, 48, -320, 48)
 
-[node name="Hazards" type="Node2D" parent="."]
+[node name="Hazards" type="Node2D" parent="." unique_id=30160158]
 
-[node name="LavaPool1" type="Area2D" parent="Hazards"]
+[node name="LavaPool1" type="Area2D" parent="Hazards" unique_id=494756567]
 position = Vector2(400, 550)
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("6_hazard_script")
 instant_kill = true
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool1"]
+[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool1" unique_id=1766695229]
 offset_left = -80.0
 offset_top = -15.0
 offset_right = 80.0
 offset_bottom = 30.0
 color = Color(1, 0.3, 0.05, 1)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool1" unique_id=616599225]
 polygon = PackedVector2Array(-80, -15, 80, -15, 80, 30, -80, 30)
 
-[node name="LavaPool2" type="Area2D" parent="Hazards"]
+[node name="LavaPool2" type="Area2D" parent="Hazards" unique_id=16807499]
 position = Vector2(850, 520)
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("6_hazard_script")
 instant_kill = true
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool2"]
+[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool2" unique_id=1562715399]
 offset_left = -100.0
 offset_top = -15.0
 offset_right = 100.0
 offset_bottom = 40.0
 color = Color(1, 0.35, 0.1, 1)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool2" unique_id=889025555]
 polygon = PackedVector2Array(-100, -15, 100, -15, 100, 40, -100, 40)
 
-[node name="LaserTrap1" type="Area2D" parent="Hazards"]
+[node name="LaserTrap1" type="Area2D" parent="Hazards" unique_id=1879061610]
 position = Vector2(650, 300)
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("6_hazard_script")
 damage = 35
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LaserTrap1"]
+[node name="Sprite" type="ColorRect" parent="Hazards/LaserTrap1" unique_id=494651145]
 offset_left = -5.0
 offset_top = -80.0
 offset_right = 5.0
 offset_bottom = 80.0
 color = Color(1, 0.1, 0.1, 0.9)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LaserTrap1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LaserTrap1" unique_id=816585983]
 polygon = PackedVector2Array(-5, -80, 5, -80, 5, 80, -5, 80)
 
-[node name="Collectibles" type="Node2D" parent="."]
+[node name="Collectibles" type="Node2D" parent="." unique_id=1622735896]
 
-[node name="CoreFragment" type="Area2D" parent="Collectibles"]
+[node name="CoreFragment" type="Area2D" parent="Collectibles" unique_id=1700681371]
 position = Vector2(1400, 350)
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("5_core_script")
 core_id = 5
 glow_color = Color(1, 0.2, 0.2, 1)
 
-[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
-scale = Vector2(3, 3)
+[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment" unique_id=1815785520]
 self_modulate = Color(1, 0.3, 0.3, 1)
+scale = Vector2(3, 3)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment" unique_id=1207427574]
 polygon = PackedVector2Array(-24, -24, 24, -24, 24, 24, -24, 24)
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=2049596725]
 
-[node name="LevelLabel" type="Label" parent="UI"]
+[node name="LevelLabel" type="Label" parent="UI" unique_id=830667112]
 offset_left = 50.0
 offset_top = 50.0
 offset_right = 550.0
@@ -185,5 +248,12 @@ text = "FINAL LEVEL - BENTENG OVERLORD
 Ini pertempuran terakhir! Ambil Core terakhir
 dan hadapi Overlord untuk menyelamatkan Arcadia!"
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
+[node name="Player" type="CharacterBody2D" parent="." unique_id=372870042 instance=ExtResource("3_player")]
 position = Vector2(100, 400)
+collision_mask = 6
+script = ExtResource("7_uxp4k")
+
+[node name="BossOverlord" type="CharacterBody2D" parent="." unique_id=1662964346 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
+position = Vector2(2000, 350)
+collision_layer = 2
+collision_mask = 5

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://level_04_storm_spire"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
@@ -6,8 +6,37 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
 [ext_resource type="Script" path="res://scripts/hazards/WindZone.gd" id="6_wind_script"]
+[ext_resource type="Script" path="res://scripts/player/Player.gd" id="7_8ih4q"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/BossTempest.tscn" id="7_boss"]
 
-[node name="Level_04_StormSpire" type="Node2D"]
+
+[sub_resource type="Environment" id="Environment_storm"]
+background_mode = 3
+background_color = Color(0.04, 0.04, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.15, 0.15, 0.3, 1)
+ambient_light_energy = 0.45
+glow_enabled = true
+glow_intensity = 0.5
+glow_strength = 0.9
+glow_bloom = 0.2
+glow_hdr_threshold = 0.8
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.05
+
+[sub_resource type="Gradient" id="Gradient_storm"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_storm"]
+gradient = SubResource("Gradient_storm")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="Level_04_StormSpire" type="Node2D" unique_id=1271925458]
 script = ExtResource("1_level_script")
 level_name = "The Storm Spire"
 level_description = "Menara tinggi dengan badai dan angin kencang. Boss: Tempest."
@@ -16,186 +45,219 @@ spawn_position = Vector2(100, 600)
 killzone_y = 1500.0
 background_color = Color(0.15, 0.15, 0.25, 1)
 
-[node name="Background" type="ParallaxBackground" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1578295445]
+environment = SubResource("Environment_storm")
 
-[node name="StormBG" type="ParallaxLayer" parent="Background"]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=829319076]
+color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="AmbientLights" type="Node2D" parent="." unique_id=1022719308]
+
+[node name="LightningBlue1" type="PointLight2D" parent="AmbientLights" unique_id=592548651]
+position = Vector2(300, 400)
+color = Color(0.5, 0.7, 1, 1)
+energy = 0.75
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_storm")
+texture_scale = 6.5
+
+[node name="LightningBlue2" type="PointLight2D" parent="AmbientLights" unique_id=1791713227]
+position = Vector2(800, 300)
+color = Color(0.6, 0.8, 1, 1)
+energy = 0.6
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_storm")
+texture_scale = 5.5
+
+[node name="PurpleStorm" type="PointLight2D" parent="AmbientLights" unique_id=2129817050]
+position = Vector2(500, 200)
+color = Color(0.6, 0.4, 1, 1)
+energy = 0.55
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_storm")
+texture_scale = 7.5
+
+[node name="Background" type="ParallaxBackground" parent="." unique_id=326681813]
+
+[node name="StormBG" type="ParallaxLayer" parent="Background" unique_id=684240842]
 motion_scale = Vector2(0.05, 0.05)
 
-[node name="BGRect" type="ColorRect" parent="Background/StormBG"]
+[node name="BGRect" type="ColorRect" parent="Background/StormBG" unique_id=183119919]
 offset_left = -2000.0
 offset_top = -2000.0
 offset_right = 4000.0
 offset_bottom = 3000.0
 color = Color(0.1, 0.1, 0.2, 1)
 
-[node name="CloudLayer" type="ParallaxLayer" parent="Background"]
+[node name="CloudLayer" type="ParallaxLayer" parent="Background" unique_id=1645628398]
 motion_scale = Vector2(0.3, 0.1)
 
-[node name="StormCloud1" type="ColorRect" parent="Background/CloudLayer"]
+[node name="StormCloud1" type="ColorRect" parent="Background/CloudLayer" unique_id=467354898]
 offset_left = -100.0
 offset_top = -300.0
 offset_right = 300.0
 offset_bottom = -200.0
 color = Color(0.3, 0.3, 0.4, 0.8)
 
-[node name="StormCloud2" type="ColorRect" parent="Background/CloudLayer"]
+[node name="StormCloud2" type="ColorRect" parent="Background/CloudLayer" unique_id=1760813017]
 offset_left = 400.0
 offset_top = -400.0
 offset_right = 900.0
 offset_bottom = -280.0
 color = Color(0.25, 0.25, 0.35, 0.9)
 
-[node name="StormCloud3" type="ColorRect" parent="Background/CloudLayer"]
+[node name="StormCloud3" type="ColorRect" parent="Background/CloudLayer" unique_id=1539940711]
 offset_left = 1000.0
 offset_top = -350.0
 offset_right = 1500.0
 offset_bottom = -220.0
 color = Color(0.2, 0.2, 0.3, 0.85)
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="Environment" type="Node2D" parent="." unique_id=1105865864]
 
-[node name="FloorBase" type="StaticBody2D" parent="Environment"]
+[node name="FloorBase" type="StaticBody2D" parent="Environment" unique_id=1350651061]
 position = Vector2(300, 700)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/FloorBase"]
-scale = Vector2(18, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/FloorBase" unique_id=1944897731]
 modulate = Color(0.4, 0.4, 0.5, 1)
+scale = Vector2(18, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/FloorBase"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/FloorBase" unique_id=518668001]
 polygon = PackedVector2Array(-288, -32, 288, -32, 288, 32, -288, 32)
 
-[node name="Platform1" type="StaticBody2D" parent="Environment"]
+[node name="Platform1" type="StaticBody2D" parent="Environment" unique_id=1656801424]
 position = Vector2(200, 620)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform1" unique_id=2015644558]
 modulate = Color(0.5, 0.5, 0.6, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=640885381]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="Platform2" type="StaticBody2D" parent="Environment"]
+[node name="Platform2" type="StaticBody2D" parent="Environment" unique_id=8445899]
 position = Vector2(450, 550)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
-scale = Vector2(3, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform2" unique_id=1263468661]
 modulate = Color(0.5, 0.5, 0.6, 1)
+scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2" unique_id=1187377377]
 polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
 
-[node name="Platform3" type="StaticBody2D" parent="Environment"]
+[node name="Platform3" type="StaticBody2D" parent="Environment" unique_id=165300186]
 position = Vector2(250, 480)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform3"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform3" unique_id=344028410]
 modulate = Color(0.5, 0.5, 0.6, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3" unique_id=727224509]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="Platform4" type="StaticBody2D" parent="Environment"]
+[node name="Platform4" type="StaticBody2D" parent="Environment" unique_id=1016317929]
 position = Vector2(500, 410)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform4"]
-scale = Vector2(3, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform4" unique_id=1394316905]
 modulate = Color(0.5, 0.5, 0.6, 1)
+scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform4"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform4" unique_id=854171082]
 polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
 
-[node name="Platform5" type="StaticBody2D" parent="Environment"]
+[node name="Platform5" type="StaticBody2D" parent="Environment" unique_id=1945331426]
 position = Vector2(300, 340)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform5"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform5" unique_id=1148664846]
 modulate = Color(0.5, 0.5, 0.6, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform5"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform5" unique_id=618681951]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="TopPlatform" type="StaticBody2D" parent="Environment"]
+[node name="TopPlatform" type="StaticBody2D" parent="Environment" unique_id=1720454132]
 position = Vector2(500, 270)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/TopPlatform"]
-scale = Vector2(8, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/TopPlatform" unique_id=1710443410]
 modulate = Color(0.6, 0.6, 0.7, 1)
+scale = Vector2(8, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/TopPlatform"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/TopPlatform" unique_id=102113538]
 polygon = PackedVector2Array(-128, -32, 128, -32, 128, 32, -128, 32)
 
-[node name="Hazards" type="Node2D" parent="."]
+[node name="Hazards" type="Node2D" parent="." unique_id=1562197408]
 
-[node name="WindZone1" type="Area2D" parent="Hazards"]
+[node name="WindZone1" type="Area2D" parent="Hazards" unique_id=323446796]
 position = Vector2(350, 480)
 script = ExtResource("6_wind_script")
 wind_direction = Vector2(1, -0.3)
 wind_force = 250.0
 fluctuating = true
 
-[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone1"]
+[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone1" unique_id=1411650702]
 offset_left = -80.0
 offset_top = -100.0
 offset_right = 80.0
 offset_bottom = 100.0
 color = Color(0.5, 0.7, 1, 0.15)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone1" unique_id=1027507708]
 polygon = PackedVector2Array(-80, -100, 80, -100, 80, 100, -80, 100)
 
-[node name="WindZone2" type="Area2D" parent="Hazards"]
+[node name="WindZone2" type="Area2D" parent="Hazards" unique_id=1263086755]
 position = Vector2(400, 320)
 script = ExtResource("6_wind_script")
 wind_direction = Vector2(-1, -0.2)
-wind_force = 300.0
 fluctuating = true
 fluctuation_interval = 1.5
 
-[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone2"]
+[node name="VisualRect" type="ColorRect" parent="Hazards/WindZone2" unique_id=515012141]
 offset_left = -100.0
 offset_top = -80.0
 offset_right = 100.0
 offset_bottom = 80.0
 color = Color(0.6, 0.8, 1, 0.2)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/WindZone2" unique_id=1935474497]
 polygon = PackedVector2Array(-100, -80, 100, -80, 100, 80, -100, 80)
 
-[node name="Collectibles" type="Node2D" parent="."]
+[node name="Collectibles" type="Node2D" parent="." unique_id=1604106342]
 
-[node name="CoreFragment" type="Area2D" parent="Collectibles"]
+[node name="CoreFragment" type="Area2D" parent="Collectibles" unique_id=357289328]
 position = Vector2(500, 220)
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("5_core_script")
 core_id = 4
 glow_color = Color(0.8, 0.8, 1, 1)
 
-[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
-scale = Vector2(2, 2)
+[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment" unique_id=955879644]
 self_modulate = Color(0.7, 0.7, 1, 1)
+scale = Vector2(2, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment" unique_id=1457168833]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=11263323]
 
-[node name="LevelLabel" type="Label" parent="UI"]
+[node name="LevelLabel" type="Label" parent="UI" unique_id=174362830]
 offset_left = 50.0
 offset_top = 50.0
 offset_right = 500.0
@@ -203,5 +265,12 @@ offset_bottom = 100.0
 text = "LEVEL 4 - THE STORM SPIRE
 Hati-hati dengan zona angin! Naik ke puncak menara!"
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
+[node name="Player" type="CharacterBody2D" parent="." unique_id=1934056465 instance=ExtResource("3_player")]
 position = Vector2(100, 600)
+collision_mask = 6
+script = ExtResource("7_8ih4q")
+
+[node name="BossTempest" type="CharacterBody2D" parent="." unique_id=1555109660 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
+position = Vector2(1500, -200)
+collision_layer = 2
+collision_mask = 5

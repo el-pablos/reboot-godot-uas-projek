@@ -45,6 +45,36 @@ var attack_cooldown_timer: float = 0.0
 var is_invulnerable: bool = false
 
 
+# === NULL SAFETY HELPERS ===
+# Use these instead of raw await to prevent crashes when boss dies mid-animation
+
+func _safe_await_timer(duration: float) -> bool:
+	"""Safely await a timer. Returns false if node was freed/removed."""
+	if not is_inside_tree() or is_queued_for_deletion():
+		return false
+	var tree := get_tree()
+	if tree == null:
+		return false
+	await tree.create_timer(duration).timeout
+	return is_inside_tree() and not is_queued_for_deletion()
+
+
+func _safe_await_frame() -> bool:
+	"""Safely await next frame. Returns false if node was freed/removed."""
+	if not is_inside_tree() or is_queued_for_deletion():
+		return false
+	var tree := get_tree()
+	if tree == null:
+		return false
+	await tree.process_frame
+	return is_inside_tree() and not is_queued_for_deletion()
+
+
+func _is_valid_for_attack() -> bool:
+	"""Check if boss can continue attacking."""
+	return is_inside_tree() and not is_queued_for_deletion() and not is_dead and get_tree() != null
+
+
 func _on_ready() -> void:
 	# Setup phase health
 	if phase_health.size() > 0:
@@ -53,7 +83,7 @@ func _on_ready() -> void:
 		current_health = phase_hp
 	
 	current_state = State.IDLE
-	print("[Boss] %s muncul! Phase: %d/%d" % [boss_name, current_phase, total_phases])
+	print("[Boss] %s muncul! Script: %s | Phase: %d/%d" % [boss_name, get_script().resource_path.get_file(), current_phase, total_phases])
 
 
 func _physics_process(delta: float) -> void:
@@ -119,10 +149,14 @@ func _phase_transition_effect() -> void:
 	# Default: flash dan pause
 	if sprite:
 		for i in range(5):
+			if not _is_valid_for_attack():
+				return
 			sprite.modulate = Color(1, 1, 0)
-			await get_tree().create_timer(0.1).timeout
+			if not await _safe_await_timer(0.1):
+				return
 			sprite.modulate = Color.WHITE
-			await get_tree().create_timer(0.1).timeout
+			if not await _safe_await_timer(0.1):
+				return
 
 
 func _boss_defeated() -> void:
@@ -143,18 +177,24 @@ func _boss_defeated() -> void:
 			"glide":
 				GameManager.unlock_glide()
 	
-	# Death effect
-	await _death_effect()
-	queue_free()
+	# Death effect (with safety check)
+	if _is_valid_for_attack():
+		await _death_effect()
+	
+	if is_inside_tree():
+		queue_free()
 
 
 func _death_effect() -> void:
 	"""Override untuk efek kematian boss."""
+	if not _is_valid_for_attack():
+		return
 	if sprite:
 		var tween := create_tween()
 		tween.tween_property(sprite, "scale", Vector2(2, 2), 0.5)
 		tween.parallel().tween_property(sprite, "modulate:a", 0.0, 0.5)
-		await tween.finished
+		if tween:
+			await tween.finished
 
 
 # === ATTACK SYSTEM ===
