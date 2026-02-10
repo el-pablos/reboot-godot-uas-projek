@@ -9,6 +9,7 @@ name: "📦 Export Builds"
 
 on:
   push:
+    branches: [master]
     tags:
       - "v*"
   workflow_dispatch:
@@ -22,18 +23,21 @@ jobs:
   export:
     name: "Export ${{ matrix.preset }}"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       matrix:
         include:
           - preset: "Windows Desktop"
             output_dir: "windows"
+            output_file: "ProjectREBOOT.exe"
             artifact_name: "ProjectREBOOT-Windows"
           - preset: "Linux"
             output_dir: "linux"
+            output_file: "ProjectREBOOT.x86_64"
             artifact_name: "ProjectREBOOT-Linux"
           - preset: "Web"
             output_dir: "web"
+            output_file: "index.html"
             artifact_name: "ProjectREBOOT-Web"
 
     steps:
@@ -43,7 +47,7 @@ jobs:
       - name: "🤖 Setup Godot 4.6"
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.6.0-stable
+          version: 4.6.0
           use-dotnet: false
           include-templates: true
 
@@ -57,8 +61,10 @@ jobs:
 
       - name: "🚀 Export build — ${{ matrix.preset }}"
         run: |
-          godot --headless --export-release "${{ matrix.preset }}" 2>&1
-          echo "Export ${{ matrix.preset }} complete"
+          godot --headless --export-release "${{ matrix.preset }}" \
+            "export_output/${{ matrix.output_dir }}/${{ matrix.output_file }}" 2>&1
+          echo "✅ Export ${{ matrix.preset }} complete"
+          ls -la export_output/${{ matrix.output_dir }}/
 
       - name: "📋 Upload build artifact"
         uses: actions/upload-artifact@v4
