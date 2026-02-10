@@ -7,6 +7,9 @@
 ![Tests](https://img.shields.io/badge/Tests-119%20Passed-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
+[![🧪 Headless Tests](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml)
+[![📦 Export Builds](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/export.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/export.yml)
+
 **2D Action Platformer** • Dibuat dengan **Godot Engine 4.6**
 
 *"Selamatkan Arcadia dari cengkeraman Overlord!"*
@@ -195,7 +198,7 @@ project-reboot/
 │   ├── enemies/        # Enemy & Boss scenes
 │   └── ui/             # HUD, Menus, Dialogs
 ├── scripts/
-│   ├── autoload/       # GameManager, AudioManager, SaveManager
+│   ├── autoload/       # GameManager, AudioManager, SaveManager, SettingsManager
 │   ├── player/         # Player & State Machine
 │   ├── enemies/        # Enemy AI & Boss Logic
 │   ├── hazards/        # Level hazards
