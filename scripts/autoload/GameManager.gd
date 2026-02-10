@@ -296,11 +296,17 @@ func go_to_main_menu() -> void:
 	"""Kembali ke main menu."""
 	# Reset pause state
 	is_paused = false
+	is_game_over = false
+	Engine.time_scale = 1.0
 	get_tree().paused = false
 	
-	# Pindah ke main menu
-	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
-	print("[GameManager] Returning to main menu")
+	# Pindah ke main menu (dengan guard)
+	const MAIN_MENU_PATH := "res://scenes/main_menu/MainMenu.tscn"
+	if ResourceLoader.exists(MAIN_MENU_PATH):
+		get_tree().change_scene_to_file(MAIN_MENU_PATH)
+		print("[GameManager] Returning to main menu")
+	else:
+		push_error("[GameManager] MainMenu scene not found: %s" % MAIN_MENU_PATH)
 
 
 func reset_player_health() -> void:
