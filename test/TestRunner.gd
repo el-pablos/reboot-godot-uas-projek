@@ -13,7 +13,8 @@ var test_scripts: Array[String] = [
 	"res://test/test_game_logic.gd",
 	"res://test/test_enemy_boss.gd",
 	"res://test/test_enemy_ai.gd",
-	"res://test/test_combat_system.gd"
+	"res://test/test_combat_system.gd",
+	"res://test/test_gameplay_qa.gd"
 ]
 
 var current_test_index: int = 0

@@ -4,7 +4,7 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-119%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-188%20Passed-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 [![🧪 Headless Tests](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml)
@@ -152,7 +152,7 @@ EnemyBase (abstract)
 
 | Metric | Status |
 |--------|--------|
-| Unit Tests | **119/119 Passed** ✅ |
+| Unit Tests | **188/188 Passed** ✅ |
 | Parse Errors | **0** ✅ |
 | Code Coverage | **Core Systems** ✅ |
 | Headless Import | **Clean** ✅ |
@@ -181,7 +181,8 @@ godot --headless --path . 2>&1
 | test_enemy_boss.gd | 25 |
 | test_enemy_ai.gd | 25 |
 | test_combat_system.gd | 18 |
-| **Total** | **119** |
+| test_gameplay_qa.gd | 69 |
+| **Total** | **188** |
 
 ---
 
@@ -190,7 +191,7 @@ godot --headless --path . 2>&1
 ```
 project-reboot/
 ├── assets/
-│   ├── sprites/        # Visual assets (SVG placeholders)
+│   ├── sprites/        # Pixel art assets (PNG)
 │   └── audio/          # SFX & Music
 ├── scenes/
 │   ├── levels/         # 5 game levels

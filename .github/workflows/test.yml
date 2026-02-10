@@ -2,7 +2,7 @@
 # CI — Headless Test Suite untuk Project: REBOOT
 # =============================================================================
 # Trigger: push/PR ke master atau fix/* branches
-# Jalankan 119 unit tests via TestRunner headless, exit code = jumlah fail
+# Jalankan 188 unit tests via TestRunner headless, exit code = jumlah fail
 # =============================================================================
 
 name: "🧪 Headless Tests"
