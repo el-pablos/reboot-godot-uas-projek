@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://boss_overlord_scene"]
+[gd_scene load_steps=8 format=3 uid="uid://boss_overlord_scene"]
 
 [ext_resource type="Script" path="res://scripts/enemies/BossOverlord.gd" id="1_boss_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/boss.png" id="2_boss_sprite"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(80, 100)
@@ -38,8 +39,9 @@ detection_range = 400.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -50)
-scale = Vector2(5, 6.25)
+scale = Vector2(1.8, 2.2)
 modulate = Color(0.5, 0.1, 0.15, 1)
+texture = ExtResource("2_boss_sprite")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -50)

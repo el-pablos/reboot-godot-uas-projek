@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://level_template"]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.png" id="2_ground"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
 
 [sub_resource type="RectangleShape2D" id="ground_shape"]

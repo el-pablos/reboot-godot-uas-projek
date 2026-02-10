@@ -1,9 +1,9 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.png" id="2_ground"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.png" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
 [ext_resource type="Script" path="res://scripts/hazards/Hazard.gd" id="6_hazard_script"]
 [ext_resource type="PackedScene" path="res://scenes/bosses/BossOverlord.tscn" id="7_boss"]

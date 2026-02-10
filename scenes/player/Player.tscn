@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://player_bip_scene"]
 
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="1_player_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/bip_placeholder.svg" id="2_bip_sprite"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/bip.png" id="2_bip_sprite"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(24, 28)

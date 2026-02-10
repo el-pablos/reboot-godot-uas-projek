@@ -13,31 +13,25 @@ extends EditorScript
 # === TEXTURE MAPPING ===
 # Format: "placeholder_texture_path": "real_texture_path"
 const TEXTURE_MAP: Dictionary = {
-	# Player sprites
-	"res://assets/sprites/player/placeholder_idle.png": "res://assets/sprites/player/satria_idle.png",
-	"res://assets/sprites/player/placeholder_run.png": "res://assets/sprites/player/satria_run.png",
-	"res://assets/sprites/player/placeholder_jump.png": "res://assets/sprites/player/satria_jump.png",
-	"res://assets/sprites/player/placeholder_fall.png": "res://assets/sprites/player/satria_fall.png",
-	"res://assets/sprites/player/placeholder_dash.png": "res://assets/sprites/player/satria_dash.png",
-	
-	# Kenshi Pack (alienGreen, etc.)
-	"res://assets/sprites/player/alienGreen_stand.png": "res://assets/sprites/player/satria_idle.png",
+	# Player sprites (SVG → PNG upgrade)
+	"res://assets/sprites/player/bip_placeholder.svg": "res://assets/sprites/player/bip.png",
+	"res://assets/sprites/player/bip.svg": "res://assets/sprites/player/bip.png",
 	
 	# Enemy sprites
-	"res://assets/sprites/enemies/placeholder_drone.png": "res://assets/sprites/enemies/drone.png",
-	"res://assets/sprites/enemies/placeholder_turret.png": "res://assets/sprites/enemies/turret.png",
-	"res://assets/sprites/enemies/spinner_half.png": "res://assets/sprites/enemies/drone.png",
+	"res://assets/sprites/enemies/enemy_placeholder.svg": "res://assets/sprites/enemies/enemy.png",
+	"res://assets/sprites/enemies/enemy.svg": "res://assets/sprites/enemies/enemy.png",
+	"res://assets/sprites/enemies/boss_placeholder.svg": "res://assets/sprites/enemies/boss.png",
+	"res://assets/sprites/enemies/boss.svg": "res://assets/sprites/enemies/boss.png",
 	
-	# Boss sprites
-	"res://assets/sprites/bosses/placeholder_scrapper.png": "res://assets/sprites/bosses/scrapper.png",
-	"res://assets/sprites/bosses/placeholder_sporebot.png": "res://assets/sprites/bosses/sporebot.png",
-	"res://assets/sprites/bosses/placeholder_tempest.png": "res://assets/sprites/bosses/tempest.png",
-	"res://assets/sprites/bosses/placeholder_overlord.png": "res://assets/sprites/bosses/overlord.png",
-	"res://assets/sprites/bosses/shipBlue_manned.png": "res://assets/sprites/bosses/scrapper.png",
-	
-	# Tiles & environment
-	"res://assets/sprites/tiles/placeholder_tile.png": "res://assets/sprites/tiles/metal_tile.png",
-	"res://assets/sprites/tiles/placeholder_platform.png": "res://assets/sprites/tiles/platform.png",
+	# Tiles & environment (SVG → PNG upgrade)
+	"res://assets/sprites/environment/ground_placeholder.svg": "res://assets/sprites/environment/ground_placeholder.png",
+	"res://assets/sprites/environment/platform_placeholder.svg": "res://assets/sprites/environment/platform_placeholder.png",
+	"res://assets/sprites/environment/core_fragment.svg": "res://assets/sprites/items/core_fragment.png",
+	"res://assets/sprites/tiles/ground.svg": "res://assets/sprites/tiles/ground.png",
+	"res://assets/sprites/tiles/platform.svg": "res://assets/sprites/tiles/platform.png",
+	"res://assets/sprites/tiles/industrial.svg": "res://assets/sprites/tiles/industrial.png",
+	"res://assets/sprites/tiles/scifi.svg": "res://assets/sprites/tiles/scifi.png",
+	"res://assets/sprites/items/core_fragment.svg": "res://assets/sprites/items/core_fragment.png",
 }
 
 

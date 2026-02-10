@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://boss_scrapper_scene"]
+[gd_scene load_steps=8 format=3 uid="uid://boss_scrapper_scene"]
 
 [ext_resource type="Script" path="res://scripts/enemies/BossScrapper.gd" id="1_boss_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/boss.png" id="2_boss_sprite"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(64, 80)
@@ -38,8 +39,9 @@ detection_range = 250.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -40)
-scale = Vector2(4, 5)
+scale = Vector2(1.5, 1.8)
 modulate = Color(0.6, 0.4, 0.2, 1)
+texture = ExtResource("2_boss_sprite")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -40)
