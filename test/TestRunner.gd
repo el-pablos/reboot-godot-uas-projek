@@ -14,7 +14,8 @@ var test_scripts: Array[String] = [
 	"res://test/test_enemy_boss.gd",
 	"res://test/test_enemy_ai.gd",
 	"res://test/test_combat_system.gd",
-	"res://test/test_gameplay_qa.gd"
+	"res://test/test_gameplay_qa.gd",
+	"res://test/test_boss_rework.gd"
 ]
 
 var current_test_index: int = 0
