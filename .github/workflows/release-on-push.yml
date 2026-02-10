@@ -1,0 +1,142 @@
+# =============================================================================
+# CI/CD — Auto Release setiap push ke master
+# =============================================================================
+# Pipeline: headless tests → export builds → create tag + GitHub Release
+# Versi otomatis: v0.1.<RUN_NUMBER>
+# Token: GITHUB_TOKEN bawaan (TIDAK pakai PAT pribadi)
+# =============================================================================
+
+name: "🚀 Auto Release on Push"
+
+on:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-on-push-master
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.6.0"
+  PRESET_WINDOWS: "Windows Desktop"
+  PRESET_LINUX: "Linux"
+  PRESET_WEB: "Web"
+
+jobs:
+  release:
+    name: "Test → Export → Release"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── Setup Godot (dengan export templates) ──────────────────────
+      - name: "🤖 Setup Godot ${{ env.GODOT_VERSION }}"
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      # ── Import project resources ───────────────────────────────────
+      - name: "📦 Import project resources"
+        run: |
+          godot --headless --import --quit 2>&1 || true
+          echo "✅ Import complete"
+
+      # ── Headless Tests ─────────────────────────────────────────────
+      - name: "🔧 Swap main scene ke TestRunner"
+        run: |
+          cp project.godot project.godot.bak
+          sed -i 's|run/main_scene="res://scenes/main_menu/MainMenu.tscn"|run/main_scene="res://test/TestRunner.tscn"|' project.godot
+          echo "Main scene → TestRunner"
+
+      - name: "🧪 Run headless tests"
+        run: |
+          set +e
+          godot --headless --path . 2>&1 | tee test_output.log
+          EXIT_CODE=$?
+          echo "================================"
+          echo "Test exit code: $EXIT_CODE"
+          echo "================================"
+          exit $EXIT_CODE
+
+      - name: "🔄 Restore main scene"
+        if: always()
+        run: mv project.godot.bak project.godot
+
+      # ── Export Builds ──────────────────────────────────────────────
+      - name: "🔨 Export Windows"
+        run: |
+          mkdir -p build/windows
+          godot --headless --path . --export-release "${{ env.PRESET_WINDOWS }}" build/windows/REBOOT.exe 2>&1
+          echo "✅ Windows export done"
+          ls -la build/windows/
+
+      - name: "🔨 Export Linux"
+        run: |
+          mkdir -p build/linux
+          godot --headless --path . --export-release "${{ env.PRESET_LINUX }}" build/linux/REBOOT.x86_64 2>&1
+          echo "✅ Linux export done"
+          ls -la build/linux/
+
+      - name: "🔨 Export Web"
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "${{ env.PRESET_WEB }}" build/web/index.html 2>&1
+          echo "✅ Web export done"
+          ls -la build/web/
+
+      # ── Generate Version & Tag ─────────────────────────────────────
+      - name: "🏷️ Generate version tag"
+        run: |
+          VERSION="v0.1.${{ github.run_number }}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "📌 Version: $VERSION"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "$VERSION" -m "Auto release $VERSION"
+          git push origin "$VERSION"
+
+      # ── Create GitHub Release ──────────────────────────────────────
+      - name: "🚀 Create GitHub Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: "REBOOT ${{ env.VERSION }}"
+          body: |
+            ## 🤖 Auto Release — ${{ env.VERSION }}
+
+            | Info | Detail |
+            |------|--------|
+            | **Commit** | `${{ github.sha }}` |
+            | **Branch** | `master` |
+            | **Timestamp** | `${{ github.event.head_commit.timestamp }}` |
+            | **Workflow** | [Lihat run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
+
+            ### 📦 Artifacts
+            - `REBOOT.exe` — Windows build
+            - `REBOOT.x86_64` + `REBOOT.pck` — Linux build  
+            - `index.html` + assets — Web build
+
+            ---
+            *Release otomatis oleh GitHub Actions, tanpa token pribadi.*
+          files: |
+            build/windows/*
+            build/linux/*
+            build/web/*
+          fail_on_unmatched_files: false
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
