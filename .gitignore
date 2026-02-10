@@ -6,6 +6,7 @@
 
 # Folder cache Godot (WAJIB diabaikan)
 .godot/
+.import/
 
 # Folder hasil export
 export/
@@ -74,8 +75,7 @@ asset_downloader.py
 download_assets_real.ps1
 setup_assets_real.ps1
 
-# Ignore Unit Tests (Development Only)
-test/
+# GUT settings (jika pakai)
 .gut_settings.json
 
 # Ignore Audit / Report Documents (internal only)
