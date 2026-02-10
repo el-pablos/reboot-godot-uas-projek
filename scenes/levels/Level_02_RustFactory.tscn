@@ -41,7 +41,7 @@ level_name = "The Rust Factory"
 level_description = "Pabrik berkarat dengan mesin press berbahaya. Boss: The Scrapper."
 next_level_path = "res://scenes/levels/Level_03_CrystalLabs.tscn"
 spawn_position = Vector2(100, 200)
-killzone_y = 1000.0
+killzone_y = 800.0
 background_color = Color(0.2, 0.15, 0.1, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1445494025]
