@@ -5,6 +5,7 @@
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tests-188%20Passed-success?style=for-the-badge)
+![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 [![🧪 Headless Tests](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml)
@@ -88,6 +89,16 @@ g_fall = (2 × 96) / 0.35² ≈ 1567 px/s²
 | Turun | 1567 px/s² | Jatuh cepat = **snappy & responsive** |
 
 Perbedaan ini menciptakan karakteristik lompatan yang khas pada platformer profesional seperti Celeste, Hollow Knight, dan Super Meat Boy.
+
+### 🎨 Visual & Art
+
+- **Pixel art** sprite karakter dengan 7 animasi (idle, run, jump, fall, dash, hurt, dead)
+- **4 boss** masing-masing memiliki desain sprite unik
+- **5 parallax background** set per level (sky, clouds, far layer)
+- **Textured hazards**: toxic pool, lava pool, machine press, wind zone, laser trap
+- **HUD** dengan ikon ability bergambar (dash, double jump, glide)
+- **UI** dengan panel styled dan themed backgrounds
+- **Dust particles** untuk efek visual saat mendarat
 
 ### ⚔️ Combat & Progression
 - Health system dengan regenerasi
@@ -191,20 +202,31 @@ godot --headless --path . 2>&1
 ```
 project-reboot/
 ├── assets/
-│   ├── sprites/        # Pixel art assets (PNG)
-│   └── audio/          # SFX & Music
+│   ├── sprites/
+│   │   ├── player/         # Spritesheet & frame PNGs (7 animasi)
+│   │   ├── enemies/        # Boss sprites (4 unik)
+│   │   ├── environment/    # Tile, hazard, prop sprites
+│   │   ├── backgrounds/    # Parallax layers per level (sky/clouds/far)
+│   │   ├── items/          # Core fragment collectible
+│   │   ├── ui/             # Button, panel, health bar, ability icons
+│   │   └── vfx/            # Dust, spark, explosion, glow, dash trail
+│   └── audio/              # SFX & Music
 ├── scenes/
-│   ├── levels/         # 5 game levels
-│   ├── player/         # Player scene
-│   ├── enemies/        # Enemy & Boss scenes
-│   └── ui/             # HUD, Menus, Dialogs
+│   ├── levels/             # 5 game levels
+│   ├── player/             # Player scene (AnimatedSprite2D)
+│   ├── bosses/             # 4 Boss scenes
+│   ├── enemies/            # Enemy scenes
+│   ├── main_menu/          # Main menu scene
+│   └── ui/                 # HUD, Pause, GameOver, Victory
 ├── scripts/
-│   ├── autoload/       # GameManager, AudioManager, SaveManager, SettingsManager
-│   ├── player/         # Player & State Machine
-│   ├── enemies/        # Enemy AI & Boss Logic
-│   ├── hazards/        # Level hazards
-│   └── ui/             # UI Controllers
-└── project.godot       # Godot project config
+│   ├── autoload/           # GameManager, AudioManager, SaveManager, SettingsManager
+│   ├── player/             # Player & State Machine
+│   ├── enemies/            # Enemy AI & Boss Logic
+│   ├── hazards/            # Level hazards (MachinePress, WindZone, etc.)
+│   ├── collectibles/       # Core Fragment
+│   └── ui/                 # UI Controllers
+├── test/                   # 188 headless tests (6 suites)
+└── project.godot           # Godot project config
 ```
 
 ---
@@ -212,7 +234,8 @@ project-reboot/
 ## 🎨 Credits
 
 - **Engine**: [Godot Engine 4.6](https://godotengine.org)
-- **Assets**: Placeholder sprites (CC0) — Production assets by [Kenney.nl](https://kenney.nl)
+- **Art Style**: Custom pixel art (CC0), generated via Python/Pillow pipeline
+- **Audio**: Placeholder SFX
 - **Developer**: el-pablos
 
 ---
