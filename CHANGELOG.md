@@ -5,6 +5,35 @@ Semua perubahan penting pada project ini akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan project ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-02-11
+
+### Fixed (P0 — Critical)
+- DEBUG_UNLOCK_ALL_ABILITIES dimatikan, ability hanya dibuka via boss defeat
+- Path MainMenu salah di 3 file, ditambah guard ResourceLoader.exists()
+- is_game_over tidak di-reset saat respawn/reload, Engine.time_scale bisa stuck 0.1
+- Boss Level 2–5 tertimpa SmartEnemy script, dikembalikan ke script asli
+- Health jadi single source of truth via GameManager, HUD tidak polling tiap frame
+
+### Fixed (P1 — Crash Risk)
+- 8 file unsafe await di-guard dengan is_inside_tree()
+- Infinite loop di MachinePress dan WindZone diganti while is_inside_tree()
+- PauseMenu pakai GameManager.go_to_main_menu() bukan direct scene change
+
+### Added
+- 12 SFX procedural (jump, dash, hit, death, collect, dll) + 1 BGM loop
+- Font pixel PressStart2P (OFL) sebagai default theme
+- Boss scenes terpisah (BossScrapper, BossSporeBot, BossTempest, BossOverlord .tscn)
+- Enemy variants: PatrollerEnemy, SmartEnemy, TurretEnemy, WatcherDrone
+- Effects: BackgroundManager, ExplosionEffect, LightingManager
+- TestRunner auto-quit di headless mode
+- Test glide_gravity diperbaiki sesuai property Player.gd aktual
+
+### Tests
+- 119/119 unit tests passed (5 suite: player, game logic, enemy/boss, AI, combat)
+- Headless import clean (14 assets)
+
+---
+
 ## [0.1.0] - 2024
 
 ### Added
@@ -96,21 +125,14 @@ dan project ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ## Future Plans
 
-### [0.2.0] - Planned
-- [ ] Proper tilemap implementation
-- [ ] Animated sprites untuk BIP dan enemies
-- [ ] Sound effects dan background music
-- [ ] Screen shake dan juice effects
-- [ ] Mobile touch controls
-
 ### [0.3.0] - Planned
-- [ ] Save/Load system integration
-- [ ] Settings menu (volume, controls)
-- [ ] Achievement system
-- [ ] Speedrun timer
+- [ ] Settings menu (volume, fullscreen, gameplay tweaks)
+- [ ] CI/CD GitHub Actions (test + export)
+- [ ] Export presets Windows/Linux/Web
+- [ ] Polish game feel (camera, particles, accessibility)
 
 ### [1.0.0] - Release
 - [ ] Full art assets
-- [ ] Complete audio
-- [ ] Polish dan bug fixes
-- [ ] Export untuk Windows/Linux/Web
+- [ ] Complete audio per-level
+- [ ] Achievement system
+- [ ] Mobile touch controls
