@@ -87,3 +87,7 @@ md/
 *.zip
 *.apk
 *.aab
+
+# Godot export output
+export_output/
+release/
