@@ -39,6 +39,22 @@ func _on_ready() -> void:
 	move_speed = 60.0
 
 
+func _setup_brain() -> void:
+	var config := BossConfig.create_scrapper_config()
+	config.arena_center = Vector2.ZERO
+	_create_brain(config)
+
+
+func _on_brain_attack_requested(attack_type: String) -> void:
+	if attack_type == "close":
+		_attack_slam()
+	else:
+		if current_phase >= 2 or randf() > 0.3:
+			_attack_dash()
+		else:
+			_attack_slam()
+
+
 func _process_chase(_delta: float) -> void:
 	if not target_player or is_attacking:
 		velocity.x = 0

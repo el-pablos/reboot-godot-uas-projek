@@ -50,6 +50,19 @@ func _on_ready() -> void:
 	phase_2_position = global_position + Vector2(0, -200)
 
 
+func _setup_brain() -> void:
+	var config := BossConfig.create_overlord_config()
+	config.arena_center = Vector2.ZERO
+	_create_brain(config)
+
+
+func _on_brain_attack_requested(attack_type: String) -> void:
+	if current_phase == 1:
+		_choose_phase_1_attack()
+	else:
+		_choose_phase_2_attack()
+
+
 func _process_chase(_delta: float) -> void:
 	if is_attacking:
 		return

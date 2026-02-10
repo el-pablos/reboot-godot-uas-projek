@@ -44,6 +44,9 @@ var is_attacking: bool = false
 var attack_cooldown_timer: float = 0.0
 var is_invulnerable: bool = false
 
+# === BOSS BRAIN ===
+var brain: BossBrain = null
+
 
 # === NULL SAFETY HELPERS ===
 # Use these instead of raw await to prevent crashes when boss dies mid-animation
@@ -83,7 +86,43 @@ func _on_ready() -> void:
 		current_health = phase_hp
 	
 	current_state = State.IDLE
-	print("[Boss] %s muncul! Script: %s | Phase: %d/%d" % [boss_name, get_script().resource_path.get_file(), current_phase, total_phases])
+	
+	# Setup BossBrain jika ada
+	_setup_brain()
+	
+	print("[Boss] %s muncul! Script: %s | Phase: %d/%d | Brain: %s" % [
+		boss_name, get_script().resource_path.get_file(),
+		current_phase, total_phases,
+		"aktif" if brain else "tidak ada"
+	])
+
+
+func _setup_brain() -> void:
+	"""Setup BossBrain AI. Override di subclass untuk config spesifik."""
+	# Subclass harus override dan call _create_brain(config)
+	pass
+
+
+func _create_brain(config: BossConfig) -> void:
+	"""Buat BossBrain dengan config tertentu."""
+	brain = BossBrain.new()
+	brain.name = "BossBrain"
+	brain.config = config
+	add_child(brain)
+	
+	# Connect BossBrain signals
+	brain.attack_requested.connect(_on_brain_attack_requested)
+	brain.telegraph_started.connect(_on_brain_telegraph)
+
+
+func _on_brain_attack_requested(attack_type: String) -> void:
+	"""BossBrain minta serangan. Override di subclass."""
+	_choose_attack()
+
+
+func _on_brain_telegraph(duration: float) -> void:
+	"""BossBrain mulai telegraph. Override untuk custom effect."""
+	pass
 
 
 func _physics_process(delta: float) -> void:
@@ -92,11 +131,12 @@ func _physics_process(delta: float) -> void:
 	if is_dead:
 		return
 	
-	# Attack cooldown
-	if attack_cooldown_timer > 0:
-		attack_cooldown_timer -= delta
-	elif target_player and not is_attacking:
-		_choose_attack()
+	# Attack cooldown (hanya jika tidak pakai BossBrain)
+	if not brain:
+		if attack_cooldown_timer > 0:
+			attack_cooldown_timer -= delta
+		elif target_player and not is_attacking:
+			_choose_attack()
 
 
 # === PHASE SYSTEM ===
@@ -142,6 +182,10 @@ func _transition_to_next_phase() -> void:
 	current_health = phase_hp
 	
 	is_invulnerable = false
+	
+	# Notify BossBrain
+	if brain:
+		brain.notify_phase_change()
 
 
 func _phase_transition_effect() -> void:
@@ -213,7 +257,10 @@ func _start_attack(attack_name: String) -> void:
 func _end_attack() -> void:
 	"""Akhiri serangan, set cooldown."""
 	is_attacking = false
-	attack_cooldown_timer = randf_range(min_attack_cooldown, max_attack_cooldown)
+	if brain:
+		brain.end_attack()
+	else:
+		attack_cooldown_timer = randf_range(min_attack_cooldown, max_attack_cooldown)
 
 
 # === HELPER METHODS ===

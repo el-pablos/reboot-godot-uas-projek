@@ -43,6 +43,24 @@ func _on_ready() -> void:
 	base_height = global_position.y
 
 
+func _setup_brain() -> void:
+	var config := BossConfig.create_tempest_config()
+	config.arena_center = Vector2.ZERO
+	_create_brain(config)
+
+
+func _on_brain_attack_requested(attack_type: String) -> void:
+	var roll := randf()
+	if attack_type == "close":
+		_attack_dive_strike()
+	elif roll < 0.5:
+		_attack_lightning_bolt()
+	elif roll < 0.8:
+		_attack_lightning_burst()
+	else:
+		_attack_dive_strike()
+
+
 func _process_chase(_delta: float) -> void:
 	if not target_player or is_attacking:
 		return

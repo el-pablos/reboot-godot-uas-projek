@@ -41,6 +41,24 @@ func _on_ready() -> void:
 	gravity = 0  # Spore-Bot melayang
 
 
+func _setup_brain() -> void:
+	var config := BossConfig.create_sporebot_config()
+	config.arena_center = Vector2.ZERO
+	_create_brain(config)
+
+
+func _on_brain_attack_requested(attack_type: String) -> void:
+	var roll := randf()
+	if attack_type == "close":
+		_attack_spore_burst()
+	elif roll < 0.4 and active_minions.size() < max_minions:
+		_attack_spawn_minion()
+	elif roll < 0.7:
+		_attack_poison_cloud()
+	else:
+		_attack_spore_burst()
+
+
 func _process_chase(_delta: float) -> void:
 	if not target_player or is_attacking:
 		return
