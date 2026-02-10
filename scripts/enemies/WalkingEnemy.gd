@@ -101,4 +101,6 @@ func _turn_around() -> void:
 	# Tunggu sebentar
 	is_waiting = true
 	await get_tree().create_timer(patrol_wait_time).timeout
+	if not is_inside_tree():
+		return
 	is_waiting = false

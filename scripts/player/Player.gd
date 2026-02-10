@@ -79,6 +79,13 @@ var jump_force: float:
 @export var invincibility_duration: float = 1.5
 @export var knockback_force: float = 300.0
 
+# === ATTACK (Wrench Swing) ===
+@export_group("Attack")
+@export var attack_damage: int = 25
+@export var attack_knockback: float = 200.0
+@export var attack_cooldown: float = 0.4
+@export var attack_duration: float = 0.25
+
 # === VISUAL FEEDBACK ===
 @export_group("Juice")
 @export var squash_scale: Vector2 = Vector2(1.25, 0.75)
@@ -112,6 +119,11 @@ var dash_direction: Vector2 = Vector2.ZERO
 # Glide tracking
 var is_gliding: bool = false
 
+# Attack tracking
+var is_attacking: bool = false
+var attack_timer: float = 0.0
+var attack_cooldown_timer: float = 0.0
+
 # State machine
 var state_machine: PlayerStateMachine
 
@@ -121,6 +133,8 @@ var state_machine: PlayerStateMachine
 @onready var animation_player: AnimationPlayer = $AnimationPlayer if has_node("AnimationPlayer") else null
 @onready var dust_particles: GPUParticles2D = $DustParticles if has_node("DustParticles") else null
 @onready var ghost_timer: Timer = $GhostTimer if has_node("GhostTimer") else null
+@onready var attack_hitbox: Area2D = $AttackHitbox if has_node("AttackHitbox") else null
+@onready var player_light: PointLight2D = $PlayerLight if has_node("PlayerLight") else null
 
 
 # =========================================
@@ -139,8 +153,12 @@ func _ready() -> void:
 	add_child(state_machine)
 	state_machine.setup(self)
 	
-	# Initialize health
-	current_health = max_health
+	# Initialize health from GameManager (single source of truth)
+	if GameManager:
+		current_health = GameManager.player_health
+		max_health = GameManager.player_max_health
+	else:
+		current_health = max_health
 	
 	# CRITICAL: Sync with GameManager (Source of Truth)
 	_sync_from_game_manager()
@@ -209,6 +227,10 @@ func _physics_process(delta: float) -> void:
 		_handle_jump()
 		_handle_dash_input()
 		_handle_glide()
+		_handle_attack()
+	
+	# Process attack timer
+	_process_attack(delta)
 	
 	# Apply movement
 	move_and_slide()
@@ -442,6 +464,95 @@ func _handle_glide() -> void:
 
 
 # =========================================
+# ATTACK (Wrench Swing)
+# =========================================
+
+func _handle_attack() -> void:
+	"""Check for attack input."""
+	if is_attacking or is_dashing:
+		return
+	
+	if Input.is_action_just_pressed("attack") and attack_cooldown_timer <= 0:
+		_execute_attack()
+
+
+func _execute_attack() -> void:
+	"""Start wrench swing attack."""
+	is_attacking = true
+	attack_timer = attack_duration
+	attack_cooldown_timer = attack_cooldown
+	
+	# Enable attack hitbox
+	if attack_hitbox:
+		attack_hitbox.monitoring = true
+		# Position hitbox based on facing
+		attack_hitbox.position.x = 20 if facing_right else -20
+	
+	# Visual feedback - rotate sprite slightly
+	if sprite:
+		var tween := create_tween()
+		tween.tween_property(sprite, "rotation_degrees", 15 if facing_right else -15, 0.05)
+		tween.tween_property(sprite, "rotation_degrees", 0, 0.1)
+	
+	# Play attack sound
+	AudioManager.play_sfx("hit")
+	
+	# Emit signal
+	ability_used.emit("attack")
+
+
+func _process_attack(delta: float) -> void:
+	"""Process attack timing."""
+	if not is_attacking:
+		return
+	
+	attack_timer -= delta
+	
+	if attack_timer <= 0:
+		_end_attack()
+
+
+func _end_attack() -> void:
+	"""End attack and disable hitbox."""
+	is_attacking = false
+	attack_timer = 0.0
+	
+	# Disable attack hitbox
+	if attack_hitbox:
+		attack_hitbox.monitoring = false
+
+
+func _on_attack_hitbox_body_entered(body: Node2D) -> void:
+	"""Deal damage to enemies hit by attack."""
+	if not is_attacking:
+		return
+	
+	if body.is_in_group("enemies") and body.has_method("take_damage"):
+		var knockback_dir := Vector2(1 if facing_right else -1, -0.3).normalized()
+		body.take_damage(attack_damage, knockback_dir * attack_knockback)
+		
+		# Hit stop effect (brief freeze)
+		_hit_stop(0.05)
+		
+		# Screen shake
+		var camera := get_viewport().get_camera_2d()
+		if camera and camera.has_method("shake"):
+			camera.shake(6.0, 0.1)
+		
+		print("[Player] ⚔️ Hit enemy for %d damage!" % attack_damage)
+
+
+func _hit_stop(duration: float) -> void:
+	"""Freeze time briefly for impact feel."""
+	Engine.time_scale = 0.1
+	await get_tree().create_timer(duration * 0.1).timeout  # Timer runs in scaled time
+	# Always restore time_scale, even if node freed during await
+	Engine.time_scale = 1.0
+	if not is_inside_tree():
+		return
+
+
+# =========================================
 # TIMERS
 # =========================================
 
@@ -457,6 +568,9 @@ func _update_timers(delta: float) -> void:
 	
 	# Dash cooldown
 	dash_cooldown_timer = maxf(0.0, dash_cooldown_timer - delta)
+	
+	# Attack cooldown
+	attack_cooldown_timer = maxf(0.0, attack_cooldown_timer - delta)
 
 
 # =========================================
@@ -543,6 +657,10 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	current_health = maxi(0, current_health - amount)
 	health_changed.emit(current_health, max_health)
 	
+	# Sync to GameManager (single source of truth)
+	if GameManager:
+		GameManager.player_health = current_health
+	
 	# Knockback
 	if knockback_dir != Vector2.ZERO:
 		velocity = knockback_dir.normalized() * knockback_force
@@ -571,15 +689,23 @@ func _start_invincibility() -> void:
 	
 	# Timer to end invincibility
 	await get_tree().create_timer(invincibility_duration).timeout
+	if not is_inside_tree():
+		return
 	is_invincible = false
 
 
 func heal(amount: int) -> void:
 	current_health = mini(current_health + amount, max_health)
 	health_changed.emit(current_health, max_health)
+	
+	# Sync to GameManager
+	if GameManager:
+		GameManager.player_health = current_health
 
 
 func _die() -> void:
+	# Ensure time_scale is restored
+	Engine.time_scale = 1.0
 	state_machine.change_state(PlayerStateMachine.State.DEAD)
 	died.emit()
 	AudioManager.play_sfx("death")
@@ -624,6 +750,9 @@ func is_ability_unlocked(ability_name: String) -> bool:
 
 func reset_player() -> void:
 	"""Reset player state for respawn. Called by LevelBase after death."""
+	# Ensure time_scale is normal
+	Engine.time_scale = 1.0
+	
 	# Reset velocity
 	velocity = Vector2.ZERO
 	

@@ -98,6 +98,8 @@ func _start_dive() -> void:
 	
 	# Durasi dive
 	await get_tree().create_timer(0.5).timeout
+	if not is_inside_tree():
+		return
 	
 	# Kembali ke chase
 	is_diving = false
@@ -105,6 +107,8 @@ func _start_dive() -> void:
 	
 	# Cooldown dive
 	await get_tree().create_timer(dive_cooldown).timeout
+	if not is_inside_tree():
+		return
 	can_dive = true
 
 

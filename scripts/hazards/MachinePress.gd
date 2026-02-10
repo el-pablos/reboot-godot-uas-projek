@@ -47,24 +47,32 @@ func _ready() -> void:
 
 
 func _start_press_cycle() -> void:
-	while true:
+	while is_inside_tree():
 		# Tunggu delay
 		await get_tree().create_timer(press_delay).timeout
+		if not is_inside_tree():
+			return
 		
 		# Press down (cepat)
 		is_pressing = true
 		var tween := create_tween()
 		tween.tween_property(self, "position:y", start_position.y + press_distance, press_distance / press_speed)
 		await tween.finished
+		if not is_inside_tree():
+			return
 		
 		# Hold di bawah
 		await get_tree().create_timer(hold_delay).timeout
+		if not is_inside_tree():
+			return
 		
 		# Retract (lambat)
 		is_pressing = false
 		var retract_tween := create_tween()
 		retract_tween.tween_property(self, "position:y", start_position.y, press_distance / retract_speed)
 		await retract_tween.finished
+		if not is_inside_tree():
+			return
 
 
 func _on_body_entered(body: Node2D) -> void:

@@ -46,8 +46,10 @@ func _physics_process(delta: float) -> void:
 	if not is_active:
 		return
 	
-	# Apply wind ke semua body di zone
+	# Apply wind ke semua body di zone (filter freed bodies)
 	for body in bodies_in_zone:
+		if not is_instance_valid(body):
+			continue
 		if body is Player:
 			var player := body as Player
 			player.velocity += wind_direction * current_force * delta
@@ -64,8 +66,10 @@ func _on_body_exited(body: Node2D) -> void:
 
 
 func _start_fluctuation() -> void:
-	while true:
+	while is_inside_tree():
 		await get_tree().create_timer(fluctuation_interval).timeout
+		if not is_inside_tree():
+			return
 		
 		# Random force antara 50% - 150%
 		current_force = wind_force * randf_range(0.5, 1.5)

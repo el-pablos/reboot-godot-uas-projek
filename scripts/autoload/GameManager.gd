@@ -4,10 +4,11 @@
 # Author: el-pablos
 # ===================================================
 # Mengelola state game, progress pemain, dan data persistent.
+# NOTE: Autoload scripts MUST NOT have class_name!
+# Access via: GameManager (global singleton)
 # ===================================================
 
 extends Node
-class_name GameManagerClass
 
 # --- SIGNALS ---
 signal core_collected(total: int)
@@ -16,13 +17,14 @@ signal level_completed(level_name: String)
 signal ability_unlocked(ability_name: String)
 signal game_paused(is_paused: bool)
 signal player_stats_changed  # Emitted when abilities/stats change
+signal health_changed(current: int, max_hp: int)  # Emitted when HP changes
 
 # --- KONSTANTA ---
 const MAX_CORES: int = 5
 const SAVE_PATH: String = "user://savegame.save"
 
 # DEBUG: Set ke true untuk force unlock abilities (untuk testing Level 4+)
-const DEBUG_UNLOCK_ALL_ABILITIES: bool = true
+const DEBUG_UNLOCK_ALL_ABILITIES: bool = false
 
 # --- DATA PEMAIN ---
 var player_health: int = 100
@@ -138,6 +140,7 @@ func apply_upgrades_to_player(player_node: Node) -> void:
 func damage_player(amount: int) -> void:
 	"""Kurangi HP pemain. Emit signal jika mati."""
 	player_health = max(0, player_health - amount)
+	health_changed.emit(player_health, player_max_health)
 	print("[GameManager] Player kena damage: %d. HP tersisa: %d" % [amount, player_health])
 	
 	if player_health <= 0:
@@ -149,12 +152,15 @@ func damage_player(amount: int) -> void:
 func heal_player(amount: int) -> void:
 	"""Tambah HP pemain (tidak melebihi max)."""
 	player_health = min(player_max_health, player_health + amount)
+	health_changed.emit(player_health, player_max_health)
 	print("[GameManager] Player heal: +%d. HP sekarang: %d" % [amount, player_health])
 
 
 func reset_health() -> void:
 	"""Reset HP ke full (saat respawn/new game)."""
 	player_health = player_max_health
+	is_game_over = false
+	health_changed.emit(player_health, player_max_health)
 
 
 # === FUNGSI PAUSE ===
@@ -260,6 +266,8 @@ const LEVEL_ORDER: Array[String] = [
 
 func reload_current_level() -> void:
 	"""Reload level saat ini (untuk retry)."""
+	is_game_over = false
+	Engine.time_scale = 1.0
 	if current_level != "":
 		get_tree().reload_current_scene()
 		print("[GameManager] Reloading level: %s" % current_level)
@@ -295,11 +303,17 @@ func go_to_main_menu() -> void:
 	"""Kembali ke main menu."""
 	# Reset pause state
 	is_paused = false
+	is_game_over = false
+	Engine.time_scale = 1.0
 	get_tree().paused = false
 	
-	# Pindah ke main menu
-	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
-	print("[GameManager] Returning to main menu")
+	# Pindah ke main menu (dengan guard)
+	const MAIN_MENU_PATH := "res://scenes/main_menu/MainMenu.tscn"
+	if ResourceLoader.exists(MAIN_MENU_PATH):
+		get_tree().change_scene_to_file(MAIN_MENU_PATH)
+		print("[GameManager] Returning to main menu")
+	else:
+		push_error("[GameManager] MainMenu scene not found: %s" % MAIN_MENU_PATH)
 
 
 func reset_player_health() -> void:

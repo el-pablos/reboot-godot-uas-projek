@@ -1,0 +1,86 @@
+[gd_scene load_steps=7 format=3 uid="uid://boss_overlord_scene"]
+
+[ext_resource type="Script" path="res://scripts/enemies/BossOverlord.gd" id="1_boss_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(80, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(88, 108)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detection"]
+radius = 400.0
+
+[sub_resource type="Gradient" id="Gradient_boss"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_boss"]
+gradient = SubResource("Gradient_boss")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="BossOverlord" type="CharacterBody2D" groups=["enemies", "bosses"]]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_boss_script")
+boss_name = "The Overlord"
+total_phases = 3
+phase_health = [200, 250, 300]
+reward_ability = ""
+max_health = 200
+contact_damage = 35
+knockback_force = 400.0
+move_speed = 90.0
+detection_range = 400.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -50)
+scale = Vector2(5, 6.25)
+modulate = Color(0.5, 0.1, 0.15, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_detection")
+
+[node name="BossLight" type="PointLight2D" parent="."]
+position = Vector2(0, -50)
+color = Color(1, 0.15, 0.1, 1)
+energy = 0.75
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_boss")
+texture_scale = 4.5
+
+[node name="EyeGlow" type="PointLight2D" parent="."]
+position = Vector2(0, -70)
+color = Color(1, 0.8, 0.2, 1)
+energy = 0.5
+texture = SubResource("GradientTexture2D_boss")
+texture_scale = 1.8
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -50.0
+offset_top = -130.0
+offset_right = 50.0
+offset_bottom = -118.0
+max_value = 200.0
+value = 200.0
+show_percentage = false

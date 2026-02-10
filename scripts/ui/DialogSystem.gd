@@ -176,6 +176,8 @@ func _type_text() -> void:
 		#     AudioManager.play_sfx(typing_sound, 0.3)
 		
 		await get_tree().create_timer(1.0 / typing_speed).timeout
+		if not is_inside_tree():
+			return
 	
 	_complete_typing()
 
@@ -199,10 +201,12 @@ func _animate_continue_indicator() -> void:
 	while is_dialog_active and not is_typing and continue_indicator:
 		continue_indicator.modulate.a = 1.0
 		await get_tree().create_timer(0.5).timeout
-		if not is_dialog_active:
+		if not is_inside_tree() or not is_dialog_active:
 			break
 		continue_indicator.modulate.a = 0.3
 		await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree():
+			break
 
 
 func _advance_dialog() -> void:

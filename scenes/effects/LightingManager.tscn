@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://lighting_manager_scene"]
+
+[ext_resource type="Script" path="res://scripts/effects/LightingManager.gd" id="1_lighting_script"]
+[ext_resource type="Environment" path="res://resources/environments/neon_ruins_environment.tres" id="2_environment"]
+
+[node name="LightingManager" type="Node2D"]
+script = ExtResource("1_lighting_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_environment")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.3, 0.35, 0.5, 1)

@@ -1,12 +1,25 @@
-[gd_scene load_steps=2 format=3 uid="uid://hud_scene"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1_hud_script"]
+[ext_resource type="Script" path="res://scripts/ui/ModernHealthUI.gd" id="2_atyv1"]
 
-[node name="HUD" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bg"]
+bg_color = Color(0.1, 0.1, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.8, 1, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="HUD" type="CanvasLayer" unique_id=846592822]
 layer = 10
 script = ExtResource("1_hud_script")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1931819886]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,18 +32,18 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=400339493]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1111165871]
 custom_minimum_size = Vector2(200, 25)
 layout_mode = 2
-max_value = 100.0
+theme_override_styles/background = SubResource("StyleBoxFlat_health_bg")
 value = 100.0
 show_percentage = false
 
-[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/HealthBar"]
+[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/HealthBar" unique_id=960678858]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,22 +54,22 @@ text = "100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CoreCounter" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="CoreCounter" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1629677779]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "CORE: 0 / 5"
 
-[node name="AbilityContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="AbilityContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=519017985]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DashIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer"]
+[node name="DashIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=832241910]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-color = Color(0.4, 0.4, 0.4, 0.5)
 tooltip_text = "Air Dash (Shift)"
+color = Color(0.4, 0.4, 0.4, 0.5)
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DashIcon"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DashIcon" unique_id=1632213784]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,13 +80,13 @@ text = "D"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DoubleJumpIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer"]
+[node name="DoubleJumpIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=3566858]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-color = Color(0.4, 0.4, 0.4, 0.5)
 tooltip_text = "Double Jump (Space x2)"
+color = Color(0.4, 0.4, 0.4, 0.5)
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DoubleJumpIcon"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DoubleJumpIcon" unique_id=1053240636]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -84,13 +97,13 @@ text = "2J"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GlideIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer"]
+[node name="GlideIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=422149836]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-color = Color(0.4, 0.4, 0.4, 0.5)
 tooltip_text = "Glide (Hold Space)"
+color = Color(0.4, 0.4, 0.4, 0.5)
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/GlideIcon"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/GlideIcon" unique_id=13865452]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -101,7 +114,7 @@ text = "G"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BossHealthContainer" type="VBoxContainer" parent="."]
+[node name="BossHealthContainer" type="VBoxContainer" parent="." unique_id=524799021]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -111,16 +124,20 @@ offset_right = 150.0
 offset_bottom = 70.0
 grow_horizontal = 2
 
-[node name="BossName" type="Label" parent="BossHealthContainer"]
+[node name="BossName" type="Label" parent="BossHealthContainer" unique_id=2134139101]
 visible = false
 layout_mode = 2
 text = "BOSS NAME"
 horizontal_alignment = 1
 
-[node name="BossHealthBar" type="ProgressBar" parent="BossHealthContainer"]
+[node name="BossHealthBar" type="ProgressBar" parent="BossHealthContainer" unique_id=852132618]
 visible = false
 custom_minimum_size = Vector2(300, 20)
 layout_mode = 2
-max_value = 100.0
 value = 100.0
 show_percentage = false
+
+[node name="ModernHealthUI" type="Control" parent="." unique_id=1618633441]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("2_atyv1")

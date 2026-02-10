@@ -130,7 +130,11 @@ func _on_main_menu_pressed() -> void:
 		game_manager.go_to_main_menu()
 	else:
 		# Fallback langsung change scene
-		get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+		const MAIN_MENU_PATH := "res://scenes/main_menu/MainMenu.tscn"
+		if ResourceLoader.exists(MAIN_MENU_PATH):
+			get_tree().change_scene_to_file(MAIN_MENU_PATH)
+		else:
+			push_error("[GameOverScreen] MainMenu scene not found: %s" % MAIN_MENU_PATH)
 
 
 # -----------------------------------------------------------------------------

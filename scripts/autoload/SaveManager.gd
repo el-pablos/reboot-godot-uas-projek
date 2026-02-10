@@ -4,10 +4,11 @@
 # Author: el-pablos
 # ===================================================
 # Mengelola save dan load game progress.
+# NOTE: Autoload scripts MUST NOT have class_name!
+# Access via: SaveManager (global singleton)
 # ===================================================
 
 extends Node
-class_name SaveManagerClass
 
 # --- KONSTANTA ---
 const SAVE_PATH: String = "user://reboot_save.json"

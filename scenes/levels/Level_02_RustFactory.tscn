@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://level_02_rust_factory"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
@@ -6,8 +6,36 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
 [ext_resource type="Script" path="res://scripts/hazards/MachinePress.gd" id="6_press_script"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/BossScrapper.tscn" id="7_boss"]
+[ext_resource type="Script" path="res://scripts/player/Player.gd" id="7_x8pr8"]
 
-[node name="Level_02_RustFactory" type="Node2D"]
+[sub_resource type="Environment" id="Environment_factory"]
+background_mode = 3
+background_color = Color(0.08, 0.05, 0.03, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.15, 0.1, 1)
+ambient_light_energy = 0.45
+glow_enabled = true
+glow_intensity = 0.5
+glow_strength = 0.9
+glow_bloom = 0.2
+glow_hdr_threshold = 0.85
+adjustment_enabled = true
+adjustment_contrast = 1.05
+adjustment_saturation = 1.1
+
+[sub_resource type="Gradient" id="Gradient_factory"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_factory"]
+gradient = SubResource("Gradient_factory")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="Level_02_RustFactory" type="Node2D" unique_id=155725253]
 script = ExtResource("1_level_script")
 level_name = "The Rust Factory"
 level_description = "Pabrik berkarat dengan mesin press berbahaya. Boss: The Scrapper."
@@ -16,156 +44,185 @@ spawn_position = Vector2(100, 200)
 killzone_y = 1000.0
 background_color = Color(0.2, 0.15, 0.1, 1)
 
-[node name="Background" type="ParallaxBackground" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1445494025]
+environment = SubResource("Environment_factory")
 
-[node name="FactoryBG" type="ParallaxLayer" parent="Background"]
+[node name="Background" type="ParallaxBackground" parent="." unique_id=2034565734]
+
+[node name="FactoryBG" type="ParallaxLayer" parent="Background" unique_id=1321788547]
 motion_scale = Vector2(0.2, 0.2)
 
-[node name="BGRect" type="ColorRect" parent="Background/FactoryBG"]
+[node name="BGRect" type="ColorRect" parent="Background/FactoryBG" unique_id=467768799]
 offset_left = -2000.0
 offset_top = -1000.0
 offset_right = 4000.0
 offset_bottom = 2000.0
 color = Color(0.15, 0.1, 0.08, 1)
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.7, 0.65, 0.6, 1)
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=393630457]
+color = Color(0.18, 0.15, 0.14, 1)
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="AmbientLights" type="Node2D" parent="." unique_id=1757760275]
 
-[node name="Floor1" type="StaticBody2D" parent="Environment"]
+[node name="OrangeGlow1" type="PointLight2D" parent="AmbientLights" unique_id=825928927]
+position = Vector2(200, 320)
+color = Color(1, 0.5, 0.2, 1)
+energy = 0.6
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_factory")
+texture_scale = 4.5
+
+[node name="OrangeGlow2" type="PointLight2D" parent="AmbientLights" unique_id=425199747]
+position = Vector2(600, 280)
+color = Color(1, 0.4, 0.1, 1)
+energy = 0.5
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_factory")
+texture_scale = 4.0
+
+[node name="RedWarning" type="PointLight2D" parent="AmbientLights" unique_id=25326167]
+position = Vector2(1000, 300)
+color = Color(1, 0.2, 0.1, 1)
+energy = 0.55
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_factory")
+texture_scale = 5.5
+
+[node name="Environment" type="Node2D" parent="." unique_id=581342486]
+
+[node name="Floor1" type="StaticBody2D" parent="Environment" unique_id=7229952]
 position = Vector2(400, 400)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Floor1"]
-scale = Vector2(25, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/Floor1" unique_id=752436935]
 modulate = Color(0.4, 0.35, 0.3, 1)
+scale = Vector2(25, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor1" unique_id=1406757078]
 polygon = PackedVector2Array(-400, -32, 400, -32, 400, 32, -400, 32)
 
-[node name="Platform1" type="StaticBody2D" parent="Environment"]
+[node name="Platform1" type="StaticBody2D" parent="Environment" unique_id=1137859737]
 position = Vector2(300, 300)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform1"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform1" unique_id=15401192]
 modulate = Color(0.5, 0.4, 0.35, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=1432832795]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="Platform2" type="StaticBody2D" parent="Environment"]
+[node name="Platform2" type="StaticBody2D" parent="Environment" unique_id=479346896]
 position = Vector2(600, 250)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Platform2"]
-scale = Vector2(4, 1)
+[node name="Sprite" type="Sprite2D" parent="Environment/Platform2" unique_id=2087897898]
 modulate = Color(0.5, 0.4, 0.35, 1)
+scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2" unique_id=511675188]
 polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
 
-[node name="Floor2" type="StaticBody2D" parent="Environment"]
+[node name="Floor2" type="StaticBody2D" parent="Environment" unique_id=70683220]
 position = Vector2(1000, 400)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Floor2"]
-scale = Vector2(20, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/Floor2" unique_id=50875917]
 modulate = Color(0.4, 0.35, 0.3, 1)
+scale = Vector2(20, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor2" unique_id=541148864]
 polygon = PackedVector2Array(-320, -32, 320, -32, 320, 32, -320, 32)
 
-[node name="Floor3" type="StaticBody2D" parent="Environment"]
+[node name="Floor3" type="StaticBody2D" parent="Environment" unique_id=1083350271]
 position = Vector2(1600, 350)
 collision_layer = 4
 
-[node name="Sprite" type="Sprite2D" parent="Environment/Floor3"]
-scale = Vector2(15, 2)
+[node name="Sprite" type="Sprite2D" parent="Environment/Floor3" unique_id=1289005660]
 modulate = Color(0.4, 0.35, 0.3, 1)
+scale = Vector2(15, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor3"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Floor3" unique_id=632074059]
 polygon = PackedVector2Array(-240, -32, 240, -32, 240, 32, -240, 32)
 
-[node name="Hazards" type="Node2D" parent="."]
+[node name="Hazards" type="Node2D" parent="." unique_id=503762334]
 
-[node name="MachinePress1" type="Node2D" parent="Hazards"]
+[node name="MachinePress1" type="Node2D" parent="Hazards" unique_id=690478432]
 position = Vector2(500, 150)
 script = ExtResource("6_press_script")
 press_distance = 180.0
 
-[node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress1"]
+[node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress1" unique_id=2006890434]
 collision_layer = 4
 
-[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress1/PressBody"]
+[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress1/PressBody" unique_id=877004648]
 offset_left = -30.0
 offset_top = -20.0
 offset_right = 30.0
 offset_bottom = 80.0
 color = Color(0.6, 0.2, 0.1, 1)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress1/PressBody"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress1/PressBody" unique_id=1680632786]
 polygon = PackedVector2Array(-30, -20, 30, -20, 30, 80, -30, 80)
 
-[node name="HazardArea" type="Area2D" parent="Hazards/MachinePress1"]
+[node name="HazardArea" type="Area2D" parent="Hazards/MachinePress1" unique_id=940875106]
 collision_layer = 8
-collision_mask = 1
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress1/HazardArea"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress1/HazardArea" unique_id=770060383]
 polygon = PackedVector2Array(-30, 60, 30, 60, 30, 80, -30, 80)
 
-[node name="MachinePress2" type="Node2D" parent="Hazards"]
+[node name="MachinePress2" type="Node2D" parent="Hazards" unique_id=1197314862]
 position = Vector2(900, 150)
 script = ExtResource("6_press_script")
 press_distance = 180.0
 press_delay = 2.0
 
-[node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress2"]
+[node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress2" unique_id=523552600]
 collision_layer = 4
 
-[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress2/PressBody"]
+[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress2/PressBody" unique_id=529032163]
 offset_left = -30.0
 offset_top = -20.0
 offset_right = 30.0
 offset_bottom = 80.0
 color = Color(0.6, 0.2, 0.1, 1)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress2/PressBody"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress2/PressBody" unique_id=539289877]
 polygon = PackedVector2Array(-30, -20, 30, -20, 30, 80, -30, 80)
 
-[node name="HazardArea" type="Area2D" parent="Hazards/MachinePress2"]
+[node name="HazardArea" type="Area2D" parent="Hazards/MachinePress2" unique_id=1984881359]
 collision_layer = 8
-collision_mask = 1
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress2/HazardArea"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress2/HazardArea" unique_id=1424534845]
 polygon = PackedVector2Array(-30, 60, 30, 60, 30, 80, -30, 80)
 
-[node name="Collectibles" type="Node2D" parent="."]
+[node name="Collectibles" type="Node2D" parent="." unique_id=556708734]
 
-[node name="CoreFragment" type="Area2D" parent="Collectibles"]
+[node name="CoreFragment" type="Area2D" parent="Collectibles" unique_id=584013913]
 position = Vector2(1600, 270)
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("5_core_script")
 core_id = 2
 
-[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
-scale = Vector2(2, 2)
+[node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment" unique_id=1661230590]
 self_modulate = Color(1, 0.5, 0.2, 1)
+scale = Vector2(2, 2)
 texture = ExtResource("2_ground")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment" unique_id=313048996]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=279484098]
 
-[node name="LevelLabel" type="Label" parent="UI"]
+[node name="LevelLabel" type="Label" parent="UI" unique_id=1666052612]
 offset_left = 50.0
 offset_top = 50.0
 offset_right = 450.0
@@ -173,5 +230,12 @@ offset_bottom = 100.0
 text = "LEVEL 2 - THE RUST FACTORY
 Hati-hati dengan mesin press!"
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
+[node name="Player" type="CharacterBody2D" parent="." unique_id=2056370659 instance=ExtResource("3_player")]
 position = Vector2(100, 300)
+collision_mask = 6
+script = ExtResource("7_x8pr8")
+
+[node name="BossScrapper" type="CharacterBody2D" parent="." unique_id=493148141 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
+position = Vector2(1800, 350)
+collision_layer = 2
+collision_mask = 5

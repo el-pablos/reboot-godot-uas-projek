@@ -79,27 +79,35 @@ func _choose_attack() -> void:
 
 func _attack_spawn_minion() -> void:
 	"""Spawn minion jamur kecil."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("spawn_minion")
 	
 	# Animation spawn
 	if sprite:
 		var tween := create_tween()
-		tween.tween_property(sprite, "scale", Vector2(1.2, 0.8), 0.2)
-		tween.tween_property(sprite, "scale", Vector2.ONE, 0.2)
-		await tween.finished
+		if tween:
+			tween.tween_property(sprite, "scale", Vector2(1.2, 0.8), 0.2)
+			tween.tween_property(sprite, "scale", Vector2.ONE, 0.2)
+			await tween.finished
 	else:
-		await get_tree().create_timer(0.4).timeout
+		if not await _safe_await_timer(0.4):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Spawn minion (simplified - just visual)
 	var minion := _create_minion()
-	if minion:
+	if minion and is_inside_tree():
 		active_minions.append(minion)
 		get_parent().add_child(minion)
 		minion.global_position = global_position + Vector2(randf_range(-30, 30), 50)
 	
 	print("[Spore-Bot] Spawned minion! Total: %d" % active_minions.size())
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
 	_end_attack()
 
 
@@ -140,9 +148,11 @@ func _create_minion() -> Node2D:
 
 func _attack_poison_cloud() -> void:
 	"""Buat area poison di sekitar player."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("poison_cloud")
 	
-	if not target_player:
+	if not target_player or not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
@@ -168,16 +178,18 @@ func _attack_poison_cloud() -> void:
 	poison_zone.collision_layer = 8
 	poison_zone.collision_mask = 1
 	
-	get_parent().add_child(poison_zone)
-	poison_zones.append(poison_zone)
+	if is_inside_tree():
+		get_parent().add_child(poison_zone)
+		poison_zones.append(poison_zone)
 	
 	# Poison tick damage
 	var time := 0.0
 	while time < poison_duration:
-		await get_tree().create_timer(0.5).timeout
+		if not await _safe_await_timer(0.5):
+			break
 		time += 0.5
 		
-		if target_player and poison_zone:
+		if target_player and is_instance_valid(target_player) and is_instance_valid(poison_zone):
 			if target_player.global_position.distance_to(poison_zone.global_position) < poison_radius:
 				target_player.take_damage(poison_damage)
 	
@@ -191,16 +203,23 @@ func _attack_poison_cloud() -> void:
 
 func _attack_spore_burst() -> void:
 	"""Burst spore ke segala arah - damage jika kena."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("spore_burst")
 	
 	# Charge up
 	if sprite:
 		sprite.modulate = Color(0.5, 1, 0.5)
 		var tween := create_tween()
-		tween.tween_property(sprite, "scale", Vector2(1.3, 1.3), 0.5)
-		await tween.finished
+		if tween:
+			tween.tween_property(sprite, "scale", Vector2(1.3, 1.3), 0.5)
+			await tween.finished
 	else:
-		await get_tree().create_timer(0.5).timeout
+		if not await _safe_await_timer(0.5):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# BURST!
 	if sprite:
@@ -209,22 +228,29 @@ func _attack_spore_burst() -> void:
 	
 	# Create burst visual (particles bisa ditambahkan)
 	# Check damage ke player dalam radius
-	if target_player:
+	if target_player and is_instance_valid(target_player):
 		var distance := global_position.distance_to(target_player.global_position)
 		if distance < 150:
 			var knockback := (target_player.global_position - global_position).normalized()
 			target_player.take_damage(25, knockback * 200)
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
 	_end_attack()
 
 
 func _phase_transition_effect() -> void:
 	# Phase 2 - more aggressive, more minions
+	if not _is_valid_for_attack():
+		return
+	
 	if sprite:
 		for i in range(6):
+			if not _is_valid_for_attack():
+				return
 			sprite.modulate = Color(0.3, 1, 0.3) if i % 2 == 0 else Color.WHITE
-			await get_tree().create_timer(0.15).timeout
+			if not await _safe_await_timer(0.15):
+				return
 	
 	max_minions = 5
 	poison_radius = 150.0

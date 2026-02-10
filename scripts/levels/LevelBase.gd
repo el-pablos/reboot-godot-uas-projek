@@ -59,6 +59,11 @@ func _ready() -> void:
 	
 	# Notify level started
 	level_started.emit()
+	
+	# Play BGM
+	if AudioManager:
+		AudioManager.play_bgm("main")
+	
 	print("[Level] %s dimulai!" % level_name)
 
 
@@ -103,6 +108,8 @@ func _on_player_died() -> void:
 	
 	# Tunggu sebentar
 	await get_tree().create_timer(1.0).timeout
+	if not is_inside_tree():
+		return
 	
 	# Respawn
 	_respawn_player()
@@ -134,6 +141,8 @@ func complete_level() -> void:
 	# Pindah ke level selanjutnya
 	if next_level_path != "":
 		await get_tree().create_timer(2.0).timeout
+		if not is_inside_tree():
+			return
 		GameManager.change_level(next_level_path)
 
 

@@ -1,10 +1,38 @@
-[gd_scene load_steps=6 format=3 uid="uid://level_01_golden_isles"]
+[gd_scene load_steps=9 format=3 uid="uid://level_01_golden_isles"]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.svg" id="2_ground"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.svg" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
+
+[sub_resource type="Environment" id="Environment_glow"]
+background_mode = 3
+background_color = Color(0.03, 0.04, 0.08, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.15, 0.2, 0.35, 1)
+ambient_light_energy = 0.5
+glow_enabled = true
+glow_intensity = 0.5
+glow_strength = 0.9
+glow_bloom = 0.2
+glow_blend_mode = 1
+glow_hdr_threshold = 0.8
+glow_hdr_scale = 1.5
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.1
+
+[sub_resource type="Gradient" id="Gradient_ambient"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ambient"]
+gradient = SubResource("Gradient_ambient")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [node name="Level_01_GoldenIsles" type="Node2D"]
 script = ExtResource("1_level_script")
@@ -14,6 +42,12 @@ next_level_path = "res://scenes/levels/Level_02_RustFactory.tscn"
 spawn_position = Vector2(100, 200)
 killzone_y = 1000.0
 background_color = Color(0.4, 0.6, 0.9, 1)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.145, 0.145, 0.188, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_glow")
 
 [node name="Background" type="ParallaxBackground" parent="."]
 
@@ -139,6 +173,53 @@ texture = ExtResource("2_ground")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment"]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="AmbientLights" type="Node2D" parent="."]
+
+[node name="Light1" type="PointLight2D" parent="AmbientLights"]
+position = Vector2(200, 280)
+color = Color(0.3, 0.8, 1, 1)
+energy = 0.5
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_ambient")
+texture_scale = 4.5
+
+[node name="Light2" type="PointLight2D" parent="AmbientLights"]
+position = Vector2(600, 200)
+color = Color(1, 0.5, 0.8, 1)
+energy = 0.4
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_ambient")
+texture_scale = 4.0
+
+[node name="Light3" type="PointLight2D" parent="AmbientLights"]
+position = Vector2(1000, 260)
+color = Color(0.5, 1, 0.6, 1)
+energy = 0.45
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_ambient")
+texture_scale = 5.0
+
+[node name="Light4" type="PointLight2D" parent="AmbientLights"]
+position = Vector2(1400, 220)
+color = Color(1, 0.85, 0.3, 1)
+energy = 0.55
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_ambient")
+texture_scale = 5.5
+
+[node name="Light5" type="PointLight2D" parent="AmbientLights"]
+position = Vector2(1700, 180)
+color = Color(1, 0.9, 0.4, 1)
+energy = 0.6
+shadow_enabled = true
+shadow_filter = 2
+texture = SubResource("GradientTexture2D_ambient")
+texture_scale = 4.5
 
 [node name="UI" type="CanvasLayer" parent="."]
 

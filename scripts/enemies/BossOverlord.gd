@@ -121,6 +121,8 @@ func _choose_phase_2_attack() -> void:
 
 func _attack_horizontal_laser() -> void:
 	"""Laser horizontal yang sweep arena."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("horizontal_laser")
 	
 	# Warning - flash dan telegraph
@@ -134,7 +136,15 @@ func _attack_horizontal_laser() -> void:
 	telegraph.color = Color(1, 0, 0, 0.3)
 	add_child(telegraph)
 	
-	await get_tree().create_timer(laser_warning).timeout
+	if not await _safe_await_timer(laser_warning):
+		if is_instance_valid(telegraph):
+			telegraph.queue_free()
+		return
+	
+	if not _is_valid_for_attack():
+		if is_instance_valid(telegraph):
+			telegraph.queue_free()
+		return
 	
 	# FIRE LASER!
 	if sprite:
@@ -159,50 +169,79 @@ func _attack_horizontal_laser() -> void:
 	# Damage player jika dalam laser
 	var laser_time := 0.0
 	while laser_time < laser_duration:
-		await get_tree().create_timer(0.1).timeout
+		if not await _safe_await_timer(0.1):
+			if is_instance_valid(telegraph):
+				telegraph.queue_free()
+			if is_instance_valid(laser_area):
+				laser_area.queue_free()
+			return
 		laser_time += 0.1
 		
-		if target_player:
+		if is_instance_valid(target_player):
 			var player_y := target_player.global_position.y
 			var laser_y := global_position.y
 			if abs(player_y - laser_y) < 25:
 				target_player.take_damage(laser_damage)
 	
 	# Cleanup
-	telegraph.queue_free()
-	laser_area.queue_free()
+	if is_instance_valid(telegraph):
+		telegraph.queue_free()
+	if is_instance_valid(laser_area):
+		laser_area.queue_free()
 	
 	if sprite:
 		sprite.modulate = Color.WHITE
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
 	_end_attack()
 
 
 func _attack_ground_slam() -> void:
 	"""Slam tanah - shockwave."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("ground_slam")
 	
 	# Jump up
 	var tween := create_tween()
-	tween.tween_property(self, "global_position:y", global_position.y - 100, 0.4)
-	await tween.finished
+	if tween:
+		tween.tween_property(self, "global_position:y", global_position.y - 100, 0.4)
+		await tween.finished
+	else:
+		if not await _safe_await_timer(0.4):
+			return
 	
-	await get_tree().create_timer(0.3).timeout
+	if not _is_valid_for_attack():
+		return
+	
+	if not await _safe_await_timer(0.3):
+		return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# SLAM DOWN
 	var slam_tween := create_tween()
-	slam_tween.tween_property(self, "global_position:y", global_position.y + 100, 0.15)
-	await slam_tween.finished
+	if slam_tween:
+		slam_tween.tween_property(self, "global_position:y", global_position.y + 100, 0.15)
+		await slam_tween.finished
+	else:
+		if not await _safe_await_timer(0.15):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# Shockwave damage
-	if target_player and target_player.is_on_floor():
+	if is_instance_valid(target_player) and target_player.is_on_floor():
 		var distance: float = abs(target_player.global_position.x - global_position.x)
 		if distance < 300:
 			var knockback := Vector2(sign(target_player.global_position.x - global_position.x), -1).normalized()
 			target_player.take_damage(25, knockback * 200)
 	
-	await get_tree().create_timer(0.5).timeout
+	if not await _safe_await_timer(0.5):
+		return
 	_end_attack()
 
 
@@ -210,20 +249,29 @@ func _attack_ground_slam() -> void:
 
 func _attack_energy_orbs() -> void:
 	"""Spawn energy orbs yang chase player."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("energy_orbs")
 	
 	var spawn_count := orb_count if current_phase == 2 else orb_count - 2
 	
 	for i in range(spawn_count):
+		if not _is_valid_for_attack():
+			return
 		var orb := _spawn_energy_orb()
-		orbs.append(orb)
-		await get_tree().create_timer(0.3).timeout
+		if orb:
+			orbs.append(orb)
+		if not await _safe_await_timer(0.3):
+			return
 	
 	_end_attack()
 
 
 func _spawn_energy_orb() -> Area2D:
 	"""Spawn satu energy orb."""
+	if not is_inside_tree() or not get_parent():
+		return null
+	
 	var orb := Area2D.new()
 	orb.global_position = global_position + Vector2(randf_range(-50, 50), 0)
 	
@@ -255,10 +303,14 @@ func _orb_chase_player(orb: Area2D) -> void:
 	var lifetime := 0.0
 	
 	while lifetime < 5.0 and is_instance_valid(orb):
+		if not is_inside_tree() or is_queued_for_deletion():
+			break
+		if not get_tree():
+			break
 		await get_tree().process_frame
 		lifetime += get_process_delta_time()
 		
-		if not target_player:
+		if not is_instance_valid(target_player):
 			continue
 		
 		var dir := (target_player.global_position - orb.global_position).normalized()
@@ -276,24 +328,37 @@ func _orb_chase_player(orb: Area2D) -> void:
 
 func _attack_energy_rain() -> void:
 	"""Energy rain dari atas."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("energy_rain")
 	
-	if not target_player:
+	if not is_instance_valid(target_player):
 		_end_attack()
 		return
 	
 	# Spawn energy falling from above
 	for i in range(8):
-		var x_pos := target_player.global_position.x + randf_range(-150, 150)
-		_spawn_falling_energy(x_pos)
-		await get_tree().create_timer(0.15).timeout
+		if not _is_valid_for_attack():
+			return
+		if is_instance_valid(target_player):
+			var x_pos := target_player.global_position.x + randf_range(-150, 150)
+			_spawn_falling_energy(x_pos)
+		if not await _safe_await_timer(0.15):
+			return
 	
-	await get_tree().create_timer(1.0).timeout
+	if not await _safe_await_timer(1.0):
+		return
 	_end_attack()
 
 
 func _spawn_falling_energy(x_pos: float) -> void:
 	"""Spawn energy yang jatuh."""
+	if not is_inside_tree() or not get_parent():
+		return
+	
+	if not is_instance_valid(target_player):
+		return
+	
 	# Warning indicator
 	var warning := ColorRect.new()
 	warning.size = Vector2(30, 5)
@@ -301,8 +366,16 @@ func _spawn_falling_energy(x_pos: float) -> void:
 	warning.color = Color(1, 0, 0, 0.5)
 	get_parent().add_child(warning)
 	
-	await get_tree().create_timer(0.5).timeout
-	warning.queue_free()
+	if not await _safe_await_timer(0.5):
+		if is_instance_valid(warning):
+			warning.queue_free()
+		return
+	
+	if is_instance_valid(warning):
+		warning.queue_free()
+	
+	if not is_inside_tree() or not get_parent():
+		return
 	
 	# Actual projectile
 	var proj := Area2D.new()
@@ -325,13 +398,17 @@ func _spawn_falling_energy(x_pos: float) -> void:
 	# Fall down
 	var fall_time := 0.0
 	while fall_time < 2.0 and is_instance_valid(proj):
+		if not is_inside_tree() or is_queued_for_deletion():
+			break
+		if not get_tree():
+			break
 		await get_tree().process_frame
 		fall_time += get_process_delta_time()
 		
 		proj.global_position.y += 400 * get_process_delta_time()
 		
 		# Check hit player
-		if target_player and proj.global_position.distance_to(target_player.global_position) < 25:
+		if is_instance_valid(target_player) and proj.global_position.distance_to(target_player.global_position) < 25:
 			target_player.take_damage(15, Vector2(0, 1) * 100)
 			break
 	
@@ -341,21 +418,34 @@ func _spawn_falling_energy(x_pos: float) -> void:
 
 func _attack_pulse_wave() -> void:
 	"""Expanding pulse wave."""
+	if not _is_valid_for_attack():
+		return
 	_start_attack("pulse_wave")
 	
 	# Charge
 	if sprite:
 		sprite.modulate = Color(1, 0.5, 1)
 		var tween := create_tween()
-		tween.tween_property(sprite, "scale", Vector2(1.5, 1.5), 0.5)
-		await tween.finished
+		if tween:
+			tween.tween_property(sprite, "scale", Vector2(1.5, 1.5), 0.5)
+			await tween.finished
+		else:
+			if not await _safe_await_timer(0.5):
+				return
 	else:
-		await get_tree().create_timer(0.5).timeout
+		if not await _safe_await_timer(0.5):
+			return
+	
+	if not _is_valid_for_attack():
+		return
 	
 	# PULSE!
 	if sprite:
 		sprite.scale = Vector2.ONE
 		sprite.modulate = Color.WHITE
+	
+	if not is_inside_tree() or not get_parent():
+		return
 	
 	# Visual pulse (simplified)
 	var pulse := ColorRect.new()
@@ -366,23 +456,32 @@ func _attack_pulse_wave() -> void:
 	
 	var pulse_size := 50.0
 	while pulse_size < 400:
+		if not is_inside_tree() or is_queued_for_deletion():
+			break
+		if not get_tree():
+			break
 		await get_tree().process_frame
 		pulse_size += 500 * get_process_delta_time()
+		
+		if not is_instance_valid(pulse):
+			break
 		
 		pulse.size = Vector2(pulse_size, pulse_size)
 		pulse.global_position = global_position - Vector2(pulse_size/2, pulse_size/2)
 		pulse.color.a = 1.0 - (pulse_size / 400)
 		
 		# Check hit
-		if target_player:
+		if is_instance_valid(target_player):
 			var dist := global_position.distance_to(target_player.global_position)
 			if abs(dist - pulse_size/2) < 30:
 				var knockback := (target_player.global_position - global_position).normalized()
 				target_player.take_damage(20, knockback * 300)
 	
-	pulse.queue_free()
+	if is_instance_valid(pulse):
+		pulse.queue_free()
 	
-	await get_tree().create_timer(0.3).timeout
+	if not await _safe_await_timer(0.3):
+		return
 	_end_attack()
 
 
@@ -393,15 +492,25 @@ func _phase_transition_effect() -> void:
 	# Robot hancur efek
 	if sprite:
 		for i in range(10):
+			if not is_inside_tree() or is_queued_for_deletion():
+				return
 			sprite.modulate = Color(1, randf(), randf())
 			sprite.rotation_degrees = randf_range(-10, 10)
-			await get_tree().create_timer(0.1).timeout
+			if not await _safe_await_timer(0.1):
+				return
+		
+		if not is_inside_tree() or is_queued_for_deletion():
+			return
 		
 		# Shrink menjadi core
 		var tween := create_tween()
-		tween.tween_property(sprite, "scale", Vector2(0.5, 0.5), 0.5)
-		tween.parallel().tween_property(sprite, "modulate", Color(0.8, 0.2, 1), 0.5)
-		await tween.finished
+		if tween:
+			tween.tween_property(sprite, "scale", Vector2(0.5, 0.5), 0.5)
+			tween.parallel().tween_property(sprite, "modulate", Color(0.8, 0.2, 1), 0.5)
+			await tween.finished
+		else:
+			if not await _safe_await_timer(0.5):
+				return
 		
 		sprite.rotation_degrees = 0
 	
