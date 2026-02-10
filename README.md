@@ -4,11 +4,12 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-188%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-205%20Passed-success?style=for-the-badge)
 ![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 [![🚀 Auto Release](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/release-on-push.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/release-on-push.yml)
+[![🌐 Web Deploy](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/deploy-web-pages.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/deploy-web-pages.yml)
 
 **2D Action Platformer** • Dibuat dengan **Godot Engine 4.6**
 
@@ -106,13 +107,15 @@ Perbedaan ini menciptakan karakteristik lompatan yang khas pada platformer profe
 
 ### 🗺️ Game Levels
 
-| Level | Nama | Tema | Boss |
-|-------|------|------|------|
-| 1 | Golden Isles | Tutorial/Pantai | Scrapper |
-| 2 | Rust Factory | Pabrik Industrial | Spore-Bot |
-| 3 | Crystal Labs | Laboratorium | Tempest |
-| 4 | Storm Spire | Menara Badai | — |
-| 5 | Overlord Fortress | Markas Final | **Overlord** |
+| Level | Nama | Tema | Boss | Gate |
+|-------|------|------|------|------|
+| 1 | Golden Isles | Tutorial/Pantai | — | — |
+| 2 | Rust Factory | Pabrik Industrial | Scrapper | ✅ |
+| 3 | Crystal Labs | Laboratorium | Spore-Bot | ✅ |
+| 4 | Storm Spire | Menara Badai | Tempest | ✅ |
+| 5 | Overlord Fortress | Markas Final | **Overlord** | ✅ |
+
+Boss ditempatkan di **mid-challenge** — pemain harus mengalahkan boss dan melewati BossGate sebelum bisa mengambil Core Fragment.
 
 ---
 
@@ -149,12 +152,25 @@ IDLE ↔ RUN ↔ JUMP ↔ FALL
 EnemyBase (abstract)
 ├── WalkingEnemy
 ├── FlyingEnemy
-└── BossBase
+└── BossBase  ← BossBrain (AI state machine)
     ├── BossScrapper (rewards: Dash)
     ├── BossSporeBot (rewards: Double Jump)
     ├── BossTempest (rewards: Glide)
     └── BossOverlord (Final Boss)
 ```
+
+### BossBrain AI State Machine
+```
+ROAM → CHASE → ATTACK_CLOSE / ATTACK_FAR
+  ↑       ↕         ↓
+  └── REPOSITION ← RECOVER ← PHASE_CHANGE
+```
+
+Setiap boss menggunakan `BossBrain` + `BossConfig` (Resource) untuk AI yang fair:
+- **Telegraph** visual sebelum setiap serangan
+- **Cooldown** antar serangan (recovery window)
+- **Arena bounds** agar boss tidak keluar area
+- **Phase modifiers** yang meningkatkan agresivitas per fase
 
 ---
 
@@ -162,7 +178,7 @@ EnemyBase (abstract)
 
 | Metric | Status |
 |--------|--------|
-| Unit Tests | **188/188 Passed** ✅ |
+| Unit Tests | **205/205 Passed** ✅ |
 | Parse Errors | **0** ✅ |
 | Code Coverage | **Core Systems** ✅ |
 | Headless Import | **Clean** ✅ |
@@ -192,7 +208,8 @@ godot --headless --path . 2>&1
 | test_enemy_ai.gd | 25 |
 | test_combat_system.gd | 18 |
 | test_gameplay_qa.gd | 69 |
-| **Total** | **188** |
+| test_boss_rework.gd | 17 |
+| **Total** | **205** |
 
 ---
 
@@ -221,10 +238,11 @@ project-reboot/
 │   ├── autoload/           # GameManager, AudioManager, SaveManager, SettingsManager
 │   ├── player/             # Player & State Machine
 │   ├── enemies/            # Enemy AI & Boss Logic
+│   ├── boss/               # BossBrain AI, BossConfig, BossGate
 │   ├── hazards/            # Level hazards (MachinePress, WindZone, etc.)
 │   ├── collectibles/       # Core Fragment
 │   └── ui/                 # UI Controllers
-├── test/                   # 188 headless tests (6 suites)
+├── test/                   # 205 headless tests (7 suites)
 └── project.godot           # Godot project config
 ```
 
@@ -233,9 +251,10 @@ project-reboot/
 ## 🚀 Automated Releases
 
 Setiap push ke branch `master` otomatis:
-1. **Headless Tests** — 188 unit tests dijalankan
+1. **Headless Tests** — 205 unit tests dijalankan
 2. **Export Builds** — Windows, Linux, dan Web
-3. **GitHub Release** — tag `v0.1.<run>` dibuat + artifacts di-attach
+3. **GitHub Release** — tag `v0.1.<run>` dibuat + desktop builds di-attach
+4. **Web Deploy** — build web otomatis di-deploy ke GitHub Pages
 
 ### Versioning Scheme
 
@@ -250,9 +269,14 @@ Tag dibuat otomatis oleh `github-actions[bot]`, tanpa token pribadi.
 > **[📥 Releases Page](https://github.com/el-pablos/reboot-godot-uas-projek/releases)**
 
 Setiap release berisi:
-- `REBOOT.exe` — Windows build
-- `REBOOT.x86_64` + `REBOOT.pck` — Linux build
-- `index.html` + assets — Web build (playable in browser)
+- `REBOOT.exe` — Windows build (PCK embedded, single file)
+- `REBOOT.x86_64` — Linux build (PCK embedded, single file)
+
+### 🌐 Mainkan di Browser
+
+> **[🎮 Play Online](https://el-pablos.github.io/reboot-godot-uas-projek/)**
+
+Web build otomatis di-deploy ke GitHub Pages setiap ada tag rilis baru.
 
 ### Quality Gate
 
