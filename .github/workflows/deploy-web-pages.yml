@@ -1,0 +1,87 @@
+# =============================================================================
+# CI/CD — Deploy Web Build ke GitHub Pages
+# =============================================================================
+# Trigger: setelah release workflow selesai push tag v*
+# Hasil: web build di-deploy ke GitHub Pages
+# Token: GITHUB_TOKEN bawaan (TIDAK pakai PAT pribadi)
+# =============================================================================
+
+name: "🌐 Deploy Web to Pages"
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.6.0"
+  PRESET_WEB: "Web"
+
+jobs:
+  deploy:
+    name: "Export Web → Deploy Pages"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+
+      # ── Setup Godot ────────────────────────────────────────────────
+      - name: "🤖 Setup Godot ${{ env.GODOT_VERSION }}"
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      # ── Import project resources ───────────────────────────────────
+      - name: "📦 Import project resources"
+        run: |
+          godot --headless --import --quit 2>&1 || true
+          echo "✅ Import complete"
+
+      # ── Export Web Build ───────────────────────────────────────────
+      - name: "🔨 Export Web"
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "${{ env.PRESET_WEB }}" build/web/index.html 2>&1
+          echo "✅ Web export done"
+          ls -la build/web/
+
+      # ── Ensure coi-serviceworker for SharedArrayBuffer ─────────────
+      - name: "🔧 Add coi-serviceworker for cross-origin isolation"
+        run: |
+          cd build/web
+          curl -fsSL https://raw.githubusercontent.com/nicknisi/coi-serviceworker/main/coi-serviceworker.min.js \
+            -o coi-serviceworker.min.js || true
+          if [ -f coi-serviceworker.min.js ]; then
+            sed -i 's|<head>|<head><script src="coi-serviceworker.min.js"></script>|' index.html
+            echo "✅ coi-serviceworker injected"
+          fi
+
+      # ── Deploy to GitHub Pages ─────────────────────────────────────
+      - name: "📄 Setup Pages"
+        uses: actions/configure-pages@v5
+
+      - name: "📦 Upload artifact"
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - name: "🚀 Deploy to Pages"
+        id: deployment
+        uses: actions/deploy-pages@v4
