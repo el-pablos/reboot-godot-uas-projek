@@ -35,6 +35,11 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[gui]
+
+theme/default_font="res://assets/fonts/PressStart2P.ttf"
+theme/default_font_size=12
+
 [input]
 
 move_left={
