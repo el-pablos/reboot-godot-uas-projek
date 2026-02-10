@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/overlord_fortress_clouds.png" id="11_clouds"]
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/overlord_fortress_far.png" id="12_far"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="13_core_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_lava.png" id="14_hazard_lava"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_laser.png" id="15_hazard_laser"]
 
 [sub_resource type="Environment" id="Environment_fortress"]
 background_mode = 3
@@ -188,12 +190,11 @@ collision_layer = 8
 script = ExtResource("6_hazard_script")
 instant_kill = true
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool1" unique_id=1766695229]
-offset_left = -80.0
-offset_top = -15.0
-offset_right = 80.0
-offset_bottom = 30.0
-color = Color(1, 0.3, 0.05, 1)
+[node name="Sprite" type="Sprite2D" parent="Hazards/LavaPool1" unique_id=1766695229]
+position = Vector2(0, 7.5)
+scale = Vector2(2.5, 2.813)
+texture = ExtResource("14_hazard_lava")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool1" unique_id=616599225]
 polygon = PackedVector2Array(-80, -15, 80, -15, 80, 30, -80, 30)
@@ -204,12 +205,11 @@ collision_layer = 8
 script = ExtResource("6_hazard_script")
 instant_kill = true
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LavaPool2" unique_id=1562715399]
-offset_left = -100.0
-offset_top = -15.0
-offset_right = 100.0
-offset_bottom = 40.0
-color = Color(1, 0.35, 0.1, 1)
+[node name="Sprite" type="Sprite2D" parent="Hazards/LavaPool2" unique_id=1562715399]
+position = Vector2(0, 12.5)
+scale = Vector2(3.125, 3.438)
+texture = ExtResource("14_hazard_lava")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LavaPool2" unique_id=889025555]
 polygon = PackedVector2Array(-100, -15, 100, -15, 100, 40, -100, 40)
@@ -220,12 +220,10 @@ collision_layer = 8
 script = ExtResource("6_hazard_script")
 damage = 35
 
-[node name="Sprite" type="ColorRect" parent="Hazards/LaserTrap1" unique_id=494651145]
-offset_left = -5.0
-offset_top = -80.0
-offset_right = 5.0
-offset_bottom = 80.0
-color = Color(1, 0.1, 0.1, 0.9)
+[node name="Sprite" type="Sprite2D" parent="Hazards/LaserTrap1" unique_id=494651145]
+scale = Vector2(1.25, 2.5)
+texture = ExtResource("15_hazard_laser")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/LaserTrap1" unique_id=816585983]
 polygon = PackedVector2Array(-5, -80, 5, -80, 5, 80, -5, 80)

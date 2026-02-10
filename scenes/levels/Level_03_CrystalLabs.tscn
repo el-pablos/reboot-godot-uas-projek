@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/crystal_labs_clouds.png" id="11_clouds"]
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/crystal_labs_far.png" id="12_far"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="13_core_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_toxic.png" id="14_hazard_toxic"]
 
 [sub_resource type="Environment" id="Environment_crystal"]
 background_mode = 3
@@ -198,12 +199,11 @@ collision_layer = 8
 script = ExtResource("8_hazard_script")
 damage = 25
 
-[node name="Sprite" type="ColorRect" parent="Hazards/ToxicPool1" unique_id=155252998]
-offset_left = -60.0
-offset_top = -10.0
-offset_right = 60.0
-offset_bottom = 20.0
-color = Color(0.2, 0.8, 0.3, 0.8)
+[node name="Sprite" type="Sprite2D" parent="Hazards/ToxicPool1" unique_id=155252998]
+position = Vector2(0, 5)
+scale = Vector2(1.875, 1.875)
+texture = ExtResource("14_hazard_toxic")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/ToxicPool1" unique_id=1004241001]
 polygon = PackedVector2Array(-60, -10, 60, -10, 60, 20, -60, 20)

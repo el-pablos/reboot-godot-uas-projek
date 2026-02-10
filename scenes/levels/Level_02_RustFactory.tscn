@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/rust_factory_sky.png" id="10_sky"]
 [ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/rust_factory_far.png" id="11_far"]
 [ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="12_core_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_press.png" id="13_hazard_press"]
 
 [sub_resource type="Environment" id="Environment_factory"]
 background_mode = 3
@@ -172,12 +173,11 @@ press_distance = 180.0
 [node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress1" unique_id=2006890434]
 collision_layer = 4
 
-[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress1/PressBody" unique_id=877004648]
-offset_left = -30.0
-offset_top = -20.0
-offset_right = 30.0
-offset_bottom = 80.0
-color = Color(0.6, 0.2, 0.1, 1)
+[node name="Sprite" type="Sprite2D" parent="Hazards/MachinePress1/PressBody" unique_id=877004648]
+position = Vector2(0, 30)
+scale = Vector2(1.875, 2.083)
+texture = ExtResource("13_hazard_press")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress1/PressBody" unique_id=1680632786]
 polygon = PackedVector2Array(-30, -20, 30, -20, 30, 80, -30, 80)
@@ -197,12 +197,11 @@ press_delay = 2.0
 [node name="PressBody" type="StaticBody2D" parent="Hazards/MachinePress2" unique_id=523552600]
 collision_layer = 4
 
-[node name="Sprite" type="ColorRect" parent="Hazards/MachinePress2/PressBody" unique_id=529032163]
-offset_left = -30.0
-offset_top = -20.0
-offset_right = 30.0
-offset_bottom = 80.0
-color = Color(0.6, 0.2, 0.1, 1)
+[node name="Sprite" type="Sprite2D" parent="Hazards/MachinePress2/PressBody" unique_id=529032163]
+position = Vector2(0, 30)
+scale = Vector2(1.875, 2.083)
+texture = ExtResource("13_hazard_press")
+texture_filter = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hazards/MachinePress2/PressBody" unique_id=539289877]
 polygon = PackedVector2Array(-30, -20, 30, -20, 30, 80, -30, 80)
