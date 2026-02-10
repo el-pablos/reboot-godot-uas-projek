@@ -59,6 +59,11 @@ func _ready() -> void:
 	
 	# Notify level started
 	level_started.emit()
+	
+	# Play BGM
+	if AudioManager:
+		AudioManager.play_bgm("main")
+	
 	print("[Level] %s dimulai!" % level_name)
 
 

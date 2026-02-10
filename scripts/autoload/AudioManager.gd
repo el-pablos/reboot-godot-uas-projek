@@ -5,10 +5,11 @@
 # ===================================================
 # Mengelola semua audio: musik, SFX, volume settings.
 # Mendukung pemanggilan SFX via String name (smart dictionary).
+# NOTE: Autoload scripts MUST NOT have class_name!
+# Access via: AudioManager (global singleton)
 # ===================================================
 
 extends Node
-class_name AudioManagerClass
 
 # --- AUDIO BUSES ---
 const MASTER_BUS: String = "Master"
@@ -45,6 +46,11 @@ const SFX_PATHS: Dictionary = {
 
 # Set to true to suppress missing file warnings
 const SILENT_MISSING_AUDIO: bool = true
+
+# --- BGM PATHS ---
+const BGM_PATHS: Dictionary = {
+	"main": "res://assets/audio/music/bgm_main.wav",
+}
 
 # Cache untuk SFX yang sudah di-load
 var sfx_cache: Dictionary = {}
@@ -87,6 +93,21 @@ func stop_music(fade_out: float = 0.5) -> void:
 	var tween := create_tween()
 	tween.tween_property(music_player, "volume_db", -80.0, fade_out)
 	tween.tween_callback(music_player.stop)
+
+
+func play_bgm(bgm_name: String, fade_in: float = 0.5) -> void:
+	"""Play BGM by name from BGM_PATHS dictionary."""
+	if not BGM_PATHS.has(bgm_name):
+		if not SILENT_MISSING_AUDIO:
+			push_warning("[AudioManager] BGM '%s' not in library" % bgm_name)
+		return
+	var path: String = BGM_PATHS[bgm_name]
+	if ResourceLoader.exists(path):
+		var stream = load(path)
+		if stream is AudioStream:
+			play_music(stream, fade_in)
+	elif not SILENT_MISSING_AUDIO:
+		push_warning("[AudioManager] BGM file not found: %s" % path)
 
 
 # === SFX ===
