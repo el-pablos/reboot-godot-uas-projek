@@ -124,17 +124,18 @@ jobs:
             | **Timestamp** | `${{ github.event.head_commit.timestamp }}` |
             | **Workflow** | [Lihat run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
 
-            ### 📦 Artifacts
-            - `REBOOT.exe` — Windows build
-            - `REBOOT.x86_64` + `REBOOT.pck` — Linux build  
-            - `index.html` + assets — Web build
+            ### 📦 Downloads
+            - `REBOOT.exe` — Windows (PCK embedded, single file)
+            - `REBOOT.x86_64` — Linux (PCK embedded, single file)
+
+            ### 🌐 Web
+            Mainkan di browser: https://${{ github.repository_owner }}.github.io/reboot-godot-uas-projek/
 
             ---
             *Release otomatis oleh GitHub Actions, tanpa token pribadi.*
           files: |
             build/windows/*
             build/linux/*
-            build/web/*
           fail_on_unmatched_files: false
           draft: false
           prerelease: false
