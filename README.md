@@ -8,8 +8,7 @@
 ![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-[![🧪 Headless Tests](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/test.yml)
-[![📦 Export Builds](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/export.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/export.yml)
+[![🚀 Auto Release](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/release-on-push.yml/badge.svg)](https://github.com/el-pablos/reboot-godot-uas-projek/actions/workflows/release-on-push.yml)
 
 **2D Action Platformer** • Dibuat dengan **Godot Engine 4.6**
 
@@ -228,6 +227,40 @@ project-reboot/
 ├── test/                   # 188 headless tests (6 suites)
 └── project.godot           # Godot project config
 ```
+
+---
+
+## 🚀 Automated Releases
+
+Setiap push ke branch `master` otomatis:
+1. **Headless Tests** — 188 unit tests dijalankan
+2. **Export Builds** — Windows, Linux, dan Web
+3. **GitHub Release** — tag `v0.1.<run>` dibuat + artifacts di-attach
+
+### Versioning Scheme
+
+| Format | Contoh | Penjelasan |
+|--------|--------|------------|
+| `v0.1.<RUN_NUMBER>` | `v0.1.42` | Nomor run workflow GitHub Actions |
+
+Tag dibuat otomatis oleh `github-actions[bot]`, tanpa token pribadi.
+
+### Download Builds
+
+> **[📥 Releases Page](https://github.com/el-pablos/reboot-godot-uas-projek/releases)**
+
+Setiap release berisi:
+- `REBOOT.exe` — Windows build
+- `REBOOT.x86_64` + `REBOOT.pck` — Linux build
+- `index.html` + assets — Web build (playable in browser)
+
+### Quality Gate
+
+Release **tidak akan dibuat** jika:
+- Headless tests gagal (exit code ≠ 0)
+- Export build error
+
+Pipeline berjalan di satu job berurutan sehingga kegagalan di step manapun menghentikan proses.
 
 ---
 
