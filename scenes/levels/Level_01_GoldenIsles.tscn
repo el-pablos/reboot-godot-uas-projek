@@ -1,10 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://level_01_golden_isles"]
+[gd_scene load_steps=12 format=3 uid="uid://level_01_golden_isles"]
 
 [ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1_level_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_placeholder.png" id="2_ground"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/platform_placeholder.png" id="4_platform"]
 [ext_resource type="Script" path="res://scripts/collectibles/CoreFragment.gd" id="5_core_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/golden_isles_sky.png" id="6_sky"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/golden_isles_clouds.png" id="7_clouds"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/golden_isles_far.png" id="8_far"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="9_core_tex"]
 
 [sub_resource type="Environment" id="Environment_glow"]
 background_mode = 3
@@ -54,36 +58,26 @@ environment = SubResource("Environment_glow")
 [node name="SkyLayer" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.1, 0.1)
 
-[node name="Sky" type="ColorRect" parent="Background/SkyLayer"]
-offset_left = -2000.0
-offset_top = -1000.0
-offset_right = 4000.0
-offset_bottom = 2000.0
-color = Color(0.529, 0.808, 0.922, 1)
+[node name="Sky" type="Sprite2D" parent="Background/SkyLayer"]
+position = Vector2(640, 0)
+scale = Vector2(8, 8)
+texture = ExtResource("6_sky")
+
+[node name="FarLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.2, 0.2)
+
+[node name="Far" type="Sprite2D" parent="Background/FarLayer"]
+position = Vector2(640, 200)
+scale = Vector2(8, 4)
+texture = ExtResource("8_far")
 
 [node name="CloudLayer" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.3, 0.2)
 
-[node name="Cloud1" type="ColorRect" parent="Background/CloudLayer"]
-offset_left = 100.0
-offset_top = -200.0
-offset_right = 250.0
-offset_bottom = -150.0
-color = Color(1, 1, 1, 0.7)
-
-[node name="Cloud2" type="ColorRect" parent="Background/CloudLayer"]
-offset_left = 500.0
-offset_top = -100.0
-offset_right = 700.0
-offset_bottom = -50.0
-color = Color(1, 1, 1, 0.6)
-
-[node name="Cloud3" type="ColorRect" parent="Background/CloudLayer"]
-offset_left = 900.0
-offset_top = -180.0
-offset_right = 1100.0
-offset_bottom = -120.0
-color = Color(1, 1, 1, 0.8)
+[node name="Clouds" type="Sprite2D" parent="Background/CloudLayer"]
+position = Vector2(640, -80)
+scale = Vector2(8, 4)
+texture = ExtResource("7_clouds")
 
 [node name="Environment" type="Node2D" parent="."]
 
@@ -167,7 +161,7 @@ core_id = 1
 [node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment"]
 scale = Vector2(2, 2)
 self_modulate = Color(1, 0.9, 0.2, 1)
-texture = ExtResource("2_ground")
+texture = ExtResource("9_core_tex")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Collectibles/CoreFragment"]
 

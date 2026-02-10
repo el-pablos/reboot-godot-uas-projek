@@ -8,6 +8,9 @@
 [ext_resource type="Script" path="res://scripts/hazards/MachinePress.gd" id="6_press_script"]
 [ext_resource type="PackedScene" path="res://scenes/bosses/BossScrapper.tscn" id="7_boss"]
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="7_x8pr8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/rust_factory_sky.png" id="10_sky"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/rust_factory_far.png" id="11_far"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="12_core_tex"]
 
 [sub_resource type="Environment" id="Environment_factory"]
 background_mode = 3
@@ -49,15 +52,21 @@ environment = SubResource("Environment_factory")
 
 [node name="Background" type="ParallaxBackground" parent="." unique_id=2034565734]
 
-[node name="FactoryBG" type="ParallaxLayer" parent="Background" unique_id=1321788547]
+[node name="SkyLayer" type="ParallaxLayer" parent="Background"]
+motion_scale = Vector2(0.1, 0.1)
+
+[node name="Sky" type="Sprite2D" parent="Background/SkyLayer"]
+position = Vector2(640, 0)
+scale = Vector2(8, 8)
+texture = ExtResource("10_sky")
+
+[node name="FarLayer" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.2, 0.2)
 
-[node name="BGRect" type="ColorRect" parent="Background/FactoryBG" unique_id=467768799]
-offset_left = -2000.0
-offset_top = -1000.0
-offset_right = 4000.0
-offset_bottom = 2000.0
-color = Color(0.15, 0.1, 0.08, 1)
+[node name="Far" type="Sprite2D" parent="Background/FarLayer"]
+position = Vector2(640, 200)
+scale = Vector2(8, 4)
+texture = ExtResource("11_far")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=393630457]
 color = Color(0.18, 0.15, 0.14, 1)
@@ -215,7 +224,7 @@ core_id = 2
 [node name="Sprite" type="Sprite2D" parent="Collectibles/CoreFragment" unique_id=1661230590]
 self_modulate = Color(1, 0.5, 0.2, 1)
 scale = Vector2(2, 2)
-texture = ExtResource("2_ground")
+texture = ExtResource("12_core_tex")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collectibles/CoreFragment" unique_id=313048996]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
