@@ -17,6 +17,7 @@ signal level_completed(level_name: String)
 signal ability_unlocked(ability_name: String)
 signal game_paused(is_paused: bool)
 signal player_stats_changed  # Emitted when abilities/stats change
+signal health_changed(current: int, max_hp: int)  # Emitted when HP changes
 
 # --- KONSTANTA ---
 const MAX_CORES: int = 5
@@ -139,6 +140,7 @@ func apply_upgrades_to_player(player_node: Node) -> void:
 func damage_player(amount: int) -> void:
 	"""Kurangi HP pemain. Emit signal jika mati."""
 	player_health = max(0, player_health - amount)
+	health_changed.emit(player_health, player_max_health)
 	print("[GameManager] Player kena damage: %d. HP tersisa: %d" % [amount, player_health])
 	
 	if player_health <= 0:
@@ -150,6 +152,7 @@ func damage_player(amount: int) -> void:
 func heal_player(amount: int) -> void:
 	"""Tambah HP pemain (tidak melebihi max)."""
 	player_health = min(player_max_health, player_health + amount)
+	health_changed.emit(player_health, player_max_health)
 	print("[GameManager] Player heal: +%d. HP sekarang: %d" % [amount, player_health])
 
 
@@ -157,6 +160,7 @@ func reset_health() -> void:
 	"""Reset HP ke full (saat respawn/new game)."""
 	player_health = player_max_health
 	is_game_over = false
+	health_changed.emit(player_health, player_max_health)
 
 
 # === FUNGSI PAUSE ===

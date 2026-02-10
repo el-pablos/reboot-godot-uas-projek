@@ -153,8 +153,12 @@ func _ready() -> void:
 	add_child(state_machine)
 	state_machine.setup(self)
 	
-	# Initialize health
-	current_health = max_health
+	# Initialize health from GameManager (single source of truth)
+	if GameManager:
+		current_health = GameManager.player_health
+		max_health = GameManager.player_max_health
+	else:
+		current_health = max_health
 	
 	# CRITICAL: Sync with GameManager (Source of Truth)
 	_sync_from_game_manager()
@@ -653,6 +657,10 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	current_health = maxi(0, current_health - amount)
 	health_changed.emit(current_health, max_health)
 	
+	# Sync to GameManager (single source of truth)
+	if GameManager:
+		GameManager.player_health = current_health
+	
 	# Knockback
 	if knockback_dir != Vector2.ZERO:
 		velocity = knockback_dir.normalized() * knockback_force
@@ -689,6 +697,10 @@ func _start_invincibility() -> void:
 func heal(amount: int) -> void:
 	current_health = mini(current_health + amount, max_health)
 	health_changed.emit(current_health, max_health)
+	
+	# Sync to GameManager
+	if GameManager:
+		GameManager.player_health = current_health
 
 
 func _die() -> void:

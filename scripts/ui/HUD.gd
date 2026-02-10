@@ -19,22 +19,32 @@ class_name HUD
 @onready var glide_icon: TextureRect = $MarginContainer/VBoxContainer/AbilityContainer/GlideIcon if has_node("MarginContainer/VBoxContainer/AbilityContainer/GlideIcon") else null
 
 
+# Cached player reference
+var _cached_player: Player = null
+
+
 func _ready() -> void:
 	# Connect ke GameManager signals
 	if GameManager:
 		GameManager.core_collected.connect(_on_core_collected)
 		GameManager.ability_unlocked.connect(_on_ability_unlocked)
+		GameManager.health_changed.connect(_on_gm_health_changed)
 	
 	# Initial update
 	_update_core_counter(GameManager.cores_collected if GameManager else 0)
 	_update_abilities()
+	
+	# Initial health from GameManager
+	if GameManager:
+		_update_health_bar(GameManager.player_health, GameManager.player_max_health)
 
 
 func _process(_delta: float) -> void:
-	# Update health dari player (jika ada)
-	var player := _find_player()
-	if player:
-		_update_health_bar(player.current_health, player.max_health)
+	# Only find player once (cache reference)
+	if _cached_player == null or not is_instance_valid(_cached_player):
+		_cached_player = _find_player()
+		if _cached_player:
+			connect_to_player(_cached_player)
 
 
 func _find_player() -> Player:
@@ -82,6 +92,10 @@ func connect_to_player(player: Player) -> void:
 
 func _on_player_health_changed(new_health: int, max_health: int) -> void:
 	_update_health_bar(new_health, max_health)
+
+
+func _on_gm_health_changed(current: int, max_hp: int) -> void:
+	_update_health_bar(current, max_hp)
 
 
 # === CORE COUNTER ===
