@@ -226,6 +226,6 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 **Made with ❤️ and ☕ using Godot Engine**
 
-*Project: REBOOT — Version 0.2.0*
+*Project: REBOOT — Version 1.0.0*
 
 </div>

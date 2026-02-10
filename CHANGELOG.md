@@ -5,6 +5,39 @@ Semua perubahan penting pada project ini akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan project ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-02-11
+
+### Added
+- Settings Menu lengkap (audio/video/gameplay) dengan persist ke ConfigFile
+- SettingsManager autoload untuk kelola settings global
+- Audio bus layout: Master, Music, SFX
+- CI/CD: GitHub Actions headless test + export builds workflow
+- Export presets: Windows Desktop, Linux, Web
+- RELEASE_NOTES.md untuk reviewer
+- SECURITY.md untuk standar repo
+- GitHub Actions CI badges di README
+
+### Fixed
+- Boss Level 4 (Tempest) dipindah ke atas TopPlatform (sebelumnya unreachable)
+- Boss Level 5 (Overlord) dipindah ke dalam BossArena (sebelumnya di luar)
+- ToxicPool1 Level 3 dikasih Hazard script (sebelumnya tidak ada damage)
+- killzone_y semua level dikecilkan ke 800 (konsisten, anti-softlock)
+- GameManager.reset_health() dipanggil saat respawn (fix health desync)
+- Hit-stop dan screen-shake sekarang pakai SettingsManager (bisa dimatikan)
+- Camera shake cek SettingsManager sebelum aktif
+
+### Improved
+- Game feel: hit feedback, collect feedback, damage camera shake
+- Git hygiene: md/ untracked, test/ tracked, .import/ ignored
+- README sinkron dengan CI (119 tests, badges, headless instructions)
+
+### Tests
+- 119/119 unit tests passed
+- CI headless tests stabil (3 runs sukses berturut-turut)
+- Export builds workflow sukses (Windows + Linux + Web artifacts)
+
+---
+
 ## [0.2.0] - 2026-02-11
 
 ### Fixed (P0 — Critical)
