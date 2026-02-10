@@ -4,10 +4,11 @@
 # Author: el-pablos
 # ===================================================
 # Mengelola state game, progress pemain, dan data persistent.
+# NOTE: Autoload scripts MUST NOT have class_name!
+# Access via: GameManager (global singleton)
 # ===================================================
 
 extends Node
-class_name GameManagerClass
 
 # --- SIGNALS ---
 signal core_collected(total: int)
@@ -22,7 +23,7 @@ const MAX_CORES: int = 5
 const SAVE_PATH: String = "user://savegame.save"
 
 # DEBUG: Set ke true untuk force unlock abilities (untuk testing Level 4+)
-const DEBUG_UNLOCK_ALL_ABILITIES: bool = true
+const DEBUG_UNLOCK_ALL_ABILITIES: bool = false
 
 # --- DATA PEMAIN ---
 var player_health: int = 100
