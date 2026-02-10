@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://gameover_screen_scene"]
+[gd_scene load_steps=3 format=3 uid="uid://gameover_screen_scene"]
 
 [ext_resource type="Script" path="res://scripts/ui/GameOverScreen.gd" id="1_gameover_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gameover_panel"]
+bg_color = Color(0.1, 0.02, 0.02, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.3, 0.3, 0.5)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="GameOverScreen" type="CanvasLayer"]
 layer = 25
@@ -26,6 +38,7 @@ offset_right = 180.0
 offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gameover_panel")
 
 [node name="MarginContainer" type="MarginContainer" parent="GameOverPanel"]
 layout_mode = 2

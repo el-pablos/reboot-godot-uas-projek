@@ -1,6 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://pause_menu_scene"]
+[gd_scene load_steps=5 format=3 uid="uid://pause_menu_scene"]
 
 [ext_resource type="Script" path="res://scripts/ui/PauseMenu.gd" id="1_pause_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/panel_bg.png" id="2_panel_bg"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pause_panel"]
+texture = ExtResource("2_panel_bg")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause_bg"]
+bg_color = Color(0, 0, 0, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.8, 1, 0.3)
 
 [node name="PauseMenu" type="CanvasLayer"]
 layer = 20
@@ -26,6 +44,7 @@ offset_right = 150.0
 offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pause_bg")
 
 [node name="MarginContainer" type="MarginContainer" parent="PausePanel"]
 layout_mode = 2
@@ -40,6 +59,7 @@ theme_override_constants/separation = 15
 
 [node name="TitleLabel" type="Label" parent="PausePanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 28
 text = "PAUSED"
 horizontal_alignment = 1

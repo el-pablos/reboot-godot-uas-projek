@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://placeholder_main_menu"]
+[gd_scene load_steps=7 format=3 uid="uid://placeholder_main_menu"]
 
 [ext_resource type="Script" path="res://scripts/ui/MainMenu.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/panel_bg.png" id="2_panel_bg"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/button_normal.png" id="3_btn_normal"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/button_hover.png" id="4_btn_hover"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/button_pressed.png" id="5_btn_pressed"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/golden_isles_sky.png" id="6_bg_sky"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -11,12 +16,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.0784314, 0.117647, 0.2, 1)
+texture = ExtResource("6_bg_sky")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.0, 0.0, 0.1, 0.5)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -35,12 +49,15 @@ theme_override_constants/separation = 20
 
 [node name="Title" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.5)
 theme_override_font_sizes/font_size = 48
 text = "PROJECT: REBOOT"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 16
 text = "Selamatkan Arcadia dari Overlord!"
 horizontal_alignment = 1
@@ -76,7 +93,7 @@ offset_left = -100.0
 offset_top = -30.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "v0.1.0 - Alpha"
+text = "v1.0.0"
 horizontal_alignment = 2
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_pressed"]

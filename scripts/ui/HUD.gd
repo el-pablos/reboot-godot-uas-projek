@@ -121,12 +121,14 @@ func _update_abilities() -> void:
 	if not GameManager:
 		return
 	
-	# Update visibility/modulate based on unlock status
-	# Karena kita pakai ColorRect sebagai placeholder,
-	# kita bisa set modulate saja
-	
-	# Ini akan di-implement di scene HUD dengan proper icons
-	pass
+	# Update modulate based on unlock status
+	# Locked = dim (0.3 alpha), Unlocked = full bright
+	if dash_icon:
+		dash_icon.modulate = Color(1, 1, 1, 1) if GameManager.can_dash else Color(1, 1, 1, 0.3)
+	if double_jump_icon:
+		double_jump_icon.modulate = Color(1, 1, 1, 1) if GameManager.can_double_jump else Color(1, 1, 1, 0.3)
+	if glide_icon:
+		glide_icon.modulate = Color(1, 1, 1, 1) if GameManager.can_glide else Color(1, 1, 1, 0.3)
 
 
 func _on_ability_unlocked(ability_name: String) -> void:

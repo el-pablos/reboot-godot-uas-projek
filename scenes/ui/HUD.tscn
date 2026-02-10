@@ -1,7 +1,11 @@
-[gd_scene format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1_hud_script"]
 [ext_resource type="Script" path="res://scripts/ui/ModernHealthUI.gd" id="2_atyv1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_dash.png" id="3_dash_icon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_double_jump.png" id="4_djump_icon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_glide.png" id="5_glide_icon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_core.png" id="6_core_icon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_bg"]
 bg_color = Color(0.1, 0.1, 0.15, 0.9)
@@ -54,6 +58,13 @@ text = "100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="CoreIcon" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+texture = ExtResource("6_core_icon")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="CoreCounter" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1629677779]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
@@ -63,56 +74,32 @@ text = "CORE: 0 / 5"
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DashIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=832241910]
+[node name="DashIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=832241910]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 tooltip_text = "Air Dash (Shift)"
-color = Color(0.4, 0.4, 0.4, 0.5)
+texture = ExtResource("3_dash_icon")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(1, 1, 1, 0.3)
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DashIcon" unique_id=1632213784]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "D"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DoubleJumpIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=3566858]
+[node name="DoubleJumpIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=3566858]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 tooltip_text = "Double Jump (Space x2)"
-color = Color(0.4, 0.4, 0.4, 0.5)
+texture = ExtResource("4_djump_icon")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(1, 1, 1, 0.3)
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/DoubleJumpIcon" unique_id=1053240636]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "2J"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="GlideIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=422149836]
+[node name="GlideIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/AbilityContainer" unique_id=422149836]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 tooltip_text = "Glide (Hold Space)"
-color = Color(0.4, 0.4, 0.4, 0.5)
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AbilityContainer/GlideIcon" unique_id=13865452]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "G"
-horizontal_alignment = 1
-vertical_alignment = 1
+texture = ExtResource("5_glide_icon")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(1, 1, 1, 0.3)
 
 [node name="BossHealthContainer" type="VBoxContainer" parent="." unique_id=524799021]
 anchors_preset = 5
