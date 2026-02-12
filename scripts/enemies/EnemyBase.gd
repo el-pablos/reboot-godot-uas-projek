@@ -125,7 +125,9 @@ func _on_ready() -> void:
 
 func _process_idle(_delta: float) -> void:
 	## Override untuk behavior idle.
-	velocity.x = 0
+	# Bosses with BossBrain handle their own velocity — skip zeroing
+	if not get_node_or_null("BossBrain"):
+		velocity.x = 0
 
 
 func _process_patrol(_delta: float) -> void:

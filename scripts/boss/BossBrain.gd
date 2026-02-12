@@ -86,15 +86,19 @@ func _ready() -> void:
 
 	initial_position = boss.global_position
 
-	# Setup arena bounds
+	# Setup arena bounds — expand arena to include player's side of the level
 	if config:
+		# Gunakan arena besar yang center antara boss spawn dan arah player
+		var expanded_size := config.arena_size * 2.0  # 2x lebih lebar
+		expanded_size.x = maxf(expanded_size.x, 1200.0)  # minimal 1200px lebar
+		expanded_size.y = maxf(expanded_size.y, 600.0)
 		var center: Vector2 = initial_position + config.arena_center
 		arena_rect = Rect2(
-			center - config.arena_size / 2,
-			config.arena_size
+			center - expanded_size / 2,
+			expanded_size
 		)
 	else:
-		arena_rect = Rect2(initial_position - Vector2(300, 200), Vector2(600, 400))
+		arena_rect = Rect2(initial_position - Vector2(600, 300), Vector2(1200, 600))
 
 	# Setup RayCast2D untuk LOS
 	_setup_raycast()
@@ -140,13 +144,19 @@ func _update_target() -> void:
 	var player: Node = players[0]
 	var distance: float = boss.global_position.distance_to(player.global_position)
 
+	# SELALU sync target_player ke boss (agar attack handler bisa akses)
+	if "target_player" in boss:
+		if target and is_instance_valid(target):
+			boss.target_player = target
+		else:
+			boss.target_player = null
+
 	if target == null:
 		# Coba lock target
 		if distance <= config.detect_range:
 			target = player
 			_change_state(AIState.CHASE)
-			# Juga update parent boss target_player
-			if boss.has_method("get") and "target_player" in boss:
+			if "target_player" in boss:
 				boss.target_player = player
 	else:
 		# Cek apakah masih valid

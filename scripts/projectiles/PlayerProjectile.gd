@@ -19,8 +19,8 @@ var _timer: float = 0.0
 
 
 func _ready() -> void:
-	# Setup collision jika belum ada
-	if get_child_count() == 0 or not _has_collision_child():
+	# Setup collision jika belum ada (skip jika sudah di-create dari Player._shoot_projectile)
+	if not _has_collision_child():
 		var shape := CollisionShape2D.new()
 		var circle := CircleShape2D.new()
 		circle.radius = 6.0
@@ -36,8 +36,10 @@ func _ready() -> void:
 		add_child(visual)
 
 	# Connect signals
-	body_entered.connect(_on_body_entered)
-	area_entered.connect(_on_area_entered)
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
+	if not area_entered.is_connected(_on_area_entered):
+		area_entered.connect(_on_area_entered)
 
 	# Auto-cleanup
 	var timer := get_tree().create_timer(lifetime)

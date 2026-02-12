@@ -95,11 +95,27 @@ func _on_ready() -> void:
 	# Setup BossBrain jika ada
 	_setup_brain()
 	
+	# Connect HealthBar jika ada
+	_setup_health_bar()
+	
 	print("[Boss] %s muncul! Script: %s | Phase: %d/%d | Brain: %s" % [
 		boss_name, get_script().resource_path.get_file(),
 		current_phase, total_phases,
 		"aktif" if brain else "tidak ada"
 	])
+
+
+func _setup_health_bar() -> void:
+	## Auto-connect HealthBar ProgressBar to health_changed signal.
+	var bar = get_node_or_null("HealthBar")
+	if bar and bar is ProgressBar:
+		bar.max_value = max_health
+		bar.value = current_health
+		health_changed.connect(func(cur: int, mx: int) -> void:
+			bar.max_value = mx
+			bar.value = cur
+		)
+		print("[Boss] HealthBar connected! %d/%d" % [current_health, max_health])
 
 
 func _setup_brain() -> void:

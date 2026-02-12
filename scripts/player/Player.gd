@@ -570,10 +570,17 @@ func _shoot_projectile() -> void:
 	## Spawn energy bolt projectile.
 	var projectile := Area2D.new()
 	projectile.set_script(ProjectileScript)
-	projectile.collision_layer = 32  # projectile layer
-	projectile.collision_mask = 2    # enemy layer
+	projectile.collision_layer = 32  # projectile layer (bit 6)
+	projectile.collision_mask = 6    # enemy (2) + environment (4)
 	projectile.monitoring = true
 	projectile.monitorable = false
+
+	# Pre-create collision shape BEFORE adding to tree so physics registers it immediately
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = 6.0
+	shape.shape = circle
+	projectile.add_child(shape)
 
 	# Direction based on facing
 	var dir := Vector2.RIGHT if facing_right else Vector2.LEFT
@@ -585,7 +592,7 @@ func _shoot_projectile() -> void:
 		offset.x = -offset.x
 	projectile.global_position = global_position + offset
 
-	# Add to scene
+	# Add to scene (collision shape already child → physics registers immediately)
 	get_parent().add_child(projectile)
 
 	print("[Player] 🔫 Projectile fired!")
