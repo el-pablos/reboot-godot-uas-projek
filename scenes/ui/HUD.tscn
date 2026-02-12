@@ -101,6 +101,12 @@ expand_mode = 1
 stretch_mode = 5
 modulate = Color(1, 1, 1, 0.3)
 
+[node name="AttackHint" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.3, 0.85, 1, 0.8)
+text = "J / Mouse Left = Serang"
+
 [node name="BossHealthContainer" type="VBoxContainer" parent="." unique_id=524799021]
 anchors_preset = 5
 anchor_left = 0.5

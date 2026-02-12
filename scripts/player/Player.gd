@@ -86,6 +86,14 @@ var jump_force: float:
 @export var attack_cooldown: float = 0.4
 @export var attack_duration: float = 0.25
 
+# === RANGED ATTACK (Energy Bolt) ===
+@export_group("Ranged Attack")
+@export var shoot_cooldown: float = 0.5
+@export var projectile_offset: Vector2 = Vector2(20, -5)
+
+var _shoot_cooldown_timer: float = 0.0
+var ProjectileScript = preload("res://scripts/projectiles/PlayerProjectile.gd")
+
 # === VISUAL FEEDBACK ===
 @export_group("Juice")
 @export var squash_scale: Vector2 = Vector2(1.25, 0.75)
@@ -498,9 +506,13 @@ func _handle_attack() -> void:
 	"""Check for attack input."""
 	if is_attacking or is_dashing:
 		return
-	
+
 	if Input.is_action_just_pressed("attack") and attack_cooldown_timer <= 0:
+		# Melee swing + ranged shot combo
 		_execute_attack()
+		if _shoot_cooldown_timer <= 0:
+			_shoot_projectile()
+			_shoot_cooldown_timer = shoot_cooldown
 
 
 func _execute_attack() -> void:
@@ -549,12 +561,29 @@ func _end_attack() -> void:
 		attack_hitbox.monitoring = false
 
 
-func _on_attack_hitbox_body_entered(body: Node2D) -> void:
-	"""Deal damage to enemies hit by attack."""
-	if not is_attacking:
-		return
-	
-	if body.is_in_group("enemies") and body.has_method("take_damage"):
+func _shoot_projectile() -> void:
+	"""Spawn energy bolt projectile."""
+	var projectile := Area2D.new()
+	projectile.set_script(ProjectileScript)
+	projectile.collision_layer = 32  # projectile layer
+	projectile.collision_mask = 2    # enemy layer
+	projectile.monitoring = true
+	projectile.monitorable = false
+
+	# Direction based on facing
+	var dir := Vector2.RIGHT if facing_right else Vector2.LEFT
+	projectile.direction = dir
+
+	# Offset from player
+	var offset := projectile_offset
+	if not facing_right:
+		offset.x = -offset.x
+	projectile.global_position = global_position + offset
+
+	# Add to scene
+	get_parent().add_child(projectile)
+
+	print("[Player] 🔫 Projectile fired!")
 		var knockback_dir := Vector2(1 if facing_right else -1, -0.3).normalized()
 		body.take_damage(attack_damage, knockback_dir * attack_knockback)
 		
@@ -606,6 +635,9 @@ func _update_timers(delta: float) -> void:
 	
 	# Attack cooldown
 	attack_cooldown_timer = maxf(0.0, attack_cooldown_timer - delta)
+
+	# Shoot cooldown
+	_shoot_cooldown_timer = maxf(0.0, _shoot_cooldown_timer - delta)
 
 
 # =========================================
