@@ -43,6 +43,8 @@ var phase_hp: int = 0
 var is_attacking: bool = false
 var attack_cooldown_timer: float = 0.0
 var is_invulnerable: bool = false
+var _attack_timer: float = 0.0
+const MAX_ATTACK_DURATION: float = 8.0  # Safety: force-end attacks that hang
 
 # === BOSS BRAIN ===
 var brain: BossBrain = null
@@ -133,6 +135,15 @@ func _physics_process(delta: float) -> void:
 	
 	if is_dead:
 		return
+	
+	# Safety: force-end attacks that hang too long (coroutine leak, stuck in wall)
+	if is_attacking:
+		_attack_timer += delta
+		if _attack_timer >= MAX_ATTACK_DURATION:
+			push_warning("[Boss] %s attack exceeded %ds, force-ending!" % [boss_name, MAX_ATTACK_DURATION])
+			_end_attack()
+	else:
+		_attack_timer = 0.0
 	
 	# Attack cooldown (hanya jika tidak pakai BossBrain)
 	if not brain:

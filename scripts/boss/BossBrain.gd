@@ -511,11 +511,10 @@ func _check_unstuck(delta: float) -> void:
 		_last_position = boss.global_position
 		return
 
-	# Jangan cek saat attacking (boss bisa diam sebentar saat attack)
+	# During attacks: use a longer threshold (boss may be stationary briefly)
+	var effective_threshold := _stuck_threshold
 	if current_state == AIState.ATTACK_CLOSE or current_state == AIState.ATTACK_FAR:
-		_stuck_timer = 0.0
-		_last_position = boss.global_position
-		return
+		effective_threshold = _stuck_threshold * 2.5  # 5s during attacks
 
 	var delta_pos: float = boss.global_position.distance_to(_last_position)
 
@@ -527,7 +526,7 @@ func _check_unstuck(delta: float) -> void:
 	_last_position = boss.global_position
 
 	# Kalau stuck terlalu lama, nudge!
-	if _stuck_timer >= _stuck_threshold:
+	if _stuck_timer >= effective_threshold:
 		_do_unstuck_nudge()
 		_stuck_timer = 0.0
 

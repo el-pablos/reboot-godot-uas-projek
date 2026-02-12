@@ -245,6 +245,15 @@ func _attack_dive_strike() -> void:
 	
 	velocity = Vector2.ZERO
 	
+	# Post-dive: recover altitude toward base_height to avoid getting stuck below
+	var height_diff := base_height - global_position.y
+	if absf(height_diff) > 30.0:
+		var recover_tween := create_tween()
+		if recover_tween:
+			recover_tween.tween_property(self, "global_position:y",
+				base_height + randf_range(-20.0, 20.0), 0.4)
+			await recover_tween.finished
+	
 	if sprite:
 		sprite.modulate = Color.WHITE
 	
