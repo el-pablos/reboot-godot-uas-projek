@@ -73,6 +73,7 @@ var is_dead: bool = false
 
 func _ready() -> void:
 	current_health = max_health
+	add_to_group("enemies")
 	
 	# Setup hitbox
 	if hitbox:
