@@ -34,7 +34,7 @@ var current_level: String = ""
 # --- ABILITY UNLOCK STATUS ---
 # Default semua terkunci, dibuka sesuai progress game
 var can_dash: bool = false         # Unlock setelah Boss 1 (Scrapper)
-var can_double_jump: bool = false  # Unlock setelah Boss 2 (Spore-Bot)
+var can_double_jump: bool = true   # Double jump SELALU aktif
 var can_glide: bool = false        # Unlock setelah Boss 3 (Tempest)
 
 # --- GAME STATE ---
@@ -189,7 +189,7 @@ func new_game() -> void:
 	player_health = player_max_health
 	cores_collected = 0
 	can_dash = false
-	can_double_jump = false
+	can_double_jump = true  # Double jump selalu aktif
 	can_glide = false
 	is_game_over = false
 	is_paused = false

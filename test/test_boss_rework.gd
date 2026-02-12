@@ -234,53 +234,53 @@ func test_gate_starts_with_collision_enabled() -> void:
 # TESTS: LEVEL LOADING WITH GATES
 # -----------------------------------------------------------------------------
 
-func test_level_2_loads_with_gate() -> void:
-	print("\n[Test] Level 2 Loads and Has BossGate")
+func test_level_2_loads_without_gate() -> void:
+	print("\n[Test] Level 2 Loads Without BossGate")
 	var scene = load("res://scenes/levels/Level_02_RustFactory.tscn")
 	assert_not_null(scene, "Level 2 scene harus bisa di-load")
 	if scene:
 		var level = scene.instantiate()
 		var gate = level.get_node_or_null("BossGate")
-		assert_not_null(gate, "Level 2 harus punya BossGate node")
+		assert_true(gate == null, "Level 2 TIDAK boleh punya BossGate (sudah dihapus)")
 		var boss = level.get_node_or_null("BossScrapper")
 		assert_not_null(boss, "Level 2 harus punya BossScrapper")
 		level.queue_free()
 
 
-func test_level_3_loads_with_gate() -> void:
-	print("\n[Test] Level 3 Loads and Has BossGate")
+func test_level_3_loads_without_gate() -> void:
+	print("\n[Test] Level 3 Loads Without BossGate")
 	var scene = load("res://scenes/levels/Level_03_CrystalLabs.tscn")
 	assert_not_null(scene, "Level 3 scene harus bisa di-load")
 	if scene:
 		var level = scene.instantiate()
 		var gate = level.get_node_or_null("BossGate")
-		assert_not_null(gate, "Level 3 harus punya BossGate node")
+		assert_true(gate == null, "Level 3 TIDAK boleh punya BossGate (sudah dihapus)")
 		var boss = level.get_node_or_null("BossSporeBot")
 		assert_not_null(boss, "Level 3 harus punya BossSporeBot")
 		level.queue_free()
 
 
-func test_level_4_loads_with_gate() -> void:
-	print("\n[Test] Level 4 Loads and Has BossGate")
+func test_level_4_loads_without_gate() -> void:
+	print("\n[Test] Level 4 Loads Without BossGate")
 	var scene = load("res://scenes/levels/Level_04_StormSpire.tscn")
 	assert_not_null(scene, "Level 4 scene harus bisa di-load")
 	if scene:
 		var level = scene.instantiate()
 		var gate = level.get_node_or_null("BossGate")
-		assert_not_null(gate, "Level 4 harus punya BossGate node")
+		assert_true(gate == null, "Level 4 TIDAK boleh punya BossGate (sudah dihapus)")
 		var boss = level.get_node_or_null("BossTempest")
 		assert_not_null(boss, "Level 4 harus punya BossTempest")
 		level.queue_free()
 
 
-func test_level_5_loads_with_gate() -> void:
-	print("\n[Test] Level 5 Loads and Has BossGate")
+func test_level_5_loads_without_gate() -> void:
+	print("\n[Test] Level 5 Loads Without BossGate")
 	var scene = load("res://scenes/levels/Level_05_OverlordFortress.tscn")
 	assert_not_null(scene, "Level 5 scene harus bisa di-load")
 	if scene:
 		var level = scene.instantiate()
 		var gate = level.get_node_or_null("BossGate")
-		assert_not_null(gate, "Level 5 harus punya BossGate node")
+		assert_true(gate == null, "Level 5 TIDAK boleh punya BossGate (sudah dihapus)")
 		var boss = level.get_node_or_null("BossOverlord")
 		assert_not_null(boss, "Level 5 harus punya BossOverlord")
 		level.queue_free()

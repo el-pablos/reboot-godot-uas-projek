@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/items/core_fragment.png" id="13_core_tex"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_lava.png" id="14_hazard_lava"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/hazard_laser.png" id="15_hazard_laser"]
-[ext_resource type="Script" path="res://scripts/boss/BossGate.gd" id="16_gate_script"]
 
 [sub_resource type="Environment" id="Environment_fortress"]
 background_mode = 3
@@ -267,19 +266,3 @@ position = Vector2(1200, 380)
 collision_layer = 2
 collision_mask = 5
 
-[node name="BossGate" type="StaticBody2D" parent="."]
-position = Vector2(1400, 380)
-collision_layer = 4
-collision_mask = 0
-script = ExtResource("16_gate_script")
-gate_color = Color(1, 0.2, 0.2, 0.7)
-
-[node name="GateSprite" type="ColorRect" parent="BossGate"]
-offset_left = -10.0
-offset_top = -80.0
-offset_right = 10.0
-offset_bottom = 80.0
-color = Color(1, 0.2, 0.2, 0.7)
-
-[node name="GateCollision" type="CollisionPolygon2D" parent="BossGate"]
-polygon = PackedVector2Array(-10, -80, 10, -80, 10, 80, -10, 80)
