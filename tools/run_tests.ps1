@@ -56,7 +56,7 @@ Write-Host ""
 
 $exitCode = 0
 try {
-    $process = Start-Process -FilePath $GodotPath -ArgumentList "--headless", "--path", $ProjectDir, "--quit" -Wait -PassThru -NoNewWindow
+    $process = Start-Process -FilePath $GodotPath -ArgumentList "--headless", "--path", $ProjectDir -Wait -PassThru -NoNewWindow
     $exitCode = $process.ExitCode
 } catch {
     Write-Host "⚠️ Error menjalankan Godot: $_" -ForegroundColor Yellow
