@@ -4,7 +4,7 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-147%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-255%20Passed-success?style=for-the-badge)
 ![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
@@ -124,9 +124,9 @@ godot --headless --path . --quit    # verifikasi parse
 
 | Metric | Status |
 |--------|--------|
-| Unit Tests | **147/147 Passed** ✅ |
+| Unit Tests | **255/255 Passed** ✅ |
 | Parse Errors | **0** ✅ |
-| Test Suites | **7** ✅ |
+| Test Suites | **8** ✅ |
 | Headless Import | **Clean** ✅ |
 
 ### Menjalankan Test
@@ -158,14 +158,15 @@ Script otomatis: swap main scene → run headless → restore → exit code 0 = 
 | test_combat_system.gd | 18 |
 | test_gameplay_qa.gd | 32 |
 | test_boss_rework.gd | 16 |
-| **Total** | **147** |
+| test_regression.gd | 42 |
+| **Total** | **255** |
 
 ---
 
 ## 🚀 CI/CD & Auto Release
 
 Setiap push ke branch `master` otomatis:
-1. **Headless Tests** — 147 unit tests dijalankan
+1. **Headless Tests** — 255 unit tests dijalankan
 2. **Export Builds** — Windows, Linux, dan Web
 3. **GitHub Release** — tag `v0.1.<run>` + desktop builds
 4. **Web Deploy** — build web ke GitHub Pages
@@ -287,7 +288,7 @@ project-reboot/
 │   ├── hazards/        # MachinePress, WindZone, LaserTrap, ToxicPool, LavaPool
 │   ├── collectibles/   # CoreFragment
 │   └── ui/             # HUD, DialogSystem, PauseMenu, MainMenu, ModernHealthUI
-├── test/               # 147 headless tests (7 suites)
+├── test/               # 255 headless tests (8 suites)
 ├── tools/              # run_tests, capture_screenshots, scene_patcher
 └── project.godot
 ```
