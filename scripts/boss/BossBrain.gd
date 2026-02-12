@@ -70,6 +70,13 @@ var roam_change_interval: float = 2.5
 # === Phase tracking ===
 var phase_applied: int = 0  # Track which phase modifiers have been applied
 
+# === Unstuck Guard ===
+var _last_position: Vector2 = Vector2.ZERO
+var _stuck_timer: float = 0.0
+var _stuck_threshold: float = 2.0  # detik diam = dianggap stuck
+var _stuck_move_threshold: float = 3.0  # px minimum gerak per frame agar tidak stuck
+var _unstuck_nudge_force: float = 150.0
+
 
 func _ready() -> void:
 	boss = get_parent()
@@ -105,6 +112,7 @@ func _physics_process(delta: float) -> void:
 	_update_timers(delta)
 	_update_state(delta)
 	_execute_state(delta)
+	_check_unstuck(delta)
 	_clamp_to_arena()
 
 
@@ -489,6 +497,68 @@ func is_extra_pattern_phase() -> bool:
 
 
 # === ARENA BOUNDS ===
+
+# === UNSTUCK GUARD ===
+
+func _check_unstuck(delta: float) -> void:
+	"""Deteksi boss stuck (posisi hampir tidak berubah) dan nudge keluar."""
+	if not boss or not is_instance_valid(boss):
+		return
+
+	# Jangan cek saat phase change atau recovering (memang diam)
+	if current_state == AIState.PHASE_CHANGE or current_state == AIState.RECOVER:
+		_stuck_timer = 0.0
+		_last_position = boss.global_position
+		return
+
+	# Jangan cek saat attacking (boss bisa diam sebentar saat attack)
+	if current_state == AIState.ATTACK_CLOSE or current_state == AIState.ATTACK_FAR:
+		_stuck_timer = 0.0
+		_last_position = boss.global_position
+		return
+
+	var delta_pos: float = boss.global_position.distance_to(_last_position)
+
+	if delta_pos < _stuck_move_threshold:
+		_stuck_timer += delta
+	else:
+		_stuck_timer = 0.0
+
+	_last_position = boss.global_position
+
+	# Kalau stuck terlalu lama, nudge!
+	if _stuck_timer >= _stuck_threshold:
+		_do_unstuck_nudge()
+		_stuck_timer = 0.0
+
+
+func _do_unstuck_nudge() -> void:
+	"""Nudge boss ke arah aman saat terdeteksi stuck."""
+	if not boss:
+		return
+
+	print("[BossBrain] UNSTUCK: Boss %s stuck, nudging!" % boss.name)
+
+	# Strategi: nudge menuju target jika ada, atau ke arah arena center
+	var nudge_dir: Vector2 = Vector2.ZERO
+
+	if target and is_instance_valid(target):
+		nudge_dir = (target.global_position - boss.global_position).normalized()
+	else:
+		# Nudge ke center arena
+		var arena_center: Vector2 = arena_rect.position + arena_rect.size / 2
+		nudge_dir = (arena_center - boss.global_position).normalized()
+
+	# Untuk flying boss: nudge X dan Y
+	if boss.get("gravity") != null and boss.gravity == 0:
+		boss.velocity = nudge_dir * _unstuck_nudge_force
+		# Juga teleport sedikit untuk keluar collider
+		boss.global_position += nudge_dir * 20.0
+	else:
+		# Ground boss: hanya nudge horizontal + jump
+		boss.velocity.x = nudge_dir.x * _unstuck_nudge_force
+		boss.velocity.y = -200.0  # Kecil jump
+
 
 func _clamp_to_arena() -> void:
 	"""Pastikan boss tidak keluar arena."""

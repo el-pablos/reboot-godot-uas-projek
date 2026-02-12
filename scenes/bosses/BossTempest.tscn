@@ -25,7 +25,7 @@ fill_to = Vector2(0.5, 0)
 
 [node name="BossTempest" type="CharacterBody2D" groups=["enemies", "bosses"]]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 1
 script = ExtResource("1_boss_script")
 boss_name = "Tempest"
 total_phases = 3
