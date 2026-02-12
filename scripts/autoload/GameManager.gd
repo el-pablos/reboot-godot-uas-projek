@@ -21,7 +21,6 @@ signal health_changed(current: int, max_hp: int)  # Emitted when HP changes
 
 # --- KONSTANTA ---
 const MAX_CORES: int = 5
-const SAVE_PATH: String = "user://savegame.save"
 
 # DEBUG: Set ke true untuk force unlock abilities (untuk testing Level 4+)
 const DEBUG_UNLOCK_ALL_ABILITIES: bool = false

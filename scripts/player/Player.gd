@@ -260,14 +260,17 @@ func _physics_process(delta: float) -> void:
 	# Process attack timer
 	_process_attack(delta)
 	
+	# Capture falling velocity BEFORE move_and_slide zeroes it on landing
+	var pre_move_velocity_y := velocity.y
+	
 	# Apply movement
 	move_and_slide()
 	
 	# Update state machine
 	_update_state()
 	
-	# Check for landing
-	_check_landing(on_floor)
+	# Check for landing (use pre-move velocity for impact calculation)
+	_check_landing(on_floor, pre_move_velocity_y)
 	
 	was_on_floor = on_floor
 
@@ -684,13 +687,13 @@ func _on_state_changed_play_anim(_old_state: String, new_state: String) -> void:
 # LANDING DETECTION
 # =========================================
 
-func _check_landing(currently_on_floor: bool) -> void:
+func _check_landing(currently_on_floor: bool, pre_move_vy: float = 0.0) -> void:
 	if currently_on_floor and not was_on_floor:
-		_on_land()
+		_on_land(pre_move_vy)
 
 
-func _on_land() -> void:
-	var impact := absf(velocity.y) if was_on_floor == false else 0.0
+func _on_land(pre_move_vy: float = 0.0) -> void:
+	var impact := absf(pre_move_vy)
 	
 	# Visual feedback
 	_apply_squash()

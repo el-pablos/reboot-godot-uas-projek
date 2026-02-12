@@ -158,9 +158,9 @@ func _attack_lightning_burst() -> void:
 		return
 	
 	var base_dir := (target_player.global_position - global_position).normalized()
-	var _base_angle := base_dir.angle()  # Used for direction reference
+	var base_angle := base_dir.angle()  # Direction toward the player
 	
-	# Spawn multiple projectiles
+	# Spawn multiple projectiles in a spread around the player direction
 	var count := projectile_count if current_phase == 1 else projectile_count + 2
 	var angle_step: float = deg_to_rad(spread_angle) / (count - 1) if count > 1 else 0.0
 	var start_angle := -deg_to_rad(spread_angle) / 2
@@ -169,7 +169,7 @@ func _attack_lightning_burst() -> void:
 		if not _is_valid_for_attack():
 			return
 		var angle: float = start_angle + angle_step * float(i)
-		var direction := Vector2.from_angle(angle)
+		var direction := Vector2.from_angle(base_angle + angle)
 		var target_pos := global_position + direction * 500
 		_spawn_lightning(target_pos)
 		if not await _safe_await_timer(0.05):

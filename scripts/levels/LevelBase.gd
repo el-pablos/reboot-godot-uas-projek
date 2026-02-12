@@ -97,9 +97,11 @@ func _connect_signals() -> void:
 
 
 func _on_player_fell() -> void:
-	## Player jatuh ke void.
+	## Player jatuh ke void — bypass invincibility for instant kill.
 	if player:
-		player.take_damage(player.max_health)  # Instant kill
+		player.current_health = 0
+		player.health_changed.emit(0, player.max_health)
+		player._die()
 
 
 func _on_player_died() -> void:

@@ -79,6 +79,9 @@ func _is_valid_for_attack() -> bool:
 
 
 func _on_ready() -> void:
+	# Register in "bosses" group so BossGate can find us
+	add_to_group("bosses")
+	
 	# Setup phase health
 	if phase_health.size() > 0:
 		phase_hp = phase_health[0]
