@@ -4,7 +4,7 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-205%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-147%20Passed-success?style=for-the-badge)
 ![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
@@ -15,6 +15,8 @@
 
 *"Selamatkan Arcadia dari cengkeraman Overlord!"*
 
+[🎮 Main di Browser](https://el-pablos.github.io/reboot-godot-uas-projek/) · [📥 Download Terbaru](https://github.com/el-pablos/reboot-godot-uas-projek/releases) · [📋 Changelog](https://github.com/el-pablos/reboot-godot-uas-projek/releases)
+
 </div>
 
 ---
@@ -23,126 +25,186 @@
 
 **Project: REBOOT** adalah game platformer aksi 2D yang mengisahkan perjalanan **BIP**, robot kecil yang terbangun di dunia Arcadia yang telah dikuasai oleh **Overlord** — AI jahat yang memberontak terhadap penciptanya.
 
-Jelajahi 5 level unik, kalahkan 4 boss, kumpulkan Core Fragments, dan unlock berbagai kemampuan untuk menghadapi Overlord dalam pertarungan terakhir!
+Jelajahi **5 level unik**, kalahkan **4 boss**, kumpulkan **Core Fragments**, dan unlock berbagai kemampuan untuk menghadapi Overlord dalam pertarungan terakhir!
+
+Sistem gerakan menggunakan **kinematika kustom** (Coyote Time, Jump Buffer, dynamic gravity) untuk game feel yang presisi — terinspirasi oleh Celeste dan Hollow Knight.
 
 ---
 
-## 🕹️ Kontrol
+## 🖼️ Gameplay Preview
 
-| Aksi | Keyboard |
-|------|----------|
-| **Gerak** | `A` `D` atau `←` `→` |
-| **Lompat** | `Space` atau `W` atau `↑` |
-| **Serang** | `J` atau `Mouse Left` *(melee + projectile)* |
-| **Dash** | `Shift` *(setelah unlock)* |
-| **Glide** | Tahan `Space` di udara *(setelah unlock)* |
-| **Pause** | `Escape` |
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="docs/media/01-main-menu.png" width="400"/><br/><b>Main Menu</b></td>
+<td align="center"><img src="docs/media/02-level-1-golden-isles.png" width="400"/><br/><b>Level 1 — The Golden Isles</b></td>
+</tr>
+<tr>
+<td align="center"><img src="docs/media/03-level-4-storm-spire.png" width="400"/><br/><b>Level 4 — Storm Spire (Boss)</b></td>
+<td align="center"><img src="docs/media/04-level-5-overlord-fortress.png" width="400"/><br/><b>Level 5 — Overlord Fortress</b></td>
+</tr>
+</table>
+
+> Screenshot diambil otomatis via CLI — lihat `tools/capture_screenshots.gd`
+</div>
 
 ---
 
-## ✨ Fitur Utama
+## 🕹️ Kontrol & Kemampuan
 
-### 🏃 Movement System
-- Horizontal movement dengan akselerasi & friction
-- Jump dengan **Coyote Time** & **Jump Buffer**
-- **Air Dash** — unlock setelah Boss 1
-- **Double Jump** — unlock setelah Boss 2
-- **Glide** — unlock setelah Boss 3
+| Aksi | Keyboard | Gamepad |
+|------|----------|---------|
+| **Gerak** | `A` `D` / `←` `→` | Left Stick |
+| **Lompat** | `Space` / `W` / `↑` | **A** |
+| **Serang** | `J` / Mouse Left | **RB** |
+| **Dash** | `Shift` *(unlock: Boss 1)* | **X** |
+| **Glide** | Tahan `Space` di udara *(unlock: Boss 3)* | Tahan **A** |
+| **Interact** | `E` | **Y** |
+| **Pause** | `Escape` | **Start** |
 
-### ⚙️ Physics Engine & Kinematic Mathematics
+### Kemampuan Progressive
 
-Game ini menggunakan **algoritma kinematika kustom** untuk memastikan "Game Feel" yang presisi dan konsisten — bukan sekadar angka acak.
+| Ability | Unlock Setelah | Efek |
+|---------|----------------|------|
+| Air Dash | Mengalahkan Scrapper (L2) | Dash horizontal di udara |
+| Double Jump | Mengalahkan Spore-Bot (L3) | Lompat kedua di udara |
+| Glide | Mengalahkan Tempest (L4) | Melayang pelan saat jatuh |
 
-#### 🔬 Rumus Kinematika Lompatan
+---
 
-Berdasarkan persamaan gerak kinematika:
-- `v = v₀ + gt` (kecepatan)
-- `h = v₀t + ½gt²` (perpindahan)
+## 🗺️ Level & Boss
 
-**1. Jump Velocity (Kecepatan Awal Lompatan)**
-```
-v₀ = (2 × h) / t
-```
-Dimana:
-- `h` = tinggi lompatan target (96 pixels)
-- `t` = waktu mencapai puncak (0.4 detik)
-- Hasil: `v₀ = (2 × 96) / 0.4 = 480 px/s` (arah atas = negatif)
-
-**2. Dynamic Gravity System**
-
-*Jump Gravity* (saat naik):
-```
-g_jump = (2 × h) / t²
-g_jump = (2 × 96) / 0.4² = 1200 px/s²
-```
-
-*Fall Gravity* (saat turun):
-```
-g_fall = (2 × h) / t_descent²
-g_fall = (2 × 96) / 0.35² ≈ 1567 px/s²
-```
-
-**3. Mengapa Fall Gravity > Jump Gravity?**
-
-| Fase | Gravity | Efek |
-|------|---------|------|
-| Naik | 1200 px/s² | Terasa "floaty" dan terkontrol |
-| Turun | 1567 px/s² | Jatuh cepat = **snappy & responsive** |
-
-Perbedaan ini menciptakan karakteristik lompatan yang khas pada platformer profesional seperti Celeste, Hollow Knight, dan Super Meat Boy.
-
-### 🎨 Visual & Art
-
-- **Pixel art** sprite karakter dengan 7 animasi (idle, run, jump, fall, dash, hurt, dead)
-- **4 boss** masing-masing memiliki desain sprite unik
-- **5 parallax background** set per level (sky, clouds, far layer)
-- **Textured hazards**: toxic pool, lava pool, machine press, wind zone, laser trap
-- **HUD** dengan ikon ability bergambar (dash, double jump, glide)
-- **UI** dengan panel styled dan themed backgrounds
-- **Dust particles** untuk efek visual saat mendarat
-
-### ⚔️ Combat & Progression
-- **Melee Attack** — wrench swing (25 damage, knockback)
-- **Ranged Attack** — energy bolt projectile (15 damage, 400 px/s)
-- Combo system: tekan `J` untuk melee + ranged sekaligus
-- Health system dengan regenerasi
-- Kumpulkan 5 **Core Fragments**
-- Progressive ability unlock melalui boss fights
-
-### 🗺️ Game Levels
-
-| Level | Nama | Tema | Boss | Gate |
-|-------|------|------|------|------|
-| 1 | Golden Isles | Tutorial/Pantai | — | — |
-| 2 | Rust Factory | Pabrik Industrial | Scrapper | ✅ |
-| 3 | Crystal Labs | Laboratorium | Spore-Bot | ✅ |
-| 4 | Storm Spire | Menara Badai | Tempest | ✅ |
-| 5 | Overlord Fortress | Markas Final | **Overlord** | ✅ |
+| Level | Nama | Tema | Boss | Reward |
+|-------|------|------|------|--------|
+| 1 | Golden Isles | Tutorial / Pantai | — | — |
+| 2 | Rust Factory | Pabrik Industrial | **Scrapper** | Dash |
+| 3 | Crystal Labs | Laboratorium | **Spore-Bot** | Double Jump |
+| 4 | Storm Spire | Menara Badai | **Tempest** | Glide |
+| 5 | Overlord Fortress | Markas Final | **Overlord** | Victory! |
 
 Boss ditempatkan di **mid-challenge** — pemain harus mengalahkan boss dan melewati BossGate sebelum bisa mengambil Core Fragment.
 
 ---
 
-## 🚀 Instalasi
+## ⚔️ Sistem Combat
 
-### Prerequisites
-- [Godot Engine 4.6+](https://godotengine.org/download)
-
-### Cara Main
-1. **Clone repository**
-   ```bash
-   git clone https://github.com/el-pablos/reboot-godot-uas-projek.git
-   ```
-2. **Buka di Godot Editor**
-   - Launch Godot → Import → Pilih `project.godot`
-3. **Jalankan Game**
-   - Tekan `F5` atau klik tombol ▶️ Play
+- **Melee Attack** — wrench swing (25 damage, knockback, hit stop effect)
+- **Ranged Attack** — energy bolt projectile (15 damage, 400 px/s)
+- **Combo**: tekan `J` untuk melee + ranged sekaligus
+- **Screen Shake** & **Hit Stop** untuk impact feel
+- Health system dengan regenerasi
 
 ---
 
-## 🏗️ Arsitektur
+## 🚀 Instalasi & Menjalankan
+
+### Prerequisites
+
+- [Godot Engine 4.6+](https://godotengine.org/download)
+
+### Clone & Main
+
+```bash
+git clone https://github.com/el-pablos/reboot-godot-uas-projek.git
+cd reboot-godot-uas-projek
+```
+
+**Via Godot Editor:**
+1. Buka Godot → Import → pilih `project.godot`
+2. Tekan `F5` atau klik ▶️ Play
+
+**Via CLI (headless check):**
+```bash
+godot --headless --path . --quit    # verifikasi parse
+```
+
+---
+
+## 📊 Testing Headless
+
+| Metric | Status |
+|--------|--------|
+| Unit Tests | **147/147 Passed** ✅ |
+| Parse Errors | **0** ✅ |
+| Test Suites | **7** ✅ |
+| Headless Import | **Clean** ✅ |
+
+### Menjalankan Test
+
+```powershell
+# Windows (PowerShell)
+.\tools\run_tests.ps1
+
+# Dengan path Godot custom
+.\tools\run_tests.ps1 -GodotPath "C:\path\to\godot.exe"
+```
+
+```bash
+# Linux / macOS
+bash tools/run_tests.sh
+bash tools/run_tests.sh /path/to/godot
+```
+
+Script otomatis: swap main scene → run headless → restore → exit code 0 = lulus.
+
+### Test Suites
+
+| Suite | Tests |
+|-------|-------|
+| test_player_movement.gd | 17 |
+| test_game_logic.gd | 21 |
+| test_enemy_boss.gd | 19 |
+| test_enemy_ai.gd | 24 |
+| test_combat_system.gd | 18 |
+| test_gameplay_qa.gd | 32 |
+| test_boss_rework.gd | 16 |
+| **Total** | **147** |
+
+---
+
+## 🚀 CI/CD & Auto Release
+
+Setiap push ke branch `master` otomatis:
+1. **Headless Tests** — 147 unit tests dijalankan
+2. **Export Builds** — Windows, Linux, dan Web
+3. **GitHub Release** — tag `v0.1.<run>` + desktop builds
+4. **Web Deploy** — build web ke GitHub Pages
+
+### Quality Gate
+
+Release **tidak akan dibuat** jika:
+- Headless tests gagal (exit code ≠ 0)
+- Export build error
+
+| Format Tag | Contoh | Penjelasan |
+|------------|--------|------------|
+| `v0.1.<RUN>` | `v0.1.42` | Nomor run GitHub Actions |
+
+> **[📥 Download Builds](https://github.com/el-pablos/reboot-godot-uas-projek/releases)** — Windows (.exe) & Linux (.x86_64)  
+> **[🎮 Play Online](https://el-pablos.github.io/reboot-godot-uas-projek/)** — GitHub Pages
+
+---
+
+## 🔧 Troubleshooting
+
+| Masalah | Solusi |
+|---------|--------|
+| Parser Error: "Expected statement, found Indent" | Jangan pakai `"""docstrings"""` di GDScript — gunakan `## komentar` |
+| Parser Error: "Class X hides global script class" | Cek duplikat `class_name` di file backup: `grep -rn 'class_name' scripts/` |
+| Boss nyangkut / stuck | BossBrain punya unstuck guard (2 detik threshold). Jika masih, cek `collision_mask` boss |
+| Player jatuh tembus platform | Cek CollisionPolygon2D di level .tscn — `half_extents` harus 16×scale (bukan 32×scale) |
+| Serangan tidak kena musuh | Pastikan enemy punya method `take_damage()` dan ada di collision layer 2 |
+| Test gagal di CI tapi lokal OK | CI pakai Godot 4.6 vs lokal 4.5.x — cek API differences |
+| Game tidak jalan headless | Pastikan autoload scripts (GameManager, AudioManager, dll) tidak crash saat headless |
+| Screenshot tool gagal | Jangan pakai `--headless` — viewport render butuh window. Gunakan windowed mode |
+
+---
+
+<details>
+<summary><b>🏗️ Arsitektur & Detail Teknis</b></summary>
 
 ### State Machine Pattern
+
 ```
 IDLE ↔ RUN ↔ JUMP ↔ FALL
          ↓       ↓
@@ -152,6 +214,7 @@ IDLE ↔ RUN ↔ JUMP ↔ FALL
 ```
 
 ### Enemy Inheritance
+
 ```
 EnemyBase (abstract)
 ├── WalkingEnemy
@@ -163,155 +226,73 @@ EnemyBase (abstract)
     └── BossOverlord (Final Boss)
 ```
 
-### BossBrain AI State Machine
+### BossBrain AI
+
 ```
 ROAM → CHASE → ATTACK_CLOSE / ATTACK_FAR
   ↑       ↕         ↓
   └── REPOSITION ← RECOVER ← PHASE_CHANGE
 ```
 
-Setiap boss menggunakan `BossBrain` + `BossConfig` (Resource) untuk AI yang fair:
-- **Telegraph** visual sebelum setiap serangan
-- **Cooldown** antar serangan (recovery window)
-- **Arena bounds** agar boss tidak keluar area
-- **Phase modifiers** yang meningkatkan agresivitas per fase
+Boss menggunakan `BossBrain` + `BossConfig` Resource:
+- Telegraph visual sebelum serangan
+- Cooldown antar serangan (recovery window)
+- Arena bounds agar boss tidak keluar area
+- Phase modifiers yang meningkatkan agresivitas per fase
 
----
+### Autoload Singletons
 
-## 📊 Quality Assurance
+| Singleton | Tugas |
+|-----------|-------|
+| GameManager | State, health, progression, ability unlocks |
+| AudioManager | SFX pool + BGM management |
+| SaveManager | Save/load via JSON |
+| SettingsManager | Volume, screen shake, hit stop settings |
 
-| Metric | Status |
-|--------|--------|
-| Unit Tests | **205/205 Passed** ✅ |
-| Parse Errors | **0** ✅ |
-| Code Coverage | **Core Systems** ✅ |
-| Headless Import | **Clean** ✅ |
+### Physics Engine
 
-### Menjalankan Test Headless (Lokal)
+<details>
+<summary>Rumus Kinematika Lompatan</summary>
 
-Gunakan helper scripts di `tools/`:
+Berbasis persamaan gerak: `v = v₀ + gt`, `h = v₀t + ½gt²`
 
-```powershell
-# Windows (PowerShell)
-.\tools\run_tests.ps1
+**Jump Velocity**: `v₀ = (2 × h) / t = (2 × 96) / 0.4 = 480 px/s`
 
-# Atau dengan path Godot custom
-.\tools\run_tests.ps1 -GodotPath "C:\path\to\godot.exe"
-```
+**Dynamic Gravity**:
+- Jump (naik): `g = (2 × 96) / 0.4² = 1200 px/s²` — floaty, terkontrol
+- Fall (turun): `g = (2 × 96) / 0.35² ≈ 1567 px/s²` — snappy, responsive
 
-```bash
-# Linux / macOS
-bash tools/run_tests.sh
+Perbedaan gravity naik/turun menciptakan "game feel" khas platformer profesional.
 
-# Atau dengan path Godot custom
-bash tools/run_tests.sh /path/to/godot
-```
+</details>
 
-Script otomatis:
-1. Mengganti main scene ke TestRunner
-2. Menjalankan Godot headless
-3. Mengembalikan main scene
-4. Return exit code (0 = semua lulus)
-
-### Test Suites
-
-| Suite | Tests |
-|-------|-------|
-| test_player_movement.gd | 21 |
-| test_game_logic.gd | 30 |
-| test_enemy_boss.gd | 25 |
-| test_enemy_ai.gd | 25 |
-| test_combat_system.gd | 18 |
-| test_gameplay_qa.gd | 69 |
-| test_boss_rework.gd | 17 |
-| **Total** | **205** |
-
----
-
-## 📁 Struktur Project
+### Struktur Project
 
 ```
 project-reboot/
 ├── assets/
-│   ├── sprites/
-│   │   ├── player/         # Spritesheet & frame PNGs (7 animasi)
-│   │   ├── enemies/        # Boss sprites (4 unik)
-│   │   ├── environment/    # Tile, hazard, prop sprites
-│   │   ├── backgrounds/    # Parallax layers per level (sky/clouds/far)
-│   │   ├── items/          # Core fragment collectible
-│   │   ├── ui/             # Button, panel, health bar, ability icons
-│   │   └── vfx/            # Dust, spark, explosion, glow, dash trail
-│   └── audio/              # SFX & Music
+│   ├── sprites/        # Player (7 animasi), Boss (4 unik), Environment, UI, VFX
+│   └── audio/          # SFX & BGM
 ├── scenes/
-│   ├── levels/             # 5 game levels
-│   ├── player/             # Player scene (AnimatedSprite2D)
-│   ├── bosses/             # 4 Boss scenes
-│   ├── enemies/            # Enemy scenes
-│   ├── main_menu/          # Main menu scene
-│   └── ui/                 # HUD, Pause, GameOver, Victory
+│   ├── levels/         # 5 game levels + LevelTemplate
+│   ├── player/         # Player scene
+│   ├── bosses/         # 4 Boss scenes
+│   ├── main_menu/      # Main menu
+│   └── ui/             # HUD, Pause, GameOver, Victory, Dialog, Settings, Health
 ├── scripts/
-│   ├── autoload/           # GameManager, AudioManager, SaveManager, SettingsManager
-│   ├── player/             # Player & State Machine
-│   ├── enemies/            # Enemy AI & Boss Logic
-│   ├── boss/               # BossBrain AI, BossConfig, BossGate
-│   ├── hazards/            # Level hazards (MachinePress, WindZone, etc.)
-│   ├── collectibles/       # Core Fragment
-│   └── ui/                 # UI Controllers
-├── test/                   # 205 headless tests (7 suites)
-└── project.godot           # Godot project config
+│   ├── autoload/       # GameManager, AudioManager, SaveManager, SettingsManager
+│   ├── player/         # Player, PlayerStateMachine, PlayerCamera
+│   ├── enemies/        # EnemyBase, SmartEnemy, WalkingEnemy, FlyingEnemy
+│   ├── boss/           # BossBase, BossBrain, BossConfig, BossGate, 4 variants
+│   ├── hazards/        # MachinePress, WindZone, LaserTrap, ToxicPool, LavaPool
+│   ├── collectibles/   # CoreFragment
+│   └── ui/             # HUD, DialogSystem, PauseMenu, MainMenu, ModernHealthUI
+├── test/               # 147 headless tests (7 suites)
+├── tools/              # run_tests, capture_screenshots, scene_patcher
+└── project.godot
 ```
 
----
-
-## 🚀 Automated Releases
-
-Setiap push ke branch `master` otomatis:
-1. **Headless Tests** — 205 unit tests dijalankan
-2. **Export Builds** — Windows, Linux, dan Web
-3. **GitHub Release** — tag `v0.1.<run>` dibuat + desktop builds di-attach
-4. **Web Deploy** — build web otomatis di-deploy ke GitHub Pages
-
-### Versioning Scheme
-
-| Format | Contoh | Penjelasan |
-|--------|--------|------------|
-| `v0.1.<RUN_NUMBER>` | `v0.1.42` | Nomor run workflow GitHub Actions |
-
-Tag dibuat otomatis oleh `github-actions[bot]`, tanpa token pribadi.
-
-### Download Builds
-
-> **[📥 Releases Page](https://github.com/el-pablos/reboot-godot-uas-projek/releases)**
-
-Setiap release berisi:
-- `REBOOT.exe` — Windows build (PCK embedded, single file)
-- `REBOOT.x86_64` — Linux build (PCK embedded, single file)
-
-### 🌐 Mainkan di Browser
-
-> **[🎮 Play Online](https://el-pablos.github.io/reboot-godot-uas-projek/)**
-
-Web build otomatis di-deploy ke GitHub Pages setiap ada tag rilis baru.
-
-### Quality Gate
-
-Release **tidak akan dibuat** jika:
-- Headless tests gagal (exit code ≠ 0)
-- Export build error
-
-Pipeline berjalan di satu job berurutan sehingga kegagalan di step manapun menghentikan proses.
-
----
-
-## 🔧 Troubleshooting
-
-| Masalah | Solusi |
-|---------|--------|
-| Parser Error: "Class X hides global script class" | Cek duplikat `class_name` di file backup: `grep -rn 'class_name' scripts/` |
-| Boss nyangkut / stuck | BossBrain punya unstuck guard (2 detik threshold). Jika masih terjadi, cek collision_mask boss |
-| Player jatuh tembus platform | Cek CollisionPolygon2D di level .tscn — pastikan half-extent = 16 × scale (bukan 32 × scale) |
-| Serangan tidak kena musuh | Pastikan enemy ada di group `"enemies"` dan punya method `take_damage()` |
-| Test gagal di CI | Godot 4.6 di CI vs 4.5.1 lokal — cek versi-specific API |
+</details>
 
 ---
 
@@ -321,8 +302,6 @@ Pipeline berjalan di satu job berurutan sehingga kegagalan di step manapun mengh
 - **Art Style**: Custom pixel art (CC0), generated via Python/Pillow pipeline
 - **Audio**: Placeholder SFX
 - **Developer**: el-pablos
-
----
 
 ## 📜 License
 
@@ -334,6 +313,6 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 **Made with ❤️ and ☕ using Godot Engine**
 
-*Project: REBOOT — Version 1.0.0*
+*Project: REBOOT — v0.1.x*
 
 </div>
