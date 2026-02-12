@@ -138,7 +138,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/BouncePlatform1" unique_id=580572928]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="BouncePlatform2" type="StaticBody2D" parent="Environment" unique_id=1310187013]
 position = Vector2(700, 300)
@@ -152,7 +152,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/BouncePlatform2" unique_id=599399327]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform1" type="StaticBody2D" parent="Environment" unique_id=366810734]
 position = Vector2(950, 200)
@@ -164,7 +164,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=1374078300]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="BouncePlatform3" type="StaticBody2D" parent="Environment" unique_id=788954380]
 position = Vector2(1200, 280)
@@ -178,7 +178,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/BouncePlatform3" unique_id=1433042849]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Floor2" type="StaticBody2D" parent="Environment" unique_id=718657340]
 position = Vector2(1500, 350)

@@ -145,7 +145,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=231557166]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="Platform2" type="StaticBody2D" parent="Environment" unique_id=1582049617]
 position = Vector2(750, 350)
@@ -157,7 +157,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2" unique_id=2024821863]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform3" type="StaticBody2D" parent="Environment" unique_id=611096051]
 position = Vector2(1000, 400)
@@ -169,7 +169,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3" unique_id=1428305909]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="BossArena" type="StaticBody2D" parent="Environment" unique_id=1897930920]
 position = Vector2(1400, 450)

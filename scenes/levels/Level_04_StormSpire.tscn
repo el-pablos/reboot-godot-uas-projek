@@ -136,7 +136,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1" unique_id=640885381]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="Platform2" type="StaticBody2D" parent="Environment" unique_id=8445899]
 position = Vector2(450, 550)
@@ -148,7 +148,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2" unique_id=1187377377]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform3" type="StaticBody2D" parent="Environment" unique_id=165300186]
 position = Vector2(250, 480)
@@ -160,7 +160,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3" unique_id=727224509]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="Platform4" type="StaticBody2D" parent="Environment" unique_id=1016317929]
 position = Vector2(500, 410)
@@ -172,7 +172,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform4" unique_id=854171082]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform5" type="StaticBody2D" parent="Environment" unique_id=1945331426]
 position = Vector2(300, 340)
@@ -184,7 +184,7 @@ scale = Vector2(4, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform5" unique_id=618681951]
-polygon = PackedVector2Array(-128, -8, 128, -8, 128, 8, -128, 8)
+polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="TopPlatform" type="StaticBody2D" parent="Environment" unique_id=1720454132]
 position = Vector2(500, 270)

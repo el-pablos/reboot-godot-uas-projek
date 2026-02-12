@@ -103,7 +103,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform1"]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform2" type="StaticBody2D" parent="Environment"]
 position = Vector2(700, 220)
@@ -114,7 +114,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform2"]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform3" type="StaticBody2D" parent="Environment"]
 position = Vector2(950, 280)
@@ -125,7 +125,7 @@ scale = Vector2(3, 1)
 texture = ExtResource("4_platform")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Platform3"]
-polygon = PackedVector2Array(-96, -8, 96, -8, 96, 8, -96, 8)
+polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="MiddleIsland" type="StaticBody2D" parent="Environment"]
 position = Vector2(1200, 350)
