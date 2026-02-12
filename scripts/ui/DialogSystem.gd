@@ -84,12 +84,12 @@ func show_dialog(dialogs: Array[Dictionary]) -> void:
 
 
 func show_single_dialog(speaker: String, text: String) -> void:
-	"""Shortcut untuk satu dialog."""
+	## Shortcut untuk satu dialog.
 	show_dialog([{"speaker": speaker, "text": text}])
 
 
 func show_oracle_intro() -> void:
-	"""Dialog intro dari Oracle."""
+	## Dialog intro dari Oracle.
 	var intro_dialogs: Array[Dictionary] = [
 		{
 			"speaker": "ORACLE",
@@ -121,7 +121,7 @@ func show_oracle_intro() -> void:
 
 
 func close_dialog() -> void:
-	"""Tutup dialog secara paksa."""
+	## Tutup dialog secara paksa.
 	dialog_queue.clear()
 	_finish_dialog()
 
@@ -129,7 +129,7 @@ func close_dialog() -> void:
 # === INTERNAL METHODS ===
 
 func _show_next_dialog() -> void:
-	"""Tampilkan dialog berikutnya dari queue."""
+	## Tampilkan dialog berikutnya dari queue.
 	if dialog_queue.is_empty():
 		_finish_dialog()
 		return
@@ -164,7 +164,7 @@ func _show_next_dialog() -> void:
 
 
 func _type_text() -> void:
-	"""Typing effect untuk teks."""
+	## Typing effect untuk teks.
 	while displayed_text.length() < full_text.length() and is_typing:
 		displayed_text += full_text[displayed_text.length()]
 		
@@ -183,7 +183,7 @@ func _type_text() -> void:
 
 
 func _complete_typing() -> void:
-	"""Selesaikan typing, tampilkan full text."""
+	## Selesaikan typing, tampilkan full text.
 	is_typing = false
 	displayed_text = full_text
 	
@@ -197,7 +197,7 @@ func _complete_typing() -> void:
 
 
 func _animate_continue_indicator() -> void:
-	"""Animasi blink untuk continue indicator."""
+	## Animasi blink untuk continue indicator.
 	while is_dialog_active and not is_typing and continue_indicator:
 		continue_indicator.modulate.a = 1.0
 		await get_tree().create_timer(0.5).timeout
@@ -210,13 +210,13 @@ func _animate_continue_indicator() -> void:
 
 
 func _advance_dialog() -> void:
-	"""Pindah ke dialog berikutnya."""
+	## Pindah ke dialog berikutnya.
 	dialog_advanced.emit()
 	_show_next_dialog()
 
 
 func _finish_dialog() -> void:
-	"""Selesai semua dialog."""
+	## Selesai semua dialog.
 	is_dialog_active = false
 	is_typing = false
 	

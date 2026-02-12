@@ -84,7 +84,7 @@ func _process_attack(_delta: float) -> void:
 
 
 func _start_dive() -> void:
-	"""Mulai dive attack ke player."""
+	## Mulai dive attack ke player.
 	if not target_player or is_diving:
 		return
 	

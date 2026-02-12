@@ -96,7 +96,7 @@ func _choose_attack() -> void:
 
 
 func _attack_spawn_minion() -> void:
-	"""Spawn minion jamur kecil."""
+	## Spawn minion jamur kecil.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("spawn_minion")
@@ -130,7 +130,7 @@ func _attack_spawn_minion() -> void:
 
 
 func _create_minion() -> Node2D:
-	"""Buat minion sederhana."""
+	## Buat minion sederhana.
 	# Simplified minion - gunakan scene jika ada
 	var minion := CharacterBody2D.new()
 	minion.name = "SporeMinion"
@@ -165,7 +165,7 @@ func _create_minion() -> Node2D:
 
 
 func _attack_poison_cloud() -> void:
-	"""Buat area poison di sekitar player."""
+	## Buat area poison di sekitar player.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("poison_cloud")
@@ -220,7 +220,7 @@ func _attack_poison_cloud() -> void:
 
 
 func _attack_spore_burst() -> void:
-	"""Burst spore ke segala arah - damage jika kena."""
+	## Burst spore ke segala arah - damage jika kena.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("spore_burst")

@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
-	"""Mulai game baru - reset semua progress."""
+	## Mulai game baru - reset semua progress.
 	print("[MainMenu] New Game dimulai!")
 	GameManager.new_game()
 	SaveManager.delete_save()
@@ -33,7 +33,7 @@ func _on_start_pressed() -> void:
 
 
 func _on_continue_pressed() -> void:
-	"""Lanjutkan game dari save terakhir."""
+	## Lanjutkan game dari save terakhir.
 	if SaveManager.load_game():
 		print("[MainMenu] Melanjutkan game...")
 		if GameManager.current_level != "":
@@ -43,12 +43,12 @@ func _on_continue_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	"""Buka menu pengaturan."""
+	## Buka menu pengaturan.
 	print("[MainMenu] Membuka Settings...")
 	get_tree().change_scene_to_file("res://scenes/ui/SettingsMenu.tscn")
 
 
 func _on_quit_pressed() -> void:
-	"""Keluar dari game."""
+	## Keluar dari game.
 	print("[MainMenu] Keluar game...")
 	get_tree().quit()

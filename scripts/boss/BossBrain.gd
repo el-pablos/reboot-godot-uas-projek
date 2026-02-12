@@ -119,7 +119,7 @@ func _physics_process(delta: float) -> void:
 # === TARGET ACQUISITION ===
 
 func _update_target() -> void:
-	"""Lock/release target player berdasarkan jarak."""
+	## Lock/release target player berdasarkan jarak.
 	if not config:
 		return
 
@@ -161,7 +161,7 @@ func _update_target() -> void:
 
 
 func _find_player_in_tree() -> Node:
-	"""Fallback: cari Player node di scene tree."""
+	## Fallback: cari Player node di scene tree.
 	var root := get_tree().current_scene
 	if not root:
 		return null
@@ -193,7 +193,7 @@ func _update_timers(delta: float) -> void:
 # === STATE MACHINE ===
 
 func _update_state(_delta: float) -> void:
-	"""Transisi state berdasarkan kondisi."""
+	## Transisi state berdasarkan kondisi.
 	if not config:
 		return
 
@@ -261,7 +261,7 @@ func _update_state(_delta: float) -> void:
 
 
 func _execute_state(delta: float) -> void:
-	"""Eksekusi behavior state saat ini."""
+	## Eksekusi behavior state saat ini.
 	if not boss:
 		return
 
@@ -296,7 +296,7 @@ func _change_state(new_state: AIState) -> void:
 # === STATE BEHAVIORS ===
 
 func _do_roam(delta: float) -> void:
-	"""Patrol kiri-kanan di arena."""
+	## Patrol kiri-kanan di arena.
 	roam_timer += delta
 
 	if roam_timer >= roam_change_interval:
@@ -311,7 +311,7 @@ func _do_roam(delta: float) -> void:
 
 
 func _do_chase(delta: float) -> void:
-	"""Kejar player dengan akselerasi (tidak snap kaku)."""
+	## Kejar player dengan akselerasi (tidak snap kaku).
 	if not target or not is_instance_valid(target) or not config:
 		boss.velocity.x = 0
 		return
@@ -356,7 +356,7 @@ func _do_chase(delta: float) -> void:
 
 
 func _do_attack_close() -> void:
-	"""Minta boss lakukan close attack."""
+	## Minta boss lakukan close attack.
 	if boss.get("is_attacking") and boss.is_attacking:
 		return  # Sudah attacking
 
@@ -374,7 +374,7 @@ func _do_attack_close() -> void:
 
 
 func _do_attack_far() -> void:
-	"""Minta boss lakukan ranged attack."""
+	## Minta boss lakukan ranged attack.
 	if boss.get("is_attacking") and boss.is_attacking:
 		return
 
@@ -392,7 +392,7 @@ func _do_attack_far() -> void:
 
 
 func _do_reposition(delta: float) -> void:
-	"""Reposition: mundur/dodge dari player."""
+	## Reposition: mundur/dodge dari player.
 	if not target or not is_instance_valid(target) or not config:
 		boss.velocity.x = 0
 		return
@@ -410,14 +410,14 @@ func _do_reposition(delta: float) -> void:
 
 
 func _do_recover(_delta: float) -> void:
-	"""Recovery state - boss diam sebentar (vulnerability window)."""
+	## Recovery state - boss diam sebentar (vulnerability window).
 	boss.velocity.x = move_toward(boss.velocity.x, 0, 200 * _delta)
 	if boss.get("gravity") != null and boss.gravity == 0:
 		boss.velocity.y = move_toward(boss.velocity.y, 0, 100 * _delta)
 
 
 func _do_phase_change(_delta: float) -> void:
-	"""Phase change - boss pause dan berubah."""
+	## Phase change - boss pause dan berubah.
 	boss.velocity.x = 0
 	boss.velocity.y = 0
 
@@ -425,7 +425,7 @@ func _do_phase_change(_delta: float) -> void:
 # === TELEGRAPH ===
 
 func _start_telegraph(duration: float) -> void:
-	"""Mulai telegraph sebelum serangan."""
+	## Mulai telegraph sebelum serangan.
 	is_telegraphing = true
 	telegraph_timer = duration
 	telegraph_started.emit(duration)
@@ -441,7 +441,7 @@ func _start_telegraph(duration: float) -> void:
 # === ATTACK HELPERS ===
 
 func _set_attack_cooldown() -> void:
-	"""Set cooldown setelah attack."""
+	## Set cooldown setelah attack.
 	if not config:
 		attack_cooldown_timer = 2.0
 		return
@@ -458,7 +458,7 @@ func _set_attack_cooldown() -> void:
 
 
 func end_attack() -> void:
-	"""Dipanggil oleh boss script setelah attack selesai."""
+	## Dipanggil oleh boss script setelah attack selesai.
 	_set_attack_cooldown()
 
 	# Tentukan state selanjutnya
@@ -472,7 +472,7 @@ func end_attack() -> void:
 
 
 func notify_phase_change() -> void:
-	"""Dipanggil saat boss masuk phase baru."""
+	## Dipanggil saat boss masuk phase baru.
 	_change_state(AIState.PHASE_CHANGE)
 	attack_cooldown_timer = 0
 	is_telegraphing = false
@@ -481,7 +481,7 @@ func notify_phase_change() -> void:
 # === PHASE HELPERS ===
 
 func _is_aggressive_phase() -> bool:
-	"""Cek apakah boss sudah di fase agresif (HP rendah)."""
+	## Cek apakah boss sudah di fase agresif (HP rendah).
 	if not boss or not config:
 		return false
 	var hp_ratio: float = float(boss.current_health) / float(boss.max_health) if boss.max_health > 0 else 1.0
@@ -489,7 +489,7 @@ func _is_aggressive_phase() -> bool:
 
 
 func is_extra_pattern_phase() -> bool:
-	"""Cek apakah boss sudah di fase tambahan (HP sangat rendah)."""
+	## Cek apakah boss sudah di fase tambahan (HP sangat rendah).
 	if not boss or not config:
 		return false
 	var hp_ratio: float = float(boss.current_health) / float(boss.max_health) if boss.max_health > 0 else 1.0
@@ -501,7 +501,7 @@ func is_extra_pattern_phase() -> bool:
 # === UNSTUCK GUARD ===
 
 func _check_unstuck(delta: float) -> void:
-	"""Deteksi boss stuck (posisi hampir tidak berubah) dan nudge keluar."""
+	## Deteksi boss stuck (posisi hampir tidak berubah) dan nudge keluar.
 	if not boss or not is_instance_valid(boss):
 		return
 
@@ -533,7 +533,7 @@ func _check_unstuck(delta: float) -> void:
 
 
 func _do_unstuck_nudge() -> void:
-	"""Nudge boss ke arah aman saat terdeteksi stuck."""
+	## Nudge boss ke arah aman saat terdeteksi stuck.
 	if not boss:
 		return
 
@@ -561,7 +561,7 @@ func _do_unstuck_nudge() -> void:
 
 
 func _clamp_to_arena() -> void:
-	"""Pastikan boss tidak keluar arena."""
+	## Pastikan boss tidak keluar arena.
 	if not boss or arena_rect.size == Vector2.ZERO:
 		return
 
@@ -572,14 +572,14 @@ func _clamp_to_arena() -> void:
 
 
 func set_arena(center: Vector2, size: Vector2) -> void:
-	"""Set arena bounds secara eksplisit."""
+	## Set arena bounds secara eksplisit.
 	arena_rect = Rect2(center - size / 2, size)
 
 
 # === LINE OF SIGHT ===
 
 func _setup_raycast() -> void:
-	"""Setup RayCast2D untuk LOS check."""
+	## Setup RayCast2D untuk LOS check.
 	los_raycast = RayCast2D.new()
 	los_raycast.name = "LOSRaycast"
 	los_raycast.collision_mask = 4  # Environment layer
@@ -589,7 +589,7 @@ func _setup_raycast() -> void:
 
 
 func _has_line_of_sight() -> bool:
-	"""Cek apakah boss bisa lihat player (tidak terhalang tembok)."""
+	## Cek apakah boss bisa lihat player (tidak terhalang tembok).
 	if not los_raycast or not target or not is_instance_valid(target):
 		return false
 
@@ -607,7 +607,7 @@ func _has_line_of_sight() -> bool:
 # === PREDICTIVE AIMING ===
 
 func get_predicted_target_position() -> Vector2:
-	"""Hitung posisi player yang di-predict (lead target)."""
+	## Hitung posisi player yang di-predict (lead target).
 	if not target or not is_instance_valid(target):
 		return boss.global_position
 
@@ -623,21 +623,21 @@ func get_predicted_target_position() -> Vector2:
 # === UTILITY ===
 
 func get_distance_to_target() -> float:
-	"""Jarak boss ke target."""
+	## Jarak boss ke target.
 	if not target or not is_instance_valid(target):
 		return 9999.0
 	return boss.global_position.distance_to(target.global_position)
 
 
 func get_direction_to_target() -> Vector2:
-	"""Arah dari boss ke target."""
+	## Arah dari boss ke target.
 	if not target or not is_instance_valid(target):
 		return Vector2.ZERO
 	return (target.global_position - boss.global_position).normalized()
 
 
 func get_state_name() -> String:
-	"""Nama state saat ini (untuk debug)."""
+	## Nama state saat ini (untuk debug).
 	match current_state:
 		AIState.ROAM: return "ROAM"
 		AIState.CHASE: return "CHASE"

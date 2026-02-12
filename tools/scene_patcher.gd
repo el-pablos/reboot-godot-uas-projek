@@ -237,7 +237,7 @@ func _patch_level_scene(path: String) -> void:
 
 
 func _add_environment_lights(level: Node) -> bool:
-	"""Tambahkan lampu ambient ke level untuk visual yang lebih baik."""
+	## Tambahkan lampu ambient ke level untuk visual yang lebih baik.
 	var modified := false
 	
 	# Cari node Environment jika ada
@@ -291,7 +291,7 @@ func _add_environment_lights(level: Node) -> bool:
 
 
 func _upgrade_enemies(level: Node) -> bool:
-	"""Upgrade musuh lama ke SmartEnemy."""
+	## Upgrade musuh lama ke SmartEnemy.
 	var modified := false
 	
 	# Cari semua node enemy
@@ -372,7 +372,7 @@ func _patch_hud_scene() -> void:
 
 
 func _create_new_hud() -> void:
-	"""Buat HUD scene baru dengan ModernHealthUI."""
+	## Buat HUD scene baru dengan ModernHealthUI.
 	var hud := CanvasLayer.new()
 	hud.name = "HUD"
 	hud.layer = 10
@@ -407,7 +407,7 @@ func _create_new_hud() -> void:
 # =============================================================================
 
 func _create_light_gradient_texture() -> GradientTexture2D:
-	"""Buat texture gradient untuk PointLight2D."""
+	## Buat texture gradient untuk PointLight2D.
 	var texture := GradientTexture2D.new()
 	texture.width = 256
 	texture.height = 256
@@ -424,7 +424,7 @@ func _create_light_gradient_texture() -> GradientTexture2D:
 
 
 func _find_node_by_type(root: Node, type_name: String) -> Node:
-	"""Cari node berdasarkan class name."""
+	## Cari node berdasarkan class name.
 	for child in root.get_children():
 		if child.get_class() == type_name:
 			return child
@@ -435,7 +435,7 @@ func _find_node_by_type(root: Node, type_name: String) -> Node:
 
 
 func _find_nodes_by_group_or_name(root: Node, group: String, name_patterns: Array) -> Array[Node]:
-	"""Cari semua node dalam group atau dengan nama tertentu."""
+	## Cari semua node dalam group atau dengan nama tertentu.
 	var result: Array[Node] = []
 	
 	for child in root.get_children():

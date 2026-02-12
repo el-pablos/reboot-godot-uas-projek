@@ -149,7 +149,7 @@ func _ready() -> void:
 
 
 func _find_sprite() -> Node2D:
-	"""Find sprite node (Sprite2D or AnimatedSprite2D)."""
+	## Find sprite node (Sprite2D or AnimatedSprite2D).
 	if has_node("AnimatedSprite2D"):
 		return $AnimatedSprite2D
 	elif has_node("Sprite2D"):
@@ -158,14 +158,14 @@ func _find_sprite() -> Node2D:
 
 
 func _setup_hitbox() -> void:
-	"""Setup hitbox for dealing contact damage."""
+	## Setup hitbox for dealing contact damage.
 	if hitbox:
 		if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
 			hitbox.body_entered.connect(_on_hitbox_body_entered)
 
 
 func _setup_hearing() -> void:
-	"""Setup hearing area for detecting player sounds."""
+	## Setup hearing area for detecting player sounds.
 	if hearing_area:
 		if not hearing_area.body_entered.is_connected(_on_hearing_body_entered):
 			hearing_area.body_entered.connect(_on_hearing_body_entered)
@@ -176,7 +176,7 @@ func _setup_hearing() -> void:
 
 
 func _create_vision_raycast() -> void:
-	"""Create RayCast2D for line-of-sight detection if not exists."""
+	## Create RayCast2D for line-of-sight detection if not exists.
 	if not vision_raycast:
 		vision_raycast = RayCast2D.new()
 		vision_raycast.name = "VisionRayCast"
@@ -187,7 +187,7 @@ func _create_vision_raycast() -> void:
 
 
 func _create_edge_detection() -> void:
-	"""Create raycasts for edge/wall detection if not exists."""
+	## Create raycasts for edge/wall detection if not exists.
 	if not ground_check and use_edge_detection:
 		ground_check = RayCast2D.new()
 		ground_check.name = "GroundCheck"
@@ -206,7 +206,7 @@ func _create_edge_detection() -> void:
 
 
 func _create_hearing_area() -> void:
-	"""Create hearing area for detecting nearby player."""
+	## Create hearing area for detecting nearby player.
 	hearing_area = Area2D.new()
 	hearing_area.name = "HearingArea"
 	
@@ -253,7 +253,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_timers(delta: float) -> void:
-	"""Update all internal timers."""
+	## Update all internal timers.
 	state_timer += delta
 	
 	if stun_timer > 0:
@@ -267,7 +267,7 @@ func _update_timers(delta: float) -> void:
 
 
 func _apply_gravity(delta: float) -> void:
-	"""Apply gravity. Override in flying enemies."""
+	## Apply gravity. Override in flying enemies.
 	if not is_on_floor():
 		velocity.y = minf(velocity.y + gravity * delta, 800.0)
 	else:
@@ -279,7 +279,7 @@ func _apply_gravity(delta: float) -> void:
 # =========================================
 
 func _update_vision() -> void:
-	"""Check if player is visible via RayCast."""
+	## Check if player is visible via RayCast.
 	if not vision_raycast:
 		return
 	
@@ -323,7 +323,7 @@ func _update_vision() -> void:
 
 
 func _on_player_spotted() -> void:
-	"""Called when player is first spotted."""
+	## Called when player is first spotted.
 	if current_state in [State.IDLE, State.PATROL, State.SEARCH]:
 		change_state(State.CHASE)
 		alert_level = 1.0
@@ -331,7 +331,7 @@ func _on_player_spotted() -> void:
 
 
 func _on_player_lost_sight() -> void:
-	"""Called when player is no longer visible."""
+	## Called when player is no longer visible.
 	if current_state == State.CHASE:
 		change_state(State.SEARCH)
 		search_timer = search_duration
@@ -343,7 +343,7 @@ func _on_player_lost_sight() -> void:
 # =========================================
 
 func _process_state(delta: float) -> void:
-	"""Process behavior based on current state."""
+	## Process behavior based on current state.
 	match current_state:
 		State.IDLE:
 			_state_idle(delta)
@@ -362,7 +362,7 @@ func _process_state(delta: float) -> void:
 
 
 func change_state(new_state: State) -> void:
-	"""Change to a new state."""
+	## Change to a new state.
 	if current_state == new_state:
 		return
 	
@@ -380,7 +380,7 @@ func change_state(new_state: State) -> void:
 
 
 func _on_state_enter(state: State) -> void:
-	"""Called when entering a state. Override for custom behavior."""
+	## Called when entering a state. Override for custom behavior.
 	match state:
 		State.IDLE:
 			velocity.x = 0
@@ -401,7 +401,7 @@ func _on_state_enter(state: State) -> void:
 
 
 func _on_state_exit(_state: State) -> void:
-	"""Called when exiting a state. Override for custom behavior."""
+	## Called when exiting a state. Override for custom behavior.
 	pass
 
 
@@ -410,7 +410,7 @@ func _on_state_exit(_state: State) -> void:
 # =========================================
 
 func _state_idle(delta: float) -> void:
-	"""IDLE: Standing still, waiting, occasionally looking around."""
+	## IDLE: Standing still, waiting, occasionally looking around.
 	velocity.x = move_toward(velocity.x, 0, patrol_speed * delta * 5)
 	
 	# Random look around
@@ -433,7 +433,7 @@ func _state_idle(delta: float) -> void:
 
 
 func _state_patrol(delta: float) -> void:
-	"""PATROL: Walk back and forth or between waypoints."""
+	## PATROL: Walk back and forth or between waypoints.
 	# Use waypoints if defined
 	if patrol_points.size() > 0:
 		_patrol_waypoints(delta)
@@ -451,7 +451,7 @@ func _state_patrol(delta: float) -> void:
 
 
 func _patrol_waypoints(_delta: float) -> void:
-	"""Patrol using predefined waypoints."""
+	## Patrol using predefined waypoints.
 	if patrol_points.size() == 0:
 		return
 	
@@ -466,7 +466,7 @@ func _patrol_waypoints(_delta: float) -> void:
 
 
 func _patrol_edge_detection(_delta: float) -> void:
-	"""Patrol using edge/wall detection (turn at edges)."""
+	## Patrol using edge/wall detection (turn at edges).
 	velocity.x = patrol_direction * patrol_speed
 	
 	# Check for wall
@@ -481,7 +481,7 @@ func _patrol_edge_detection(_delta: float) -> void:
 
 
 func _state_search(_delta: float) -> void:
-	"""SEARCH: Looking for player after losing sight."""
+	## SEARCH: Looking for player after losing sight.
 	# Move toward last known position
 	if last_known_player_pos != Vector2.ZERO:
 		var direction: float = sign(last_known_player_pos.x - global_position.x)
@@ -510,7 +510,7 @@ func _state_search(_delta: float) -> void:
 
 
 func _state_chase(_delta: float) -> void:
-	"""CHASE: Actively pursuing player."""
+	## CHASE: Actively pursuing player.
 	if not target_player or not can_see_player:
 		# Lost sight - go to search
 		if search_timer <= 0:
@@ -528,7 +528,7 @@ func _state_chase(_delta: float) -> void:
 
 
 func _state_attack(_delta: float) -> void:
-	"""ATTACK: Performing attack. Override in subclasses."""
+	## ATTACK: Performing attack. Override in subclasses.
 	velocity.x = 0
 	
 	# Default: quick attack then return to chase
@@ -538,7 +538,7 @@ func _state_attack(_delta: float) -> void:
 
 
 func _state_stunned(delta: float) -> void:
-	"""STUNNED: Recovering from hit."""
+	## STUNNED: Recovering from hit.
 	velocity.x = move_toward(velocity.x, 0, 400 * delta)
 	
 	if stun_timer <= 0:
@@ -550,7 +550,7 @@ func _state_stunned(delta: float) -> void:
 
 
 func _state_dead(_delta: float) -> void:
-	"""DEAD: Waiting for death animation."""
+	## DEAD: Waiting for death animation.
 	velocity = Vector2.ZERO
 
 
@@ -559,7 +559,7 @@ func _state_dead(_delta: float) -> void:
 # =========================================
 
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
-	"""Receive damage and knockback."""
+	## Receive damage and knockback.
 	if is_dead:
 		return
 	
@@ -587,7 +587,7 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func _flash_damage() -> void:
-	"""Flash white/red when taking damage."""
+	## Flash white/red when taking damage.
 	if not sprite:
 		return
 	
@@ -597,7 +597,7 @@ func _flash_damage() -> void:
 
 
 func _die() -> void:
-	"""Handle death."""
+	## Handle death.
 	is_dead = true
 	change_state(State.DEAD)
 	
@@ -629,7 +629,7 @@ func _die() -> void:
 
 
 func _spawn_death_effect() -> void:
-	"""Spawn death particles. Override in subclass."""
+	## Spawn death particles. Override in subclass.
 	# Default: try to spawn explosion particles
 	var explosion_scene: PackedScene = load("res://scenes/effects/ExplosionParticles.tscn")
 	if explosion_scene:
@@ -643,13 +643,13 @@ func _spawn_death_effect() -> void:
 # =========================================
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	"""Deal contact damage to player."""
+	## Deal contact damage to player.
 	if body is Player and not is_dead:
 		_deal_contact_damage(body as Player)
 
 
 func _deal_contact_damage(player: Player) -> void:
-	"""Apply contact damage and knockback to player."""
+	## Apply contact damage and knockback to player.
 	if attack_cooldown_timer > 0:
 		return
 	
@@ -666,7 +666,7 @@ func _deal_contact_damage(player: Player) -> void:
 # =========================================
 
 func _on_hearing_body_entered(body: Node2D) -> void:
-	"""Player entered hearing range."""
+	## Player entered hearing range.
 	if body is Player:
 		heard_player = true
 		if current_state == State.IDLE:
@@ -676,7 +676,7 @@ func _on_hearing_body_entered(body: Node2D) -> void:
 
 
 func _on_hearing_body_exited(body: Node2D) -> void:
-	"""Player left hearing range."""
+	## Player left hearing range.
 	if body is Player:
 		heard_player = false
 
@@ -686,7 +686,7 @@ func _on_hearing_body_exited(body: Node2D) -> void:
 # =========================================
 
 func _update_facing() -> void:
-	"""Update sprite facing direction."""
+	## Update sprite facing direction.
 	if velocity.x > 5:
 		facing_right = true
 	elif velocity.x < -5:
@@ -700,7 +700,7 @@ func _update_facing() -> void:
 
 
 func _update_eye_light() -> void:
-	"""Update eye light color based on alert state."""
+	## Update eye light color based on alert state.
 	if not eye_light:
 		return
 	
@@ -722,10 +722,10 @@ func _update_eye_light() -> void:
 # =========================================
 
 func _on_enemy_ready() -> void:
-	"""Called at end of _ready(). Override for subclass setup."""
+	## Called at end of _ready(). Override for subclass setup.
 	pass
 
 
 func get_state_name() -> String:
-	"""Get current state as string."""
+	## Get current state as string.
 	return State.keys()[current_state]

@@ -36,7 +36,7 @@ const TEXTURE_MAP: Dictionary = {
 
 
 func _run() -> void:
-	"""Entry point untuk EditorScript. Run dari Script > Run (Ctrl+Shift+X)"""
+	## Entry point untuk EditorScript. Run dari Script > Run (Ctrl+Shift+X)
 	print("=" .repeat(60))
 	print("TEXTURE PATCHER - Project: REBOOT")
 	print("=" .repeat(60))
@@ -62,7 +62,7 @@ func _run() -> void:
 
 
 func _patch_scene(scene_path: String) -> int:
-	"""Patch satu scene. Return jumlah texture yang diganti."""
+	## Patch satu scene. Return jumlah texture yang diganti.
 	var file := FileAccess.open(scene_path, FileAccess.READ)
 	if not file:
 		return 0
@@ -99,7 +99,7 @@ func _patch_scene(scene_path: String) -> int:
 
 
 func _get_all_files(path: String, extensions: Array) -> Array:
-	"""Rekursif ambil semua file dengan extension tertentu."""
+	## Rekursif ambil semua file dengan extension tertentu.
 	var files := []
 	var dir := DirAccess.open(path)
 	
@@ -129,7 +129,7 @@ func _get_all_files(path: String, extensions: Array) -> Array:
 
 # === RUNTIME PATCHER (untuk scene yang sudah loaded) ===
 static func patch_sprite(sprite: Sprite2D) -> bool:
-	"""Patch single sprite jika menggunakan placeholder texture."""
+	## Patch single sprite jika menggunakan placeholder texture.
 	if not sprite or not sprite.texture:
 		return false
 	
@@ -146,7 +146,7 @@ static func patch_sprite(sprite: Sprite2D) -> bool:
 
 
 static func patch_all_sprites_in_tree(root: Node) -> int:
-	"""Patch semua Sprite2D dalam subtree."""
+	## Patch semua Sprite2D dalam subtree.
 	var count := 0
 	
 	for child in root.get_children():

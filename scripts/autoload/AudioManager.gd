@@ -74,7 +74,7 @@ func _ready() -> void:
 
 # === MUSIK ===
 func play_music(stream: AudioStream, fade_in: float = 0.5) -> void:
-	"""Mainkan musik dengan fade in."""
+	## Mainkan musik dengan fade in.
 	if music_player.stream == stream and music_player.playing:
 		return  # Musik sama sudah main
 	
@@ -89,14 +89,14 @@ func play_music(stream: AudioStream, fade_in: float = 0.5) -> void:
 
 
 func stop_music(fade_out: float = 0.5) -> void:
-	"""Stop musik dengan fade out."""
+	## Stop musik dengan fade out.
 	var tween := create_tween()
 	tween.tween_property(music_player, "volume_db", -80.0, fade_out)
 	tween.tween_callback(music_player.stop)
 
 
 func play_bgm(bgm_name: String, fade_in: float = 0.5) -> void:
-	"""Play BGM by name from BGM_PATHS dictionary."""
+	## Play BGM by name from BGM_PATHS dictionary.
 	if not BGM_PATHS.has(bgm_name):
 		if not SILENT_MISSING_AUDIO:
 			push_warning("[AudioManager] BGM '%s' not in library" % bgm_name)
@@ -112,12 +112,10 @@ func play_bgm(bgm_name: String, fade_in: float = 0.5) -> void:
 
 # === SFX ===
 func play_sfx(sfx_name_or_stream, volume_scale: float = 1.0) -> void:
-	"""Mainkan SFX. Mendukung String (nama SFX) atau AudioStream langsung.
-	
-	Contoh penggunaan:
-		AudioManager.play_sfx(\"collect\")  # Dari library
-		AudioManager.play_sfx(my_stream)   # AudioStream langsung
-	"""
+	## Mainkan SFX. Mendukung String (nama SFX) atau AudioStream langsung.
+	## Contoh penggunaan:
+	## AudioManager.play_sfx(\"collect\")  # Dari library
+	## AudioManager.play_sfx(my_stream)   # AudioStream langsung
 	var stream: AudioStream = null
 	
 	# Handle jika input adalah String (nama SFX dari library)
@@ -139,10 +137,8 @@ func play_sfx(sfx_name_or_stream, volume_scale: float = 1.0) -> void:
 
 
 func _get_sfx_from_library(sfx_name: String) -> AudioStream:
-	"""Ambil SFX dari library. Load dan cache jika belum ada.
-	
-	Returns null jika file tidak ditemukan (silent fallback).
-	"""
+	## Ambil SFX dari library. Load dan cache jika belum ada.
+	## Returns null jika file tidak ditemukan (silent fallback).
 	# Cek cache dulu
 	if sfx_cache.has(sfx_name):
 		return sfx_cache[sfx_name]
@@ -175,7 +171,7 @@ func _get_sfx_from_library(sfx_name: String) -> AudioStream:
 
 
 func _play_sfx_stream(stream: AudioStream, volume_scale: float) -> void:
-	"""Internal: Mainkan AudioStream menggunakan pool player."""
+	## Internal: Mainkan AudioStream menggunakan pool player.
 	if stream == null:
 		return
 	
@@ -194,7 +190,7 @@ func _play_sfx_stream(stream: AudioStream, volume_scale: float) -> void:
 
 
 func play_sfx_by_path(path: String, volume_scale: float = 1.0) -> void:
-	"""Mainkan SFX dari path resource. Gunakan cache."""
+	## Mainkan SFX dari path resource. Gunakan cache.
 	if not sfx_cache.has(path):
 		if not ResourceLoader.exists(path):
 			push_warning("[AudioManager] SFX tidak ditemukan: %s" % path)
@@ -211,7 +207,7 @@ func play_sfx_by_path(path: String, volume_scale: float = 1.0) -> void:
 
 # === VOLUME CONTROLS ===
 func set_master_volume(value: float) -> void:
-	"""Set master volume (0.0 - 1.0)."""
+	## Set master volume (0.0 - 1.0).
 	master_volume = clamp(value, 0.0, 1.0)
 	AudioServer.set_bus_volume_db(
 		AudioServer.get_bus_index(MASTER_BUS),
@@ -220,11 +216,11 @@ func set_master_volume(value: float) -> void:
 
 
 func set_music_volume(value: float) -> void:
-	"""Set music volume (0.0 - 1.0)."""
+	## Set music volume (0.0 - 1.0).
 	music_volume = clamp(value, 0.0, 1.0)
 	music_player.volume_db = linear_to_db(music_volume)
 
 
 func set_sfx_volume(value: float) -> void:
-	"""Set SFX volume (0.0 - 1.0)."""
+	## Set SFX volume (0.0 - 1.0).
 	sfx_volume = clamp(value, 0.0, 1.0)

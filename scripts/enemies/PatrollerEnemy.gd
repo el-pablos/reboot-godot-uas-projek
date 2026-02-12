@@ -33,7 +33,7 @@ var charge_direction: float = 0.0
 
 
 func _on_enemy_ready() -> void:
-	"""Patroller-specific setup."""
+	## Patroller-specific setup.
 	# Ensure we have edge detection
 	use_edge_detection = true
 	
@@ -49,7 +49,7 @@ func _on_enemy_ready() -> void:
 
 
 func _state_chase(_delta: float) -> void:
-	"""Override: Sprint toward player when in range."""
+	## Override: Sprint toward player when in range.
 	if not target_player:
 		change_state(State.SEARCH)
 		return
@@ -82,7 +82,7 @@ func _state_chase(_delta: float) -> void:
 
 
 func _start_charge(direction: float) -> void:
-	"""Start charge attack."""
+	## Start charge attack.
 	is_charging = true
 	charge_direction = direction
 	charge_timer = charge_duration
@@ -95,7 +95,7 @@ func _start_charge(direction: float) -> void:
 
 
 func _state_attack(delta: float) -> void:
-	"""Override: Charge attack behavior."""
+	## Override: Charge attack behavior.
 	if not is_charging:
 		# Normal attack, return to chase
 		if state_timer >= 0.3:
@@ -122,7 +122,7 @@ func _state_attack(delta: float) -> void:
 
 
 func _end_charge() -> void:
-	"""End charge attack."""
+	## End charge attack.
 	is_charging = false
 	is_sprinting = false
 	contact_damage = 20  # Reset damage
@@ -136,7 +136,7 @@ func _end_charge() -> void:
 
 
 func _state_patrol(_delta: float) -> void:
-	"""Override: Patrol with edge awareness."""
+	## Override: Patrol with edge awareness.
 	# Use edge detection for patrol
 	_patrol_edge_detection(_delta)
 	
@@ -150,7 +150,7 @@ func _state_patrol(_delta: float) -> void:
 
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	"""Override: Extra damage during charge."""
+	## Override: Extra damage during charge.
 	if body is Player and not is_dead:
 		if is_charging:
 			# Bigger knockback during charge
@@ -164,7 +164,7 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 
 
 func _spawn_death_effect() -> void:
-	"""Override: Ground explosion."""
+	## Override: Ground explosion.
 	# Sparks and debris
 	var explosion_scene: PackedScene = load("res://scenes/effects/ExplosionParticles.tscn")
 	if explosion_scene:

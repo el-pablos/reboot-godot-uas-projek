@@ -370,7 +370,7 @@ func _check_landing() -> void:
 
 
 func _on_land() -> void:
-	"""Dipanggil saat mendarat."""
+	## Dipanggil saat mendarat.
 	# Visual feedback - squash
 	_apply_squash_stretch(land_squash_scale)
 	landed.emit()
@@ -389,7 +389,7 @@ func _apply_squash_stretch(target_scale: Vector2) -> void:
 
 # === COMBAT ===
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
-	"""Dipanggil saat player kena damage."""
+	## Dipanggil saat player kena damage.
 	if is_invincible:
 		return
 	
@@ -417,13 +417,13 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func heal(amount: int) -> void:
-	"""Heal player."""
+	## Heal player.
 	current_health = min(max_health, current_health + amount)
 	health_changed.emit(current_health, max_health)
 
 
 func _flash_sprite() -> void:
-	"""Efek flash saat kena damage."""
+	## Efek flash saat kena damage.
 	if not sprite:
 		return
 	
@@ -435,7 +435,7 @@ func _flash_sprite() -> void:
 
 
 func _die() -> void:
-	"""Player mati."""
+	## Player mati.
 	state_machine.change_state(PlayerStateMachine.State.DEAD)
 	died.emit()
 	
@@ -446,11 +446,9 @@ func _die() -> void:
 
 # === ABILITY SYNC ===
 func _sync_abilities_from_game_manager() -> void:
-	"""Sync status ability dari GameManager.
-	
-	PENTING: Fungsi ini memastikan Player instance baru
-	mendapatkan semua ability yang sudah di-unlock.
-	"""
+	## Sync status ability dari GameManager.
+	## PENTING: Fungsi ini memastikan Player instance baru
+	## mendapatkan semua ability yang sudah di-unlock.
 	if GameManager:
 		can_dash = GameManager.can_dash
 		can_double_jump = GameManager.can_double_jump
@@ -473,7 +471,7 @@ func _sync_abilities_from_game_manager() -> void:
 
 
 func _on_ability_unlocked(ability_name: String) -> void:
-	"""Dipanggil saat ability baru di-unlock."""
+	## Dipanggil saat ability baru di-unlock.
 	match ability_name:
 		"dash":
 			can_dash = true
@@ -502,7 +500,7 @@ func is_ability_unlocked(ability_name: String) -> bool:
 
 
 func unlock_ability(ability_name: String) -> void:
-	"""Unlock ability (untuk testing)."""
+	## Unlock ability (untuk testing).
 	match ability_name:
 		"dash":
 			can_dash = true
@@ -521,7 +519,7 @@ func get_max_health() -> int:
 
 
 func reset_player() -> void:
-	"""Reset player ke kondisi awal."""
+	## Reset player ke kondisi awal.
 	current_health = max_health
 	velocity = Vector2.ZERO
 	is_invincible = false

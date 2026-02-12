@@ -49,23 +49,23 @@ func _ready() -> void:
 
 
 func setup(player_ref: CharacterBody2D) -> void:
-	"""Inisialisasi dengan referensi ke player."""
+	## Inisialisasi dengan referensi ke player.
 	player = player_ref
 	print("[StateMachine] Setup selesai, state awal: %s" % get_state_name())
 
 
 func get_state_name() -> String:
-	"""Ambil nama state sekarang."""
+	## Ambil nama state sekarang.
 	return STATE_NAMES.get(current_state, "UNKNOWN")
 
 
 func get_previous_state_name() -> String:
-	"""Ambil nama state sebelumnya."""
+	## Ambil nama state sebelumnya.
 	return STATE_NAMES.get(previous_state, "UNKNOWN")
 
 
 func change_state(new_state: State) -> void:
-	"""Ganti ke state baru."""
+	## Ganti ke state baru.
 	if current_state == new_state:
 		return  # Sudah di state yang sama
 	
@@ -84,36 +84,36 @@ func change_state(new_state: State) -> void:
 
 
 func is_state(check_state: State) -> bool:
-	"""Cek apakah sedang di state tertentu."""
+	## Cek apakah sedang di state tertentu.
 	return current_state == check_state
 
 
 func is_grounded_state() -> bool:
-	"""Cek apakah state sekarang adalah grounded (Idle/Run)."""
+	## Cek apakah state sekarang adalah grounded (Idle/Run).
 	return current_state in [State.IDLE, State.RUN]
 
 
 func is_air_state() -> bool:
-	"""Cek apakah state sekarang adalah di udara."""
+	## Cek apakah state sekarang adalah di udara.
 	return current_state in [State.JUMP, State.FALL, State.GLIDE]
 
 
 func can_jump() -> bool:
-	"""Cek apakah bisa lompat dari state sekarang."""
+	## Cek apakah bisa lompat dari state sekarang.
 	return current_state in [State.IDLE, State.RUN, State.FALL]
 
 
 func can_dash() -> bool:
-	"""Cek apakah bisa dash dari state sekarang."""
+	## Cek apakah bisa dash dari state sekarang.
 	return current_state in [State.IDLE, State.RUN, State.JUMP, State.FALL]
 
 
 func can_glide() -> bool:
-	"""Cek apakah bisa glide dari state sekarang."""
+	## Cek apakah bisa glide dari state sekarang.
 	return current_state in [State.JUMP, State.FALL]
 
 
 func reset() -> void:
-	"""Reset state ke IDLE."""
+	## Reset state ke IDLE.
 	previous_state = current_state
 	current_state = State.IDLE

@@ -77,7 +77,7 @@ func _process_chase(_delta: float) -> void:
 
 
 func _is_cliff_ahead() -> bool:
-	"""Cek apakah ada jurang di depan."""
+	## Cek apakah ada jurang di depan.
 	if patrol_direction > 0 and floor_check_right:
 		return not floor_check_right.is_colliding()
 	elif patrol_direction < 0 and floor_check_left:
@@ -86,7 +86,7 @@ func _is_cliff_ahead() -> bool:
 
 
 func _is_wall_ahead() -> bool:
-	"""Cek apakah ada dinding di depan."""
+	## Cek apakah ada dinding di depan.
 	if wall_check:
 		# Update arah raycast
 		wall_check.target_position.x = 20 * patrol_direction
@@ -95,7 +95,7 @@ func _is_wall_ahead() -> bool:
 
 
 func _turn_around() -> void:
-	"""Berbalik arah."""
+	## Berbalik arah.
 	patrol_direction *= -1
 	
 	# Tunggu sebentar

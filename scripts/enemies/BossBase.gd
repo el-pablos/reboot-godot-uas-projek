@@ -52,7 +52,7 @@ var brain: BossBrain = null
 # Use these instead of raw await to prevent crashes when boss dies mid-animation
 
 func _safe_await_timer(duration: float) -> bool:
-	"""Safely await a timer. Returns false if node was freed/removed."""
+	## Safely await a timer. Returns false if node was freed/removed.
 	if not is_inside_tree() or is_queued_for_deletion():
 		return false
 	var tree := get_tree()
@@ -63,7 +63,7 @@ func _safe_await_timer(duration: float) -> bool:
 
 
 func _safe_await_frame() -> bool:
-	"""Safely await next frame. Returns false if node was freed/removed."""
+	## Safely await next frame. Returns false if node was freed/removed.
 	if not is_inside_tree() or is_queued_for_deletion():
 		return false
 	var tree := get_tree()
@@ -74,7 +74,7 @@ func _safe_await_frame() -> bool:
 
 
 func _is_valid_for_attack() -> bool:
-	"""Check if boss can continue attacking."""
+	## Check if boss can continue attacking.
 	return is_inside_tree() and not is_queued_for_deletion() and not is_dead and get_tree() != null
 
 
@@ -98,13 +98,13 @@ func _on_ready() -> void:
 
 
 func _setup_brain() -> void:
-	"""Setup BossBrain AI. Override di subclass untuk config spesifik."""
+	## Setup BossBrain AI. Override di subclass untuk config spesifik.
 	# Subclass harus override dan call _create_brain(config)
 	pass
 
 
 func _create_brain(config: BossConfig) -> void:
-	"""Buat BossBrain dengan config tertentu."""
+	## Buat BossBrain dengan config tertentu.
 	brain = BossBrain.new()
 	brain.name = "BossBrain"
 	brain.config = config
@@ -116,12 +116,12 @@ func _create_brain(config: BossConfig) -> void:
 
 
 func _on_brain_attack_requested(attack_type: String) -> void:
-	"""BossBrain minta serangan. Override di subclass."""
+	## BossBrain minta serangan. Override di subclass.
 	_choose_attack()
 
 
 func _on_brain_telegraph(duration: float) -> void:
-	"""BossBrain mulai telegraph. Override untuk custom effect."""
+	## BossBrain mulai telegraph. Override untuk custom effect.
 	pass
 
 
@@ -159,7 +159,7 @@ func take_damage(amount: int, _knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func _transition_to_next_phase() -> void:
-	"""Pindah ke phase berikutnya."""
+	## Pindah ke phase berikutnya.
 	current_phase += 1
 	phase_changed.emit(current_phase)
 	
@@ -189,7 +189,7 @@ func _transition_to_next_phase() -> void:
 
 
 func _phase_transition_effect() -> void:
-	"""Override untuk efek transisi phase."""
+	## Override untuk efek transisi phase.
 	# Default: flash dan pause
 	if sprite:
 		for i in range(5):
@@ -204,7 +204,7 @@ func _phase_transition_effect() -> void:
 
 
 func _boss_defeated() -> void:
-	"""Boss kalah, berikan reward."""
+	## Boss kalah, berikan reward.
 	is_dead = true
 	current_state = State.DEAD
 	
@@ -230,7 +230,7 @@ func _boss_defeated() -> void:
 
 
 func _death_effect() -> void:
-	"""Override untuk efek kematian boss."""
+	## Override untuk efek kematian boss.
 	if not _is_valid_for_attack():
 		return
 	if sprite:
@@ -244,18 +244,18 @@ func _death_effect() -> void:
 # === ATTACK SYSTEM ===
 
 func _choose_attack() -> void:
-	"""Override di subclass untuk memilih serangan."""
+	## Override di subclass untuk memilih serangan.
 	pass
 
 
 func _start_attack(attack_name: String) -> void:
-	"""Mulai serangan."""
+	## Mulai serangan.
 	is_attacking = true
 	attack_started.emit(attack_name)
 
 
 func _end_attack() -> void:
-	"""Akhiri serangan, set cooldown."""
+	## Akhiri serangan, set cooldown.
 	is_attacking = false
 	if brain:
 		brain.end_attack()

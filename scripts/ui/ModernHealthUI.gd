@@ -75,13 +75,13 @@ func _process(delta: float) -> void:
 # =========================================
 
 func _setup_ui() -> void:
-	"""Initialize UI elements if they don't exist."""
+	## Initialize UI elements if they don't exist.
 	if not health_bar:
 		_create_default_ui()
 
 
 func _create_default_ui() -> void:
-	"""Create a default health bar UI programmatically."""
+	## Create a default health bar UI programmatically.
 	# Container
 	container = Control.new()
 	container.name = "Container"
@@ -143,7 +143,7 @@ func _create_default_ui() -> void:
 # =========================================
 
 func set_health(health: int, max_hp: int = -1, animate: bool = true) -> void:
-	"""Set health value with optional animation."""
+	## Set health value with optional animation.
 	if max_hp > 0:
 		max_health = max_hp
 		if health_bar:
@@ -179,14 +179,14 @@ func set_health(health: int, max_hp: int = -1, animate: bool = true) -> void:
 
 
 func take_damage(amount: int) -> void:
-	"""Take damage with full visual feedback."""
+	## Take damage with full visual feedback.
 	var new_health: int = maxi(0, current_health - amount)
 	set_health(new_health, -1, true)
 	_trigger_damage_effects()
 
 
 func heal(amount: int) -> void:
-	"""Heal with visual feedback."""
+	## Heal with visual feedback.
 	var new_health: int = mini(max_health, current_health + amount)
 	set_health(new_health, -1, true)
 	_trigger_heal_effects()
@@ -197,7 +197,7 @@ func heal(amount: int) -> void:
 # =========================================
 
 func _animate_damage(_from: int, to: int) -> void:
-	"""Animate health bar going down with damage trail."""
+	## Animate health bar going down with damage trail.
 	# Immediate health bar drop
 	var tween := create_tween()
 	tween.tween_property(self, "_displayed_health", float(to), damage_animation_duration)\
@@ -211,7 +211,7 @@ func _animate_damage(_from: int, to: int) -> void:
 
 
 func _animate_heal(_from: int, to: int) -> void:
-	"""Animate health bar going up."""
+	## Animate health bar going up.
 	var tween := create_tween()
 	tween.tween_property(self, "_displayed_health", float(to), heal_animation_duration)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
@@ -219,18 +219,18 @@ func _animate_heal(_from: int, to: int) -> void:
 
 
 func _trigger_damage_effects() -> void:
-	"""Trigger visual effects for taking damage."""
+	## Trigger visual effects for taking damage.
 	_shake_bar()
 	_flash_bar(bar_color_damage)
 
 
 func _trigger_heal_effects() -> void:
-	"""Trigger visual effects for healing."""
+	## Trigger visual effects for healing.
 	_pulse_glow(bar_glow_color)
 
 
 func _shake_bar() -> void:
-	"""Shake the health bar container."""
+	## Shake the health bar container.
 	if not container:
 		return
 	
@@ -248,7 +248,7 @@ func _shake_bar() -> void:
 
 
 func _flash_bar(flash_color: Color) -> void:
-	"""Flash the health bar a color briefly."""
+	## Flash the health bar a color briefly.
 	if not health_bar:
 		return
 	
@@ -259,7 +259,7 @@ func _flash_bar(flash_color: Color) -> void:
 
 
 func _pulse_glow(glow_color: Color) -> void:
-	"""Pulse the glow effect."""
+	## Pulse the glow effect.
 	if not glow_effect:
 		return
 	
@@ -274,12 +274,12 @@ func _pulse_glow(glow_color: Color) -> void:
 # =========================================
 
 func _update_animations(_delta: float) -> void:
-	"""Update bar display values."""
+	## Update bar display values.
 	_update_bar_display()
 
 
 func _update_bar_display() -> void:
-	"""Update visual bar values."""
+	## Update visual bar values.
 	if health_bar:
 		health_bar.value = _displayed_health
 	
@@ -291,7 +291,7 @@ func _update_bar_display() -> void:
 
 
 func _update_low_health_effects() -> void:
-	"""Pulse effects when health is low."""
+	## Pulse effects when health is low.
 	if not _is_low_health:
 		return
 	
@@ -311,15 +311,15 @@ func _update_low_health_effects() -> void:
 # =========================================
 
 func get_health_ratio() -> float:
-	"""Get current health as a ratio 0-1."""
+	## Get current health as a ratio 0-1.
 	return float(current_health) / float(max_health)
 
 
 func is_alive() -> bool:
-	"""Check if still alive."""
+	## Check if still alive.
 	return current_health > 0
 
 
 func is_full_health() -> bool:
-	"""Check if at full health."""
+	## Check if at full health.
 	return current_health >= max_health

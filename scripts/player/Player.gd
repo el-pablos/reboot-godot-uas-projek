@@ -198,12 +198,10 @@ func _ready() -> void:
 
 
 func _recalculate_jump_physics() -> void:
-	"""Calculate physics values from designer-friendly parameters.
-	
-	Using kinematic equations:
-	- v₀ = 2h / t (initial velocity to reach height h in time t)
-	- g = 2h / t² (gravity needed for that trajectory)
-	"""
+	## Calculate physics values from designer-friendly parameters.
+	## Using kinematic equations:
+	## - v₀ = 2h / t (initial velocity to reach height h in time t)
+	## - g = 2h / t² (gravity needed for that trajectory)
 	jump_velocity = -((2.0 * jump_height) / jump_time_to_peak)
 	jump_gravity = (2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
 	fall_gravity = (2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)
@@ -213,7 +211,7 @@ func _recalculate_jump_physics() -> void:
 
 
 func _sync_from_game_manager() -> void:
-	"""Sync abilities and stats from GameManager (Source of Truth)."""
+	## Sync abilities and stats from GameManager (Source of Truth).
 	if not GameManager:
 		return
 	
@@ -446,7 +444,7 @@ func _process_dash(delta: float) -> void:
 
 
 func _spawn_ghost_trail() -> void:
-	"""Spawn ghost images behind player during dash."""
+	## Spawn ghost images behind player during dash.
 	if not sprite:
 		return
 	
@@ -503,7 +501,7 @@ func _handle_glide() -> void:
 # =========================================
 
 func _handle_attack() -> void:
-	"""Check for attack input."""
+	## Check for attack input.
 	if is_attacking or is_dashing:
 		return
 
@@ -516,7 +514,7 @@ func _handle_attack() -> void:
 
 
 func _execute_attack() -> void:
-	"""Start wrench swing attack."""
+	## Start wrench swing attack.
 	is_attacking = true
 	attack_timer = attack_duration
 	attack_cooldown_timer = attack_cooldown
@@ -541,7 +539,7 @@ func _execute_attack() -> void:
 
 
 func _process_attack(delta: float) -> void:
-	"""Process attack timing."""
+	## Process attack timing.
 	if not is_attacking:
 		return
 	
@@ -552,7 +550,7 @@ func _process_attack(delta: float) -> void:
 
 
 func _end_attack() -> void:
-	"""End attack and disable hitbox."""
+	## End attack and disable hitbox.
 	is_attacking = false
 	attack_timer = 0.0
 	
@@ -562,7 +560,7 @@ func _end_attack() -> void:
 
 
 func _shoot_projectile() -> void:
-	"""Spawn energy bolt projectile."""
+	## Spawn energy bolt projectile.
 	var projectile := Area2D.new()
 	projectile.set_script(ProjectileScript)
 	projectile.collision_layer = 32  # projectile layer
@@ -607,7 +605,7 @@ func _shoot_projectile() -> void:
 
 
 func _hit_stop(duration: float) -> void:
-	"""Freeze time briefly for impact feel."""
+	## Freeze time briefly for impact feel.
 	Engine.time_scale = 0.1
 	await get_tree().create_timer(duration * 0.1).timeout  # Timer runs in scaled time
 	# Always restore time_scale, even if node freed during await
@@ -661,7 +659,7 @@ func _update_state() -> void:
 
 
 func _on_state_changed_play_anim(_old_state: String, new_state: String) -> void:
-	"""Play animation matching the new state."""
+	## Play animation matching the new state.
 	if not sprite:
 		return
 	var anim_name: String = ANIM_MAP.get(new_state, "idle")
@@ -832,7 +830,7 @@ func is_ability_unlocked(ability_name: String) -> bool:
 
 
 func reset_player() -> void:
-	"""Reset player state for respawn. Called by LevelBase after death."""
+	## Reset player state for respawn. Called by LevelBase after death.
 	# Ensure time_scale is normal
 	Engine.time_scale = 1.0
 	

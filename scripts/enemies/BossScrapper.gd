@@ -86,7 +86,7 @@ func _choose_attack() -> void:
 
 
 func _attack_slam() -> void:
-	"""Slam attack - area damage di depan."""
+	## Slam attack - area damage di depan.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("slam")
@@ -126,7 +126,7 @@ func _attack_slam() -> void:
 
 
 func _attack_dash() -> void:
-	"""Dash attack - melesat ke arah player."""
+	## Dash attack - melesat ke arah player.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("dash")

@@ -83,7 +83,7 @@ func _process(delta: float) -> void:
 # =========================================
 
 func _generate_background_layers() -> void:
-	"""Generate all parallax layers procedurally."""
+	## Generate all parallax layers procedurally.
 	
 	# Clear existing layers
 	for p_layer in _layers:
@@ -113,7 +113,7 @@ func _generate_background_layers() -> void:
 
 
 func _create_gradient_layer() -> void:
-	"""Create the background gradient layer."""
+	## Create the background gradient layer.
 	var p_layer := ParallaxLayer.new()
 	p_layer.name = "SkyGradient"
 	p_layer.motion_scale = Vector2(0.0, 0.0)  # Static background
@@ -131,7 +131,7 @@ func _create_gradient_layer() -> void:
 
 
 func _create_building_layer(preset_name: String, depth: float, z_index: int) -> void:
-	"""Create a layer with procedural building silhouettes."""
+	## Create a layer with procedural building silhouettes.
 	var preset: Dictionary = LAYER_PRESETS.get(preset_name, LAYER_PRESETS["distant_buildings"])
 	
 	var p_layer := ParallaxLayer.new()
@@ -161,7 +161,7 @@ func _create_building_layer(preset_name: String, depth: float, z_index: int) -> 
 
 
 func _create_building_silhouette(preset: Dictionary, depth: float) -> Node2D:
-	"""Create a single building silhouette with optional glow windows."""
+	## Create a single building silhouette with optional glow windows.
 	var building := Node2D.new()
 	
 	# Main building body
@@ -202,7 +202,7 @@ func _create_building_silhouette(preset: Dictionary, depth: float) -> Node2D:
 
 
 func _create_fog_layer() -> void:
-	"""Create a fog/mist layer for atmosphere."""
+	## Create a fog/mist layer for atmosphere.
 	var p_layer := ParallaxLayer.new()
 	p_layer.name = "FogLayer"
 	p_layer.motion_scale = Vector2(0.4, 0.2)
@@ -220,7 +220,7 @@ func _create_fog_layer() -> void:
 
 
 func _create_foreground_layer(index: int) -> void:
-	"""Create foreground debris particles."""
+	## Create foreground debris particles.
 	var p_layer := ParallaxLayer.new()
 	p_layer.name = "ForegroundLayer_%d" % index
 	p_layer.motion_scale = LAYER_PRESETS["foreground"]["motion_scale"]
@@ -252,7 +252,7 @@ func _create_foreground_layer(index: int) -> void:
 # =========================================
 
 func _update_dynamic_elements(_delta: float) -> void:
-	"""Update any animated elements in the background."""
+	## Update any animated elements in the background.
 	# Could add floating particles, flickering lights, etc.
 	pass
 
@@ -262,7 +262,7 @@ func _update_dynamic_elements(_delta: float) -> void:
 # =========================================
 
 func set_theme(theme_name: String, duration: float = 1.0) -> void:
-	"""Transition to a different background theme."""
+	## Transition to a different background theme.
 	var tween := create_tween()
 	
 	match theme_name:
@@ -281,7 +281,7 @@ func set_theme(theme_name: String, duration: float = 1.0) -> void:
 
 
 func add_weather_effect(effect_type: String) -> void:
-	"""Add weather/environmental effects."""
+	## Add weather/environmental effects.
 	match effect_type:
 		"rain":
 			# Could add particle system for rain

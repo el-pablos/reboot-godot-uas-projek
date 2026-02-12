@@ -51,7 +51,7 @@ var aim_direction: Vector2 = Vector2.RIGHT
 
 
 func _on_enemy_ready() -> void:
-	"""Watcher-specific setup."""
+	## Watcher-specific setup.
 	# Store starting Y for hover calculations
 	base_y = global_position.y
 	
@@ -79,7 +79,7 @@ func _on_enemy_ready() -> void:
 
 
 func _create_aim_line() -> void:
-	"""Create laser sight line for aiming."""
+	## Create laser sight line for aiming.
 	aim_line = Line2D.new()
 	aim_line.name = "AimLine"
 	aim_line.width = 2.0
@@ -91,7 +91,7 @@ func _create_aim_line() -> void:
 
 
 func _create_charge_light() -> void:
-	"""Create light that glows during charge."""
+	## Create light that glows during charge.
 	charge_light = PointLight2D.new()
 	charge_light.name = "ChargeLight"
 	charge_light.color = Color(1, 0.3, 0.3)
@@ -107,7 +107,7 @@ func _create_charge_light() -> void:
 
 
 func _apply_gravity(_delta: float) -> void:
-	"""Override: No gravity for flying enemies."""
+	## Override: No gravity for flying enemies.
 	# Hover in sine wave pattern
 	hover_time += _delta * hover_frequency * TAU
 	var hover_offset: float = sin(hover_time) * hover_amplitude
@@ -118,7 +118,7 @@ func _apply_gravity(_delta: float) -> void:
 
 
 func _state_patrol(_delta: float) -> void:
-	"""Override: Patrol with sine wave hover."""
+	## Override: Patrol with sine wave hover.
 	# Horizontal movement
 	velocity.x = patrol_direction * flight_speed
 	
@@ -140,7 +140,7 @@ func _state_patrol(_delta: float) -> void:
 
 
 func _state_chase(_delta: float) -> void:
-	"""Override: Stop and aim at player, maintaining distance."""
+	## Override: Stop and aim at player, maintaining distance.
 	if not target_player or not can_see_player:
 		change_state(State.SEARCH)
 		return
@@ -166,7 +166,7 @@ func _state_chase(_delta: float) -> void:
 
 
 func _start_charge() -> void:
-	"""Start charging a shot."""
+	## Start charging a shot.
 	is_charging_shot = true
 	charge_progress = 0.0
 	change_state(State.ATTACK)
@@ -182,7 +182,7 @@ func _start_charge() -> void:
 
 
 func _state_attack(delta: float) -> void:
-	"""Override: Charge and fire projectile."""
+	## Override: Charge and fire projectile.
 	if not is_charging_shot:
 		change_state(State.CHASE)
 		return
@@ -214,7 +214,7 @@ func _state_attack(delta: float) -> void:
 
 
 func _fire_projectile() -> void:
-	"""Fire a projectile at the player."""
+	## Fire a projectile at the player.
 	is_charging_shot = false
 	charge_progress = 0.0
 	attack_cooldown_timer = fire_rate
@@ -250,7 +250,7 @@ func _fire_projectile() -> void:
 
 
 func _state_idle(_delta: float) -> void:
-	"""Override: Hover in place during idle."""
+	## Override: Hover in place during idle.
 	velocity.x = move_toward(velocity.x, 0, flight_speed * 2 * _delta)
 	
 	# Random look around
@@ -268,7 +268,7 @@ func _state_idle(_delta: float) -> void:
 
 
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
-	"""Override: Cancel charging on damage."""
+	## Override: Cancel charging on damage.
 	is_charging_shot = false
 	charge_progress = 0.0
 	
@@ -281,7 +281,7 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func _spawn_death_effect() -> void:
-	"""Override: Aerial explosion with sparks."""
+	## Override: Aerial explosion with sparks.
 	var explosion_scene := load("res://scenes/effects/ExplosionParticles.tscn")
 	if explosion_scene:
 		var explosion := explosion_scene.instantiate()

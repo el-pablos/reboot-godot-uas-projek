@@ -82,7 +82,7 @@ func _process(delta: float) -> void:
 # =========================================
 
 func _find_scene_lights() -> void:
-	"""Find and categorize all PointLight2D nodes in the scene."""
+	## Find and categorize all PointLight2D nodes in the scene.
 	_active_lights.clear()
 	var lights := get_tree().get_nodes_in_group("dynamic_lights")
 	for light in lights:
@@ -91,7 +91,7 @@ func _find_scene_lights() -> void:
 
 
 func _update_pulsing_lights() -> void:
-	"""Update pulsing effects for hazard and collectible lights."""
+	## Update pulsing effects for hazard and collectible lights.
 	for light in _active_lights:
 		if light.is_in_group("hazard_lights"):
 			var pulse := (sin(_time * hazard_pulse_speed) + 1.0) * 0.5
@@ -102,14 +102,14 @@ func _update_pulsing_lights() -> void:
 
 
 func register_light(light: PointLight2D) -> void:
-	"""Register a new dynamic light."""
+	## Register a new dynamic light.
 	if light not in _active_lights:
 		_active_lights.append(light)
 		light.add_to_group("dynamic_lights")
 
 
 func unregister_light(light: PointLight2D) -> void:
-	"""Unregister a dynamic light."""
+	## Unregister a dynamic light.
 	_active_lights.erase(light)
 
 
@@ -118,7 +118,7 @@ func unregister_light(light: PointLight2D) -> void:
 # =========================================
 
 func flash_screen(color: Color = Color.WHITE, duration: float = 0.1) -> void:
-	"""Flash the screen briefly (for impacts, damage, etc.)."""
+	## Flash the screen briefly (for impacts, damage, etc.).
 	if canvas_modulate:
 		var original := canvas_modulate.color
 		var tween := create_tween()
@@ -127,7 +127,7 @@ func flash_screen(color: Color = Color.WHITE, duration: float = 0.1) -> void:
 
 
 func set_danger_mode(enabled: bool, transition_time: float = 0.5) -> void:
-	"""Shift lighting to danger/alert mode."""
+	## Shift lighting to danger/alert mode.
 	if canvas_modulate:
 		var target_color := Color(0.5, 0.2, 0.2, 1.0) if enabled else Color(0.3, 0.35, 0.5, 1.0)
 		var tween := create_tween()
@@ -135,7 +135,7 @@ func set_danger_mode(enabled: bool, transition_time: float = 0.5) -> void:
 
 
 func pulse_light_at(pos: Vector2, color: Color = Color.WHITE, radius: float = 100.0, duration: float = 0.3) -> void:
-	"""Create a temporary light pulse at a position."""
+	## Create a temporary light pulse at a position.
 	var light := PointLight2D.new()
 	light.global_position = pos
 	light.color = color
@@ -167,7 +167,7 @@ func pulse_light_at(pos: Vector2, color: Color = Color.WHITE, radius: float = 10
 # =========================================
 
 func transition_to_area(area_type: String, duration: float = 1.0) -> void:
-	"""Transition lighting based on area type."""
+	## Transition lighting based on area type.
 	var target_ambient := ambient_color
 	var target_modulate := Color(0.3, 0.35, 0.5, 1.0)
 	

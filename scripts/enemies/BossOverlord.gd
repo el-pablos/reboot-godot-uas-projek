@@ -74,7 +74,7 @@ func _process_chase(_delta: float) -> void:
 
 
 func _process_phase_1(_delta: float) -> void:
-	"""Phase 1: Robot raksasa - gerak lambat, laser."""
+	## Phase 1: Robot raksasa - gerak lambat, laser.
 	if not target_player:
 		return
 	
@@ -85,7 +85,7 @@ func _process_phase_1(_delta: float) -> void:
 
 
 func _process_phase_2(_delta: float) -> void:
-	"""Phase 2: Core Spirit - hover di tengah atas, spawn orbs."""
+	## Phase 2: Core Spirit - hover di tengah atas, spawn orbs.
 	# Hover di posisi phase 2
 	var move_dir := (phase_2_position - global_position).normalized()
 	var distance := global_position.distance_to(phase_2_position)
@@ -109,7 +109,7 @@ func _choose_attack() -> void:
 
 
 func _choose_phase_1_attack() -> void:
-	"""Pilih serangan fase 1."""
+	## Pilih serangan fase 1.
 	var attack_roll := randf()
 	
 	if attack_roll < 0.6:
@@ -119,7 +119,7 @@ func _choose_phase_1_attack() -> void:
 
 
 func _choose_phase_2_attack() -> void:
-	"""Pilih serangan fase 2."""
+	## Pilih serangan fase 2.
 	var attack_roll := randf()
 	
 	if attack_roll < 0.5:
@@ -133,7 +133,7 @@ func _choose_phase_2_attack() -> void:
 # === PHASE 1 ATTACKS ===
 
 func _attack_horizontal_laser() -> void:
-	"""Laser horizontal yang sweep arena."""
+	## Laser horizontal yang sweep arena.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("horizontal_laser")
@@ -211,7 +211,7 @@ func _attack_horizontal_laser() -> void:
 
 
 func _attack_ground_slam() -> void:
-	"""Slam tanah - shockwave."""
+	## Slam tanah - shockwave.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("ground_slam")
@@ -261,7 +261,7 @@ func _attack_ground_slam() -> void:
 # === PHASE 2 ATTACKS ===
 
 func _attack_energy_orbs() -> void:
-	"""Spawn energy orbs yang chase player."""
+	## Spawn energy orbs yang chase player.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("energy_orbs")
@@ -281,7 +281,7 @@ func _attack_energy_orbs() -> void:
 
 
 func _spawn_energy_orb() -> Area2D:
-	"""Spawn satu energy orb."""
+	## Spawn satu energy orb.
 	if not is_inside_tree() or not get_parent():
 		return null
 	
@@ -312,7 +312,7 @@ func _spawn_energy_orb() -> Area2D:
 
 
 func _orb_chase_player(orb: Area2D) -> void:
-	"""Orb mengejar player."""
+	## Orb mengejar player.
 	var lifetime := 0.0
 	
 	while lifetime < 5.0 and is_instance_valid(orb):
@@ -340,7 +340,7 @@ func _orb_chase_player(orb: Area2D) -> void:
 
 
 func _attack_energy_rain() -> void:
-	"""Energy rain dari atas."""
+	## Energy rain dari atas.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("energy_rain")
@@ -365,7 +365,7 @@ func _attack_energy_rain() -> void:
 
 
 func _spawn_falling_energy(x_pos: float) -> void:
-	"""Spawn energy yang jatuh."""
+	## Spawn energy yang jatuh.
 	if not is_inside_tree() or not get_parent():
 		return
 	
@@ -430,7 +430,7 @@ func _spawn_falling_energy(x_pos: float) -> void:
 
 
 func _attack_pulse_wave() -> void:
-	"""Expanding pulse wave."""
+	## Expanding pulse wave.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("pulse_wave")
@@ -499,7 +499,7 @@ func _attack_pulse_wave() -> void:
 
 
 func _phase_transition_effect() -> void:
-	"""Transisi dramatis ke fase 2."""
+	## Transisi dramatis ke fase 2.
 	print("[Overlord] TRANSFORMASI KE CORE SPIRIT!")
 	
 	# Robot hancur efek
@@ -536,7 +536,7 @@ func _phase_transition_effect() -> void:
 
 
 func _boss_defeated() -> void:
-	"""GAME COMPLETE!"""
+	## GAME COMPLETE!
 	# Cleanup orbs
 	for orb in orbs:
 		if is_instance_valid(orb):

@@ -74,7 +74,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _setup_player() -> void:
-	"""Setup player di level."""
+	## Setup player di level.
 	# Cari player yang sudah ada
 	player = get_node_or_null("Player") as Player
 	
@@ -90,20 +90,20 @@ func _setup_player() -> void:
 
 
 func _connect_signals() -> void:
-	"""Connect signal player."""
+	## Connect signal player.
 	if player:
 		if not player.died.is_connected(_on_player_died):
 			player.died.connect(_on_player_died)
 
 
 func _on_player_fell() -> void:
-	"""Player jatuh ke void."""
+	## Player jatuh ke void.
 	if player:
 		player.take_damage(player.max_health)  # Instant kill
 
 
 func _on_player_died() -> void:
-	"""Player mati, respawn."""
+	## Player mati, respawn.
 	print("[Level] Player mati! Respawning...")
 	
 	# Tunggu sebentar
@@ -116,7 +116,7 @@ func _on_player_died() -> void:
 
 
 func _respawn_player() -> void:
-	"""Respawn player di spawn point."""
+	## Respawn player di spawn point.
 	if player:
 		player.global_position = spawn_position + respawn_offset
 		player.reset_player()
@@ -128,7 +128,7 @@ func _respawn_player() -> void:
 
 
 func complete_level() -> void:
-	"""Dipanggil saat level selesai (sentuh goal/kalahkan boss)."""
+	## Dipanggil saat level selesai (sentuh goal/kalahkan boss).
 	if is_level_completed:
 		return
 	
@@ -150,5 +150,5 @@ func complete_level() -> void:
 
 
 func get_player() -> Player:
-	"""Getter untuk player."""
+	## Getter untuk player.
 	return player

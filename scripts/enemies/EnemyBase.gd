@@ -119,39 +119,39 @@ func _physics_process(delta: float) -> void:
 # === VIRTUAL METHODS (Override di subclass) ===
 
 func _on_ready() -> void:
-	"""Override untuk setup tambahan di subclass."""
+	## Override untuk setup tambahan di subclass.
 	pass
 
 
 func _process_idle(_delta: float) -> void:
-	"""Override untuk behavior idle."""
+	## Override untuk behavior idle.
 	velocity.x = 0
 
 
 func _process_patrol(_delta: float) -> void:
-	"""Override untuk behavior patrol."""
+	## Override untuk behavior patrol.
 	pass
 
 
 func _process_chase(_delta: float) -> void:
-	"""Override untuk behavior chase player."""
+	## Override untuk behavior chase player.
 	pass
 
 
 func _process_attack(_delta: float) -> void:
-	"""Override untuk behavior attack."""
+	## Override untuk behavior attack.
 	pass
 
 
 func _process_hurt(_delta: float) -> void:
-	"""Override untuk behavior saat kena hit."""
+	## Override untuk behavior saat kena hit.
 	velocity.x = move_toward(velocity.x, 0, 200 * _delta)
 
 
 # === DAMAGE & HEALTH ===
 
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
-	"""Musuh menerima damage."""
+	## Musuh menerima damage.
 	if is_dead:
 		return
 	
@@ -178,7 +178,7 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func _flash_damage() -> void:
-	"""Flash merah saat kena damage."""
+	## Flash merah saat kena damage.
 	if not sprite:
 		return
 	
@@ -191,7 +191,7 @@ func _flash_damage() -> void:
 
 
 func _die() -> void:
-	"""Musuh mati."""
+	## Musuh mati.
 	is_dead = true
 	current_state = State.DEAD
 	velocity = Vector2.ZERO

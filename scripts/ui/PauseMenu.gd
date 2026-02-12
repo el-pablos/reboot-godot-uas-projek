@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
 
 
 func toggle_pause() -> void:
-	"""Toggle pause state."""
+	## Toggle pause state.
 	if get_tree().paused:
 		resume_game()
 	else:
@@ -50,7 +50,7 @@ func toggle_pause() -> void:
 
 
 func pause_game() -> void:
-	"""Pause game dan tampilkan menu."""
+	## Pause game dan tampilkan menu.
 	get_tree().paused = true
 	pause_panel.visible = true
 	
@@ -62,7 +62,7 @@ func pause_game() -> void:
 
 
 func resume_game() -> void:
-	"""Resume game dan sembunyikan menu."""
+	## Resume game dan sembunyikan menu.
 	get_tree().paused = false
 	pause_panel.visible = false
 	

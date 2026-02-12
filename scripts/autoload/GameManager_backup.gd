@@ -52,7 +52,7 @@ func _ready() -> void:
 
 # === FUNGSI CORE COLLECTION ===
 func collect_core() -> void:
-	"""Dipanggil saat pemain mengambil pecahan core (tanpa advance level)."""
+	## Dipanggil saat pemain mengambil pecahan core (tanpa advance level).
 	if cores_collected < MAX_CORES:
 		cores_collected += 1
 		core_collected.emit(cores_collected)
@@ -64,7 +64,7 @@ func collect_core() -> void:
 
 
 func collect_core_and_advance() -> void:
-	"""Dipanggil saat pemain mengambil core DAN harus pindah level."""
+	## Dipanggil saat pemain mengambil core DAN harus pindah level.
 	if cores_collected < MAX_CORES:
 		cores_collected += 1
 		core_collected.emit(cores_collected)
@@ -82,32 +82,30 @@ func collect_core_and_advance() -> void:
 
 # === FUNGSI UNLOCK ABILITY ===
 func unlock_dash() -> void:
-	"""Unlock air dash - hadiah dari Boss Scrapper."""
+	## Unlock air dash - hadiah dari Boss Scrapper.
 	can_dash = true
 	ability_unlocked.emit("dash")
 	print("[GameManager] ABILITY UNLOCKED: Air Dash!")
 
 
 func unlock_double_jump() -> void:
-	"""Unlock double jump - hadiah dari Boss Spore-Bot."""
+	## Unlock double jump - hadiah dari Boss Spore-Bot.
 	can_double_jump = true
 	ability_unlocked.emit("double_jump")
 	print("[GameManager] ABILITY UNLOCKED: Double Jump!")
 
 
 func unlock_glide() -> void:
-	"""Unlock glide - hadiah dari Boss Tempest."""
+	## Unlock glide - hadiah dari Boss Tempest.
 	can_glide = true
 	ability_unlocked.emit("glide")
 	print("[GameManager] ABILITY UNLOCKED: Glide!")
 
 
 func apply_upgrades_to_player(player_node: Node) -> void:
-	"""Apply semua ability yang sudah di-unlock ke instance Player baru.
-	
-	Fungsi ini WAJIB dipanggil setiap kali level baru dimuat,
-	karena Player instance baru dibuat dengan nilai default.
-	"""
+	## Apply semua ability yang sudah di-unlock ke instance Player baru.
+	## Fungsi ini WAJIB dipanggil setiap kali level baru dimuat,
+	## karena Player instance baru dibuat dengan nilai default.
 	if player_node == null:
 		push_warning("[GameManager] apply_upgrades_to_player: player_node is null!")
 		return
@@ -132,7 +130,7 @@ func apply_upgrades_to_player(player_node: Node) -> void:
 
 # === FUNGSI HEALTH ===
 func damage_player(amount: int) -> void:
-	"""Kurangi HP pemain. Emit signal jika mati."""
+	## Kurangi HP pemain. Emit signal jika mati.
 	player_health = max(0, player_health - amount)
 	print("[GameManager] Player kena damage: %d. HP tersisa: %d" % [amount, player_health])
 	
@@ -143,19 +141,19 @@ func damage_player(amount: int) -> void:
 
 
 func heal_player(amount: int) -> void:
-	"""Tambah HP pemain (tidak melebihi max)."""
+	## Tambah HP pemain (tidak melebihi max).
 	player_health = min(player_max_health, player_health + amount)
 	print("[GameManager] Player heal: +%d. HP sekarang: %d" % [amount, player_health])
 
 
 func reset_health() -> void:
-	"""Reset HP ke full (saat respawn/new game)."""
+	## Reset HP ke full (saat respawn/new game).
 	player_health = player_max_health
 
 
 # === FUNGSI PAUSE ===
 func toggle_pause() -> void:
-	"""Toggle pause state game."""
+	## Toggle pause state game.
 	is_paused = !is_paused
 	get_tree().paused = is_paused
 	game_paused.emit(is_paused)
@@ -164,21 +162,21 @@ func toggle_pause() -> void:
 
 # === FUNGSI LEVEL ===
 func change_level(level_path: String) -> void:
-	"""Pindah ke level baru."""
+	## Pindah ke level baru.
 	current_level = level_path
 	get_tree().change_scene_to_file(level_path)
 	print("[GameManager] Loading level: %s" % level_path)
 
 
 func complete_level(level_name: String) -> void:
-	"""Dipanggil saat level selesai."""
+	## Dipanggil saat level selesai.
 	level_completed.emit(level_name)
 	print("[GameManager] Level selesai: %s" % level_name)
 
 
 # === FUNGSI RESET/NEW GAME ===
 func new_game() -> void:
-	"""Reset semua progress untuk game baru."""
+	## Reset semua progress untuk game baru.
 	player_health = player_max_health
 	cores_collected = 0
 	can_dash = false
@@ -194,7 +192,7 @@ func new_game() -> void:
 
 
 func _apply_debug_unlocks() -> void:
-	"""Apply debug ability unlocks if DEBUG flag is enabled."""
+	## Apply debug ability unlocks if DEBUG flag is enabled.
 	if DEBUG_UNLOCK_ALL_ABILITIES:
 		can_double_jump = true
 		can_dash = true
@@ -204,17 +202,17 @@ func _apply_debug_unlocks() -> void:
 
 # === FUNGSI TESTING (untuk unit test) ===
 func get_cores_count() -> int:
-	"""Getter untuk testing."""
+	## Getter untuk testing.
 	return cores_collected
 
 
 func get_player_health() -> int:
-	"""Getter untuk testing."""
+	## Getter untuk testing.
 	return player_health
 
 
 func is_ability_unlocked(ability_name: String) -> bool:
-	"""Cek status ability untuk testing."""
+	## Cek status ability untuk testing.
 	match ability_name:
 		"dash":
 			return can_dash
@@ -238,7 +236,7 @@ const LEVEL_ORDER: Array[String] = [
 
 
 func reload_current_level() -> void:
-	"""Reload level saat ini (untuk retry)."""
+	## Reload level saat ini (untuk retry).
 	if current_level != "":
 		get_tree().reload_current_scene()
 		print("[GameManager] Reloading level: %s" % current_level)
@@ -247,7 +245,7 @@ func reload_current_level() -> void:
 
 
 func load_next_level() -> void:
-	"""Load level berikutnya dalam urutan."""
+	## Load level berikutnya dalam urutan.
 	var current_index: int = LEVEL_ORDER.find(current_level)
 	
 	# Validasi: current_level tidak ditemukan di array
@@ -271,7 +269,7 @@ func load_next_level() -> void:
 
 
 func go_to_main_menu() -> void:
-	"""Kembali ke main menu."""
+	## Kembali ke main menu.
 	# Reset pause state
 	is_paused = false
 	get_tree().paused = false
@@ -282,18 +280,18 @@ func go_to_main_menu() -> void:
 
 
 func reset_player_health() -> void:
-	"""Alias untuk reset_health (kompatibilitas)."""
+	## Alias untuk reset_health (kompatibilitas).
 	reset_health()
 
 
 func reset_game() -> void:
-	"""Reset seluruh game state (alias untuk new_game)."""
+	## Reset seluruh game state (alias untuk new_game).
 	new_game()
 	print("[GameManager] Game state reset")
 
 
 func _show_victory_screen() -> void:
-	"""Internal: Tampilkan layar kemenangan setelah semua level selesai."""
+	## Internal: Tampilkan layar kemenangan setelah semua level selesai.
 	# Coba load VictoryScreen jika ada
 	var victory_scene_path: String = "res://scenes/ui/VictoryScreen.tscn"
 	if ResourceLoader.exists(victory_scene_path):

@@ -154,12 +154,10 @@ func _ready() -> void:
 
 
 func _recalculate_jump_physics() -> void:
-	"""Calculate physics values from designer-friendly parameters.
-	
-	Using kinematic equations:
-	- v₀ = 2h / t (initial velocity to reach height h in time t)
-	- g = 2h / t² (gravity needed for that trajectory)
-	"""
+	## Calculate physics values from designer-friendly parameters.
+	## Using kinematic equations:
+	## - v₀ = 2h / t (initial velocity to reach height h in time t)
+	## - g = 2h / t² (gravity needed for that trajectory)
 	jump_velocity = -((2.0 * jump_height) / jump_time_to_peak)
 	jump_gravity = (2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
 	fall_gravity = (2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)
@@ -169,7 +167,7 @@ func _recalculate_jump_physics() -> void:
 
 
 func _sync_from_game_manager() -> void:
-	"""Sync abilities and stats from GameManager (Source of Truth)."""
+	## Sync abilities and stats from GameManager (Source of Truth).
 	if not GameManager:
 		return
 	
@@ -398,7 +396,7 @@ func _process_dash(delta: float) -> void:
 
 
 func _spawn_ghost_trail() -> void:
-	"""Spawn ghost images behind player during dash."""
+	## Spawn ghost images behind player during dash.
 	if not sprite:
 		return
 	

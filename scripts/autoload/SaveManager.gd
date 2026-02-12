@@ -27,7 +27,7 @@ func _ready() -> void:
 
 # === SAVE GAME ===
 func save_game() -> bool:
-	"""Simpan progress game ke file."""
+	## Simpan progress game ke file.
 	var save_data: Dictionary = {
 		"version": "1.0",
 		"timestamp": Time.get_datetime_string_from_system(),
@@ -63,7 +63,7 @@ func save_game() -> bool:
 
 # === LOAD GAME ===
 func load_game() -> bool:
-	"""Load progress game dari file."""
+	## Load progress game dari file.
 	if not FileAccess.file_exists(SAVE_PATH):
 		push_warning("[SaveManager] File save tidak ditemukan.")
 		return false
@@ -114,7 +114,7 @@ func load_game() -> bool:
 
 # === DELETE SAVE ===
 func delete_save() -> bool:
-	"""Hapus file save (untuk new game)."""
+	## Hapus file save (untuk new game).
 	if FileAccess.file_exists(SAVE_PATH):
 		var error := DirAccess.remove_absolute(SAVE_PATH)
 		if error != OK:
@@ -126,7 +126,7 @@ func delete_save() -> bool:
 
 # === SETTINGS ===
 func save_settings(settings: Dictionary) -> bool:
-	"""Simpan pengaturan game (volume, controls, dll)."""
+	## Simpan pengaturan game (volume, controls, dll).
 	var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
 	if file == null:
 		return false
@@ -138,7 +138,7 @@ func save_settings(settings: Dictionary) -> bool:
 
 
 func load_settings() -> Dictionary:
-	"""Load pengaturan game."""
+	## Load pengaturan game.
 	if not FileAccess.file_exists(SETTINGS_PATH):
 		return get_default_settings()
 	
@@ -156,7 +156,7 @@ func load_settings() -> Dictionary:
 
 
 func get_default_settings() -> Dictionary:
-	"""Return default settings."""
+	## Return default settings.
 	return {
 		"master_volume": 1.0,
 		"music_volume": 0.8,
@@ -168,5 +168,5 @@ func get_default_settings() -> Dictionary:
 
 # === CHECK SAVE EXISTS ===
 func has_save_file() -> bool:
-	"""Cek apakah ada save file."""
+	## Cek apakah ada save file.
 	return FileAccess.file_exists(SAVE_PATH)

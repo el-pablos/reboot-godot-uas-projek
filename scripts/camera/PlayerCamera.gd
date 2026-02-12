@@ -117,7 +117,7 @@ func _update_look_ahead(delta: float) -> void:
 # =========================================
 
 func shake(intensity: float = -1.0, duration: float = -1.0) -> void:
-	"""Trigger screen shake (respects SettingsManager)."""
+	## Trigger screen shake (respects SettingsManager).
 	# Check settings
 	var sm = get_node_or_null("/root/SettingsManager")
 	if sm and not sm.is_screen_shake_enabled():
@@ -164,26 +164,24 @@ func _process_shake(delta: float) -> void:
 # =========================================
 
 func set_zoom_level(new_zoom: Vector2, instant: bool = false) -> void:
-	"""Change camera zoom.
-	
-	Args:
-		new_zoom: Target zoom level.
-		instant: If true, skip smooth transition.
-	"""
+	## Change camera zoom.
+	## Args:
+	## new_zoom: Target zoom level.
+	## instant: If true, skip smooth transition.
 	target_zoom = new_zoom
 	if instant:
 		zoom = new_zoom
 
 
 func enter_boss_fight(_boss_position: Vector2 = Vector2.ZERO) -> void:
-	"""Zoom out for boss fight visibility."""
+	## Zoom out for boss fight visibility.
 	is_boss_fight = true
 	target_zoom = boss_zoom
 	print("[Camera] 👹 Boss fight mode - zooming out")
 
 
 func exit_boss_fight() -> void:
-	"""Return to normal zoom after boss fight."""
+	## Return to normal zoom after boss fight.
 	is_boss_fight = false
 	target_zoom = default_zoom
 	print("[Camera] ✅ Boss defeated - normal zoom")
@@ -194,20 +192,20 @@ func exit_boss_fight() -> void:
 # =========================================
 
 func shake_small() -> void:
-	"""Small shake - light impact."""
+	## Small shake - light impact.
 	shake(4.0, 0.1)
 
 
 func shake_medium() -> void:
-	"""Medium shake - hit, dash impact."""
+	## Medium shake - hit, dash impact.
 	shake(8.0, 0.2)
 
 
 func shake_large() -> void:
-	"""Large shake - boss hit, explosion."""
+	## Large shake - boss hit, explosion.
 	shake(16.0, 0.35)
 
 
 func shake_epic() -> void:
-	"""Epic shake - boss death, major event."""
+	## Epic shake - boss death, major event.
 	shake(24.0, 0.5)

@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func _connect_to_boss() -> void:
-	"""Cari boss di scene dan connect ke signal boss_defeated."""
+	## Cari boss di scene dan connect ke signal boss_defeated.
 	var bosses := get_tree().get_nodes_in_group("bosses")
 	for boss in bosses:
 		if boss.has_signal("boss_defeated"):
@@ -44,7 +44,7 @@ func _connect_to_boss() -> void:
 
 
 func _on_boss_defeated() -> void:
-	"""Boss kalah - buka gate."""
+	## Boss kalah - buka gate.
 	if is_open:
 		return
 

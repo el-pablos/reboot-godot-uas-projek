@@ -46,7 +46,7 @@ func _ready() -> void:
 
 
 func _create_particles() -> void:
-	"""Create GPUParticles2D for explosion."""
+	## Create GPUParticles2D for explosion.
 	particles = GPUParticles2D.new()
 	particles.name = "GPUParticles2D"
 	particles.emitting = false
@@ -82,7 +82,7 @@ func _create_particles() -> void:
 
 
 func _create_light() -> void:
-	"""Create flash light for explosion."""
+	## Create flash light for explosion.
 	light = PointLight2D.new()
 	light.color = explosion_color
 	light.energy = 3.0
@@ -96,7 +96,7 @@ func _create_light() -> void:
 
 
 func _start_explosion() -> void:
-	"""Start explosion animation."""
+	## Start explosion animation.
 	# Start particles
 	if particles:
 		particles.emitting = true

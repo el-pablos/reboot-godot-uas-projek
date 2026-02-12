@@ -93,7 +93,7 @@ func _choose_attack() -> void:
 
 
 func _attack_lightning_bolt() -> void:
-	"""Tembak satu petir ke arah player."""
+	## Tembak satu petir ke arah player.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("lightning_bolt")
@@ -125,7 +125,7 @@ func _attack_lightning_bolt() -> void:
 
 
 func _attack_lightning_burst() -> void:
-	"""Tembak multiple petir spread."""
+	## Tembak multiple petir spread.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("lightning_burst")
@@ -181,7 +181,7 @@ func _attack_lightning_burst() -> void:
 
 
 func _attack_dive_strike() -> void:
-	"""Dive ke bawah dengan lightning trail."""
+	## Dive ke bawah dengan lightning trail.
 	if not _is_valid_for_attack():
 		return
 	_start_attack("dive_strike")
@@ -254,7 +254,7 @@ func _attack_dive_strike() -> void:
 
 
 func _spawn_lightning(target_pos: Vector2) -> void:
-	"""Spawn proyektil petir."""
+	## Spawn proyektil petir.
 	if not is_inside_tree():
 		return
 	
@@ -315,7 +315,7 @@ func _spawn_lightning(target_pos: Vector2) -> void:
 
 
 func _spawn_trail_effect() -> void:
-	"""Spawn efek trail saat dive."""
+	## Spawn efek trail saat dive.
 	var trail := ColorRect.new()
 	trail.size = Vector2(15, 15)
 	trail.position = global_position - Vector2(7.5, 7.5)

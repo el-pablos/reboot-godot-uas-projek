@@ -125,22 +125,22 @@ func _process(delta: float) -> void:
 # =========================================
 
 func unlock_ability(ability_name: String) -> void:
-	"""Unlock an ability by name. Emits signal for Player to sync."""
+	## Unlock an ability by name. Emits signal for Player to sync.
 	if ability_name in _abilities:
 		_abilities[ability_name] = true
 		ability_unlocked.emit(ability_name)
 		print("[GameManager] ✨ ABILITY UNLOCKED: %s" % ability_name.to_upper())
 
 func is_ability_unlocked(ability_name: String) -> bool:
-	"""Check if ability is unlocked."""
+	## Check if ability is unlocked.
 	return _abilities.get(ability_name, false)
 
 func get_abilities_dict() -> Dictionary:
-	"""Return copy of abilities dictionary (for Player sync)."""
+	## Return copy of abilities dictionary (for Player sync).
 	return _abilities.duplicate()
 
 func debug_unlock_all() -> void:
-	"""DEBUG: Unlock all abilities instantly."""
+	## DEBUG: Unlock all abilities instantly.
 	for ability in _abilities:
 		_abilities[ability] = true
 	print("[GameManager] 🔓 DEBUG: All abilities force unlocked!")
@@ -161,7 +161,7 @@ func unlock_glide() -> void:
 # =========================================
 
 func get_player_stats() -> Dictionary:
-	"""Return all player stats for injection into new Player instance."""
+	## Return all player stats for injection into new Player instance.
 	return {
 		"health": _player_data.health,
 		"max_health": _player_data.max_health,
@@ -172,7 +172,7 @@ func get_player_stats() -> Dictionary:
 	}
 
 func inject_stats_to_player(player_node: Node) -> void:
-	"""Inject all stats into a Player node. Call this in Player._ready()."""
+	## Inject all stats into a Player node. Call this in Player._ready().
 	if player_node == null:
 		push_error("[GameManager] inject_stats_to_player: player is null!")
 		return
@@ -205,7 +205,7 @@ func apply_upgrades_to_player(player_node: Node) -> void:
 # =========================================
 
 func collect_core() -> void:
-	"""Collect a core fragment."""
+	## Collect a core fragment.
 	if cores_collected < MAX_CORES:
 		_player_data.cores_collected += 1
 		core_collected.emit(cores_collected)
@@ -215,7 +215,7 @@ func collect_core() -> void:
 			print("[GameManager] 🏆 ALL CORES COLLECTED! Final boss unlocked!")
 
 func collect_core_and_advance() -> void:
-	"""Collect core and transition to next level."""
+	## Collect core and transition to next level.
 	collect_core()
 	
 	var level_name := current_level.get_file().get_basename()
@@ -262,7 +262,7 @@ func reset_player_health() -> void:
 # =========================================
 
 func change_level(level_path: String) -> void:
-	"""Change to a new level. Preserves all persistent data."""
+	## Change to a new level. Preserves all persistent data.
 	_player_data.current_level = level_path
 	print("[GameManager] 🚀 Loading level: %s" % level_path)
 	get_tree().change_scene_to_file(level_path)
@@ -309,7 +309,7 @@ func toggle_pause() -> void:
 # =========================================
 
 func new_game() -> void:
-	"""Start a new game. Resets progress but applies debug unlocks if enabled."""
+	## Start a new game. Resets progress but applies debug unlocks if enabled.
 	_player_data = {
 		"health": 100,
 		"max_health": 100,

@@ -58,7 +58,7 @@ var laser_timer: float = 0.0
 
 
 func _on_enemy_ready() -> void:
-	"""Turret-specific setup."""
+	## Turret-specific setup.
 	# Turrets don't move
 	gravity = 0.0
 	patrol_speed = 0.0
@@ -82,7 +82,7 @@ func _on_enemy_ready() -> void:
 
 
 func _setup_laser() -> void:
-	"""Setup laser line and raycast."""
+	## Setup laser line and raycast.
 	# Create laser line if not exists
 	if not laser_line:
 		laser_line = Line2D.new()
@@ -119,12 +119,12 @@ func _setup_laser() -> void:
 
 
 func _apply_gravity(_delta: float) -> void:
-	"""Override: Turrets are static, no gravity."""
+	## Override: Turrets are static, no gravity.
 	velocity = Vector2.ZERO
 
 
 func _state_idle(delta: float) -> void:
-	"""Scanning mode - slowly rotate looking for player."""
+	## Scanning mode - slowly rotate looking for player.
 	# Slow scan rotation
 	current_aim_angle += rotation_speed * 0.3 * delta
 	if current_aim_angle > max_rotation:
@@ -139,7 +139,7 @@ func _state_idle(delta: float) -> void:
 
 
 func _state_chase(delta: float) -> void:
-	"""Tracking mode - follow player and prepare to fire."""
+	## Tracking mode - follow player and prepare to fire.
 	if not target_player or not can_see_player:
 		change_state(State.SEARCH)
 		return
@@ -164,7 +164,7 @@ func _state_chase(delta: float) -> void:
 
 
 func _start_laser_charge() -> void:
-	"""Begin charging laser."""
+	## Begin charging laser.
 	is_charging_laser = true
 	laser_timer = 0.0
 	change_state(State.ATTACK)
@@ -182,7 +182,7 @@ func _start_laser_charge() -> void:
 
 
 func _state_attack(delta: float) -> void:
-	"""Charging and firing laser."""
+	## Charging and firing laser.
 	laser_timer += delta
 	
 	# Continue tracking player during charge (slower)
@@ -232,7 +232,7 @@ func _state_attack(delta: float) -> void:
 
 
 func _fire_laser() -> void:
-	"""Fire the laser beam."""
+	## Fire the laser beam.
 	is_charging_laser = false
 	is_firing_laser = true
 	
@@ -248,7 +248,7 @@ func _fire_laser() -> void:
 
 
 func _update_laser_damage() -> void:
-	"""Check if laser is hitting player."""
+	## Check if laser is hitting player.
 	if not laser_raycast:
 		return
 	
@@ -276,7 +276,7 @@ func _update_laser_damage() -> void:
 
 
 func _end_laser() -> void:
-	"""End laser firing."""
+	## End laser firing.
 	is_firing_laser = false
 	is_charging_laser = false
 	attack_cooldown_timer = laser_cooldown
@@ -294,7 +294,7 @@ func _end_laser() -> void:
 
 
 func _state_search(delta: float) -> void:
-	"""Lost target - scan for player."""
+	## Lost target - scan for player.
 	# Slowly scan back and forth
 	current_aim_angle += rotation_speed * 0.5 * delta * patrol_direction
 	
@@ -314,7 +314,7 @@ func _state_search(delta: float) -> void:
 
 
 func _apply_rotation() -> void:
-	"""Apply rotation to turret head and laser."""
+	## Apply rotation to turret head and laser.
 	var aim_rad: float = deg_to_rad(current_aim_angle) + base_direction.angle()
 	
 	if turret_head:
@@ -331,7 +331,7 @@ func _apply_rotation() -> void:
 
 
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
-	"""Override: Turrets can't be knocked back."""
+	## Override: Turrets can't be knocked back.
 	if is_dead:
 		return
 	
@@ -359,7 +359,7 @@ func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 
 
 func _spawn_death_effect() -> void:
-	"""Override: Big explosion for turret."""
+	## Override: Big explosion for turret.
 	var explosion_scene := load("res://scenes/effects/ExplosionParticles.tscn")
 	if explosion_scene:
 		var explosion := explosion_scene.instantiate()

@@ -81,7 +81,7 @@ func _ready() -> void:
 
 
 func _create_collision() -> void:
-	"""Create collision shape."""
+	## Create collision shape.
 	collision_shape = CollisionShape2D.new()
 	var circle := CircleShape2D.new()
 	circle.radius = 6.0
@@ -90,7 +90,7 @@ func _create_collision() -> void:
 
 
 func _setup_trail() -> void:
-	"""Setup projectile trail."""
+	## Setup projectile trail.
 	if not trail:
 		trail = Line2D.new()
 		trail.name = "Trail"
@@ -106,7 +106,7 @@ func _setup_trail() -> void:
 
 
 func _setup_glow() -> void:
-	"""Setup projectile glow."""
+	## Setup projectile glow.
 	if has_glow and not light:
 		light = PointLight2D.new()
 		light.color = trail_color
@@ -149,7 +149,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_trail() -> void:
-	"""Update trail line."""
+	## Update trail line.
 	if not trail:
 		return
 	
@@ -162,7 +162,7 @@ func _update_trail() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	"""Handle collision with physics bodies."""
+	## Handle collision with physics bodies.
 	if body is Player:
 		_hit_player(body as Player)
 	elif body is TileMap or body is StaticBody2D:
@@ -170,14 +170,14 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
-	"""Handle collision with areas (player hitbox, etc.)."""
+	## Handle collision with areas (player hitbox, etc.).
 	var parent := area.get_parent()
 	if parent is Player:
 		_hit_player(parent as Player)
 
 
 func _hit_player(player: Player) -> void:
-	"""Damage player and destroy."""
+	## Damage player and destroy.
 	var knockback_dir := velocity_vec.normalized()
 	knockback_dir.y = -0.3
 	knockback_dir = knockback_dir.normalized()
@@ -189,13 +189,13 @@ func _hit_player(player: Player) -> void:
 
 
 func _hit_wall() -> void:
-	"""Hit wall - destroy with effect."""
+	## Hit wall - destroy with effect.
 	_spawn_hit_effect()
 	_destroy()
 
 
 func _spawn_hit_effect() -> void:
-	"""Spawn particle effect on hit."""
+	## Spawn particle effect on hit.
 	# Try to spawn hit particles
 	var hit_scene: PackedScene = load("res://scenes/effects/HitParticles.tscn")
 	if hit_scene:
@@ -208,7 +208,7 @@ func _spawn_hit_effect() -> void:
 
 
 func _destroy() -> void:
-	"""Clean up and remove projectile."""
+	## Clean up and remove projectile.
 	# Clear trail
 	if trail:
 		trail.queue_free()

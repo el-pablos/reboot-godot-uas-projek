@@ -48,7 +48,7 @@ func _process(_delta: float) -> void:
 
 
 func _find_player() -> Player:
-	"""Cari player di scene."""
+	## Cari player di scene.
 	var players := get_tree().get_nodes_in_group("player")
 	if players.size() > 0:
 		return players[0] as Player
@@ -83,7 +83,7 @@ func _update_health_bar(current: int, max_hp: int) -> void:
 
 
 func connect_to_player(player: Player) -> void:
-	"""Connect ke signal player."""
+	## Connect ke signal player.
 	if player:
 		if not player.health_changed.is_connected(_on_player_health_changed):
 			player.health_changed.connect(_on_player_health_changed)
@@ -117,7 +117,7 @@ func _on_core_collected(total: int) -> void:
 # === ABILITIES ===
 
 func _update_abilities() -> void:
-	"""Update tampilan ability icons."""
+	## Update tampilan ability icons.
 	if not GameManager:
 		return
 	
@@ -132,7 +132,7 @@ func _update_abilities() -> void:
 
 
 func _on_ability_unlocked(ability_name: String) -> void:
-	"""Flash ability icon saat unlock."""
+	## Flash ability icon saat unlock.
 	_update_abilities()
 	
 	# Show unlock notification
@@ -140,7 +140,7 @@ func _on_ability_unlocked(ability_name: String) -> void:
 
 
 func _show_ability_unlock_notification(ability_name: String) -> void:
-	"""Tampilkan notifikasi unlock."""
+	## Tampilkan notifikasi unlock.
 	var ability_display := ""
 	match ability_name:
 		"dash":
