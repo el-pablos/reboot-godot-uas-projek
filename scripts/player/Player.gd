@@ -187,6 +187,10 @@ func _ready() -> void:
 		GameManager.ability_unlocked.connect(_on_ability_unlocked)
 		GameManager.player_stats_changed.connect(_sync_from_game_manager)
 	
+	# Connect attack hitbox signal
+	if attack_hitbox and not attack_hitbox.body_entered.is_connected(_on_attack_hitbox_body_entered):
+		attack_hitbox.body_entered.connect(_on_attack_hitbox_body_entered)
+
 	# Connect state machine to play animations
 	state_machine.state_changed.connect(_on_state_changed_play_anim)
 	
@@ -582,26 +586,35 @@ func _shoot_projectile() -> void:
 	get_parent().add_child(projectile)
 
 	print("[Player] 🔫 Projectile fired!")
-		var knockback_dir := Vector2(1 if facing_right else -1, -0.3).normalized()
-		body.take_damage(attack_damage, knockback_dir * attack_knockback)
-		
-		# Hit stop effect (respects settings)
-		var sm = get_node_or_null("/root/SettingsManager")
-		var hs_dur := 0.05
-		if sm:
-			hs_dur = sm.get_hit_stop_duration()
-		if hs_dur > 0:
-			_hit_stop(hs_dur)
-		
-		# Screen shake (respects settings)
-		if not sm or sm.is_screen_shake_enabled():
-			var camera := get_viewport().get_camera_2d()
-			if camera and camera.has_method("shake"):
-				camera.shake(6.0, 0.1)
-		
-		AudioManager.play_sfx("hit")
-		
-		print("[Player] ⚔️ Hit enemy for %d damage!" % attack_damage)
+
+
+func _on_attack_hitbox_body_entered(body: Node2D) -> void:
+	## Handle melee attack hitting an enemy.
+	if not is_attacking:
+		return
+	if not body.has_method("take_damage"):
+		return
+
+	var knockback_dir := Vector2(1 if facing_right else -1, -0.3).normalized()
+	body.take_damage(attack_damage, knockback_dir * attack_knockback)
+
+	# Hit stop effect (respects settings)
+	var sm = get_node_or_null("/root/SettingsManager")
+	var hs_dur := 0.05
+	if sm:
+		hs_dur = sm.get_hit_stop_duration()
+	if hs_dur > 0:
+		_hit_stop(hs_dur)
+
+	# Screen shake (respects settings)
+	if not sm or sm.is_screen_shake_enabled():
+		var camera := get_viewport().get_camera_2d()
+		if camera and camera.has_method("shake"):
+			camera.shake(6.0, 0.1)
+
+	AudioManager.play_sfx("hit")
+
+	print("[Player] \u2694\ufe0f Hit enemy for %d damage!" % attack_damage)
 
 
 func _hit_stop(duration: float) -> void:
