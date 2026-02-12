@@ -33,6 +33,7 @@ Jelajahi 5 level unik, kalahkan 4 boss, kumpulkan Core Fragments, dan unlock ber
 |------|----------|
 | **Gerak** | `A` `D` atau `←` `→` |
 | **Lompat** | `Space` atau `W` atau `↑` |
+| **Serang** | `J` atau `Mouse Left` *(melee + projectile)* |
 | **Dash** | `Shift` *(setelah unlock)* |
 | **Glide** | Tahan `Space` di udara *(setelah unlock)* |
 | **Pause** | `Escape` |
@@ -101,6 +102,9 @@ Perbedaan ini menciptakan karakteristik lompatan yang khas pada platformer profe
 - **Dust particles** untuk efek visual saat mendarat
 
 ### ⚔️ Combat & Progression
+- **Melee Attack** — wrench swing (25 damage, knockback)
+- **Ranged Attack** — energy bolt projectile (15 damage, 400 px/s)
+- Combo system: tekan `J` untuk melee + ranged sekaligus
 - Health system dengan regenerasi
 - Kumpulkan 5 **Core Fragments**
 - Progressive ability unlock melalui boss fights
@@ -185,18 +189,29 @@ Setiap boss menggunakan `BossBrain` + `BossConfig` (Resource) untuk AI yang fair
 
 ### Menjalankan Test Headless (Lokal)
 
-```bash
-# 1. Set main scene ke TestRunner (sementara)
-# Edit project.godot → run/main_scene="res://test/TestRunner.tscn"
+Gunakan helper scripts di `tools/`:
 
-# 2. Jalankan headless
-godot --headless --path . 2>&1
+```powershell
+# Windows (PowerShell)
+.\tools\run_tests.ps1
 
-# 3. Kembalikan main scene ke MainMenu.tscn setelah selesai
-
-# TestRunner otomatis quit dengan exit code = jumlah test gagal
-# Exit 0 = semua test passed
+# Atau dengan path Godot custom
+.\tools\run_tests.ps1 -GodotPath "C:\path\to\godot.exe"
 ```
+
+```bash
+# Linux / macOS
+bash tools/run_tests.sh
+
+# Atau dengan path Godot custom
+bash tools/run_tests.sh /path/to/godot
+```
+
+Script otomatis:
+1. Mengganti main scene ke TestRunner
+2. Menjalankan Godot headless
+3. Mengembalikan main scene
+4. Return exit code (0 = semua lulus)
 
 ### Test Suites
 
@@ -285,6 +300,18 @@ Release **tidak akan dibuat** jika:
 - Export build error
 
 Pipeline berjalan di satu job berurutan sehingga kegagalan di step manapun menghentikan proses.
+
+---
+
+## 🔧 Troubleshooting
+
+| Masalah | Solusi |
+|---------|--------|
+| Parser Error: "Class X hides global script class" | Cek duplikat `class_name` di file backup: `grep -rn 'class_name' scripts/` |
+| Boss nyangkut / stuck | BossBrain punya unstuck guard (2 detik threshold). Jika masih terjadi, cek collision_mask boss |
+| Player jatuh tembus platform | Cek CollisionPolygon2D di level .tscn — pastikan half-extent = 16 × scale (bukan 32 × scale) |
+| Serangan tidak kena musuh | Pastikan enemy ada di group `"enemies"` dan punya method `take_damage()` |
+| Test gagal di CI | Godot 4.6 di CI vs 4.5.1 lokal — cek versi-specific API |
 
 ---
 
