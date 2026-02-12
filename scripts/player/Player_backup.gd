@@ -8,7 +8,7 @@
 # ===================================================
 
 extends CharacterBody2D
-class_name Player
+# class_name Player  # REMOVED: duplikat dengan Player.gd, bikin Parser Error
 
 # --- SIGNALS ---
 signal health_changed(new_health: int, max_health: int)
