@@ -69,7 +69,7 @@ texture = SubResource("GradientTexture2D_crystal")
 texture_scale = 5.0
 
 [node name="PurpleCrystal" type="PointLight2D" parent="AmbientLights" unique_id=378504223]
-position = Vector2(700, 280)
+position = Vector2(600, 300)
 color = Color(0.7, 0.3, 1, 1)
 energy = 0.6
 shadow_enabled = true
@@ -78,7 +78,7 @@ texture = SubResource("GradientTexture2D_crystal")
 texture_scale = 4.5
 
 [node name="GreenGlow" type="PointLight2D" parent="AmbientLights" unique_id=108778565]
-position = Vector2(1100, 230)
+position = Vector2(900, 230)
 color = Color(0.3, 1, 0.5, 1)
 energy = 0.55
 shadow_enabled = true
@@ -141,7 +141,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="BouncePlatform2" type="StaticBody2D" parent="Environment" unique_id=1310187013]
-position = Vector2(700, 300)
+position = Vector2(600, 330)
 collision_layer = 4
 script = ExtResource("6_bounce_script")
 bounce_force = -600.0
@@ -155,7 +155,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Platform1" type="StaticBody2D" parent="Environment" unique_id=366810734]
-position = Vector2(950, 200)
+position = Vector2(800, 250)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Platform1" unique_id=2121589229]
@@ -167,7 +167,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-64, -16, 64, -16, 64, 16, -64, 16)
 
 [node name="BouncePlatform3" type="StaticBody2D" parent="Environment" unique_id=788954380]
-position = Vector2(1200, 280)
+position = Vector2(980, 300)
 collision_layer = 4
 script = ExtResource("6_bounce_script")
 bounce_force = -650.0
@@ -181,7 +181,7 @@ texture = ExtResource("4_platform")
 polygon = PackedVector2Array(-48, -16, 48, -16, 48, 16, -48, 16)
 
 [node name="Floor2" type="StaticBody2D" parent="Environment" unique_id=718657340]
-position = Vector2(1500, 350)
+position = Vector2(1400, 350)
 collision_layer = 4
 
 [node name="Sprite" type="Sprite2D" parent="Environment/Floor2" unique_id=153109406]
@@ -212,7 +212,7 @@ polygon = PackedVector2Array(-60, -10, 60, -10, 60, 20, -60, 20)
 [node name="Collectibles" type="Node2D" parent="." unique_id=754201414]
 
 [node name="CoreFragment" type="Area2D" parent="Collectibles" unique_id=412508951]
-position = Vector2(1500, 270)
+position = Vector2(1400, 270)
 collision_layer = 16
 script = ExtResource("5_core_script")
 core_id = 3
@@ -242,12 +242,12 @@ collision_mask = 6
 script = ExtResource("7_pl2iw")
 
 [node name="BossSporeBot" type="CharacterBody2D" parent="." unique_id=1232666485 groups=["bosses", "enemies"] instance=ExtResource("7_boss")]
-position = Vector2(1050, 280)
+position = Vector2(1100, 270)
 collision_layer = 2
 collision_mask = 5
 
 [node name="BossGate" type="StaticBody2D" parent="."]
-position = Vector2(1300, 310)
+position = Vector2(1250, 320)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("15_gate_script")
