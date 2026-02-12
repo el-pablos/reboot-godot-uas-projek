@@ -1,9 +1,11 @@
 # =============================================================================
 # CI/CD — Deploy Web Build ke GitHub Pages
 # =============================================================================
-# Trigger: setelah release workflow selesai push tag v*
+# Trigger: setelah release workflow push tag v*, ATAU manual dispatch
 # Hasil: web build di-deploy ke GitHub Pages
 # Token: GITHUB_TOKEN bawaan (TIDAK pakai PAT pribadi)
+#
+# SETUP: Di repo Settings → Pages → Source, pilih "GitHub Actions"
 # =============================================================================
 
 name: "🌐 Deploy Web to Pages"
@@ -11,6 +13,7 @@ name: "🌐 Deploy Web to Pages"
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:  # Allow manual trigger for debugging
 
 permissions:
   contents: read
@@ -29,7 +32,7 @@ jobs:
   deploy:
     name: "Export Web → Deploy Pages"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     environment:
       name: github-pages
@@ -52,6 +55,7 @@ jobs:
       - name: "📦 Import project resources"
         run: |
           godot --headless --import --quit 2>&1 || true
+          sleep 2
           echo "✅ Import complete"
 
       # ── Export Web Build ───────────────────────────────────────────
@@ -59,18 +63,30 @@ jobs:
         run: |
           mkdir -p build/web
           godot --headless --path . --export-release "${{ env.PRESET_WEB }}" build/web/index.html 2>&1
-          echo "✅ Web export done"
+          echo ""
+          echo "=== Web export output ==="
           ls -la build/web/
+          # Verify index.html was created
+          if [ ! -f build/web/index.html ]; then
+            echo "❌ ERROR: index.html not found after export!"
+            exit 1
+          fi
+          echo "✅ Web export verified"
 
       # ── Ensure coi-serviceworker for SharedArrayBuffer ─────────────
       - name: "🔧 Add coi-serviceworker for cross-origin isolation"
         run: |
           cd build/web
+          # Try multiple CDN sources for coi-serviceworker
+          curl -fsSL https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js \
+            -o coi-serviceworker.min.js 2>/dev/null || \
           curl -fsSL https://raw.githubusercontent.com/nicknisi/coi-serviceworker/main/coi-serviceworker.min.js \
-            -o coi-serviceworker.min.js || true
-          if [ -f coi-serviceworker.min.js ]; then
+            -o coi-serviceworker.min.js 2>/dev/null || true
+          if [ -f coi-serviceworker.min.js ] && [ -s coi-serviceworker.min.js ]; then
             sed -i 's|<head>|<head><script src="coi-serviceworker.min.js"></script>|' index.html
             echo "✅ coi-serviceworker injected"
+          else
+            echo "⚠️ coi-serviceworker not available, SharedArrayBuffer may not work"
           fi
 
       # ── Deploy to GitHub Pages ─────────────────────────────────────
