@@ -72,6 +72,7 @@ secrets.gd
 *.ps1
 *.py
 !tools/run_tests.ps1
+!tools/capture_media.ps1
 asset_downloader.py
 download_assets_real.ps1
 setup_assets_real.ps1
