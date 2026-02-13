@@ -138,6 +138,7 @@ func _create_brain(config: BossConfig) -> void:
 
 func _on_brain_attack_requested(attack_type: String) -> void:
 	## BossBrain minta serangan. Override di subclass.
+	print("[Boss] %s received attack_requested('%s') → calling _choose_attack()" % [boss_name, attack_type])
 	_choose_attack()
 
 
@@ -282,10 +283,12 @@ func _start_attack(attack_name: String) -> void:
 	## Mulai serangan.
 	is_attacking = true
 	attack_started.emit(attack_name)
+	print("[Boss] %s _start_attack('%s') → is_attacking=true" % [boss_name, attack_name])
 
 
 func _end_attack() -> void:
 	## Akhiri serangan, set cooldown.
+	print("[Boss] %s _end_attack() → is_attacking=false" % boss_name)
 	is_attacking = false
 	if brain:
 		brain.end_attack()

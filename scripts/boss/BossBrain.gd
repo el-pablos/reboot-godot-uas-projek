@@ -54,6 +54,7 @@ var is_telegraphing: bool = false
 var telegraph_timer: float = 0.0
 var last_attack_type: String = ""
 var attacks_since_reposition: int = 0
+var _telegraph_completed: bool = false  # Tracks that telegraph finished → ready to fire
 
 # === Recover ===
 var recover_timer: float = 0.0
@@ -195,6 +196,7 @@ func _update_timers(delta: float) -> void:
 		telegraph_timer -= delta
 		if telegraph_timer <= 0:
 			is_telegraphing = false
+			_telegraph_completed = true  # Telegraph done → attack can fire
 
 	if recover_timer > 0:
 		recover_timer -= delta
@@ -299,8 +301,10 @@ func _change_state(new_state: AIState) -> void:
 	previous_state = current_state
 	current_state = new_state
 	state_timer = 0.0
+	_telegraph_completed = false  # Reset on state change
 
 	state_changed.emit(previous_state, new_state)
+	print("[BossBrain] %s state: %s → %s" % [boss.name if boss else "?", AIState.keys()[previous_state], AIState.keys()[new_state]])
 
 
 # === STATE BEHAVIORS ===
@@ -370,6 +374,15 @@ func _do_attack_close() -> void:
 	if boss.get("is_attacking") and boss.is_attacking:
 		return  # Sudah attacking
 
+	# Telegraph selesai → fire attack
+	if _telegraph_completed:
+		_telegraph_completed = false
+		attacks_since_reposition += 1
+		print("[BossBrain] ATTACK_CLOSE → emitting attack_requested('close') for %s" % boss.name)
+		attack_requested.emit("close")
+		_set_attack_cooldown()
+		return
+
 	# Telegraph dulu
 	if not is_telegraphing and config and config.telegraph_duration > 0:
 		_start_telegraph(config.telegraph_duration * 0.5)  # Telegraph lebih pendek untuk close
@@ -378,7 +391,9 @@ func _do_attack_close() -> void:
 	if is_telegraphing:
 		return  # Masih telegraph
 
+	# No telegraph needed (telegraph_duration == 0)
 	attacks_since_reposition += 1
+	print("[BossBrain] ATTACK_CLOSE (no telegraph) → emitting attack_requested('close') for %s" % boss.name)
 	attack_requested.emit("close")
 	_set_attack_cooldown()
 
@@ -386,6 +401,15 @@ func _do_attack_close() -> void:
 func _do_attack_far() -> void:
 	## Minta boss lakukan ranged attack.
 	if boss.get("is_attacking") and boss.is_attacking:
+		return
+
+	# Telegraph selesai → fire attack
+	if _telegraph_completed:
+		_telegraph_completed = false
+		attacks_since_reposition += 1
+		print("[BossBrain] ATTACK_FAR → emitting attack_requested('far') for %s" % boss.name)
+		attack_requested.emit("far")
+		_set_attack_cooldown()
 		return
 
 	# Telegraph dulu (lebih lama untuk ranged)
@@ -396,7 +420,9 @@ func _do_attack_far() -> void:
 	if is_telegraphing:
 		return
 
+	# No telegraph needed (telegraph_duration == 0)
 	attacks_since_reposition += 1
+	print("[BossBrain] ATTACK_FAR (no telegraph) → emitting attack_requested('far') for %s" % boss.name)
 	attack_requested.emit("far")
 	_set_attack_cooldown()
 
@@ -437,6 +463,7 @@ func _do_phase_change(_delta: float) -> void:
 func _start_telegraph(duration: float) -> void:
 	## Mulai telegraph sebelum serangan.
 	is_telegraphing = true
+	_telegraph_completed = false  # Reset: new telegraph cycle
 	telegraph_timer = duration
 	telegraph_started.emit(duration)
 
@@ -470,6 +497,7 @@ func _set_attack_cooldown() -> void:
 func end_attack() -> void:
 	## Dipanggil oleh boss script setelah attack selesai.
 	_set_attack_cooldown()
+	_telegraph_completed = false  # Reset for next attack cycle
 
 	# Tentukan state selanjutnya
 	if randf() < 0.3:
