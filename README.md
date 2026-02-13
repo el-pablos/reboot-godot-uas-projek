@@ -4,7 +4,7 @@
 
 ![Godot Engine](https://img.shields.io/badge/Godot-4.6-478CBF?style=for-the-badge&logo=godot-engine&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-255%20Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-307%20Passed-success?style=for-the-badge)
 ![Visual](https://img.shields.io/badge/Visual-Pixel%20Art-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
@@ -67,7 +67,7 @@ Sistem gerakan menggunakan **kinematika kustom** (Coyote Time, Jump Buffer, dyna
 | Ability | Unlock Setelah | Efek |
 |---------|----------------|------|
 | Air Dash | Mengalahkan Scrapper (L2) | Dash horizontal di udara |
-| Double Jump | Mengalahkan Spore-Bot (L3) | Lompat kedua di udara |
+| Double Jump | Selalu aktif (default) | Lompat kedua di udara |
 | Glide | Mengalahkan Tempest (L4) | Melayang pelan saat jatuh |
 
 ---
@@ -82,7 +82,7 @@ Sistem gerakan menggunakan **kinematika kustom** (Coyote Time, Jump Buffer, dyna
 | 4 | Storm Spire | Menara Badai | **Tempest** | Glide |
 | 5 | Overlord Fortress | Markas Final | **Overlord** | Victory! |
 
-Boss ditempatkan di **mid-challenge** — pemain harus mengalahkan boss dan melewati BossGate sebelum bisa mengambil Core Fragment.
+Boss ditempatkan di setiap level — pemain harus mengalahkan boss untuk mendapatkan ability reward dan Core Fragment.
 
 ---
 
@@ -124,9 +124,9 @@ godot --headless --path . --quit    # verifikasi parse
 
 | Metric | Status |
 |--------|--------|
-| Unit Tests | **255/255 Passed** ✅ |
+| Unit Tests | **307/307 Passed** ✅ |
 | Parse Errors | **0** ✅ |
-| Test Suites | **8** ✅ |
+| Test Suites | **9** ✅ |
 | Headless Import | **Clean** ✅ |
 
 ### Menjalankan Test
@@ -159,14 +159,15 @@ Script otomatis: swap main scene → run headless → restore → exit code 0 = 
 | test_gameplay_qa.gd | 32 |
 | test_boss_rework.gd | 16 |
 | test_regression.gd | 42 |
-| **Total** | **255** |
+| test_boss_attack.gd | 52 |
+| **Total** | **307** |
 
 ---
 
 ## 🚀 CI/CD & Auto Release
 
 Setiap push ke branch `master` otomatis:
-1. **Headless Tests** — 255 unit tests dijalankan
+1. **Headless Tests** — 307 unit tests dijalankan
 2. **Export Builds** — Windows, Linux, dan Web
 3. **GitHub Release** — tag `v0.1.<run>` + desktop builds
 4. **Web Deploy** — build web ke GitHub Pages
@@ -288,7 +289,7 @@ project-reboot/
 │   ├── hazards/        # MachinePress, WindZone, LaserTrap, ToxicPool, LavaPool
 │   ├── collectibles/   # CoreFragment
 │   └── ui/             # HUD, DialogSystem, PauseMenu, MainMenu, ModernHealthUI
-├── test/               # 255 headless tests (8 suites)
+├── test/               # 307 headless tests (9 suites)
 ├── tools/              # run_tests, capture_screenshots, scene_patcher
 └── project.godot
 ```
@@ -297,16 +298,93 @@ project-reboot/
 
 ---
 
+## 🎨 Sumber Aset & Pipeline
+
+### Sprite & Visual Art — 100% Programmatic (Python/Pillow)
+
+Semua aset visual dibuat **sepenuhnya secara programatik** menggunakan script Python + Pillow (PIL). Tidak ada asset pack eksternal — semua original dan CC0.
+
+| Script Generator | Output |
+|-----------------|--------|
+| `generate_sprites.py` | Sprite individual: player `bip.png`, enemies, tiles, items |
+| `generate_all_assets.py` | Full visual overhaul: spritesheet, animasi, UI, backgrounds, VFX, environment |
+
+**Player (BIP)** — 32×32 pixel art robot biru/cyan:
+- 7 animasi: idle(6f), run(6f), jump(2f), fall(2f), dash(3f), hurt(2f), dead(3f) → **24 frame total**
+- Spritesheet + individual frame PNGs di `assets/sprites/player/frames/`
+- SpriteFrames resource: `player_frames.tres`
+
+**Enemies & Boss** — tiap boss unik:
+- Enemy generik: 32×32 spritesheet
+- 4 Boss unik: Scrapper, Spore-Bot, Tempest, Overlord (individual + spritesheet per boss)
+- Path: `assets/sprites/enemies/`
+
+**Tiles** — 4 tileset 32×32:
+- `ground.png` (earthy + grass top), `platform.png` (grey metal)
+- `industrial.png` (dark metal diamond-plate), `scifi.png` (dark blue neon circuits)
+
+**Backgrounds** — 3-layer parallax per level (15 image total):
+- Layer: `_sky.png`, `_far.png`, `_clouds.png`
+- Tema: Golden Isles, Rust Factory, Crystal Labs, Storm Spire, Overlord Fortress
+
+**Environment Props & Hazards:**
+- 6 hazard sprites: crystal, laser, lava, press, toxic, wind
+- 3 props: barrel, crate, sign
+
+**VFX** — 5 efek partikel:
+- `dash_trail.png`, `dust.png`, `explosion.png`, `glow.png`, `spark.png`
+
+### UI Components
+
+**7 scene UI** di `scenes/ui/` — semua custom, tidak pakai UI kit eksternal:
+
+| Komponen | Deskripsi |
+|----------|----------|
+| **HUD** | ProgressBar health (color-coded hijau/kuning/merah), Core counter, Ability icons dengan lock/unlock state |
+| **ModernHealthUI** | TextureProgressBar + delayed damage bar, glow effects, low-health pulse warning, shake animation |
+| **PauseMenu** | Resume, Settings, Main Menu, Quit — pause game tree |
+| **SettingsMenu** | Volume sliders (Master/Music/SFX), Fullscreen, VSync, Screen Shake, Hit Stop level |
+| **DialogSystem** | RPG-style dialog: speaker label, typewriter text effect, continue indicator (Oracle NPC) |
+| **GameOverScreen** | Random death messages (8 variasi lucu), Retry + Main Menu |
+| **VictoryScreen** | Level/game complete, core count stats, Next Level / Main Menu |
+
+**UI Sprites** (generated):
+- 3-state button: `button_normal.png`, `button_hover.png`, `button_pressed.png`
+- Health bar: `health_bar_fill.png`, `health_bar_boss_fill.png`, `health_bar_frame.png`
+- Ability icons: `icon_dash.png`, `icon_double_jump.png`, `icon_glide.png`, `icon_locked.png`
+- HUD elements: `icon_core.png`, `panel_bg.png`
+
+### Audio — Programmatic (Python wave/math)
+
+| Script | Output | Teknik |
+|--------|--------|--------|
+| `generate_sfx.py` | 12 SFX `.wav` | Python `wave` + `struct` + `math` (sine waves, noise bursts, chirps) |
+| `generate_bgm.py` | 1 BGM `.wav` | Python `wave` (triangle + sine chords + arpeggio, 8s loop) |
+
+**SFX** (12 file): jump, double_jump, dash, land, hit, hurt, death, collect, boss_hit, level_complete, menu_select, menu_confirm
+
+### Font
+
+| Font | Source | Penggunaan |
+|------|--------|------------|
+| **Press Start 2P** | Google Fonts (OFL) | Default GUI font, 12px, semua teks in-game |
+
+> Lihat [ASSET_CREDITS.md](ASSET_CREDITS.md) untuk daftar lengkap atribusi aset.
+
+---
+
 ## 🎨 Credits
 
 - **Engine**: [Godot Engine 4.6](https://godotengine.org)
-- **Art Style**: Custom pixel art (CC0), generated via Python/Pillow pipeline
-- **Audio**: Placeholder SFX
+- **Art Pipeline**: Custom pixel art (CC0), generated via Python/Pillow — `generate_sprites.py`, `generate_all_assets.py`
+- **Audio Pipeline**: Procedural SFX/BGM via Python wave — `generate_sfx.py`, `generate_bgm.py`
+- **Font**: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) (OFL License)
 - **Developer**: el-pablos
 
 ## 📜 License
 
 This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+Asset bawaan game berlisensi **CC0** (public domain).
 
 ---
 
