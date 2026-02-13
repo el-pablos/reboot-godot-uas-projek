@@ -47,10 +47,10 @@ func run_all_tests() -> void:
 	test_gate_starts_with_collision_enabled()
 	
 	# Level loading
-	test_level_2_loads_with_gate()
-	test_level_3_loads_with_gate()
-	test_level_4_loads_with_gate()
-	test_level_5_loads_with_gate()
+	test_level_2_loads_without_gate()
+	test_level_3_loads_without_gate()
+	test_level_4_loads_without_gate()
+	test_level_5_loads_without_gate()
 
 
 func print_results() -> void:
